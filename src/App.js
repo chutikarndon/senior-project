@@ -33,11 +33,11 @@ const App = () => {
 
   return (
       <div className={classes.wrapper}>
-        <Header>
-          <Login>
-            <Signup/>
-          </Login>
-        </Header>
+        <Login>
+          <Header/>
+          <Signup/>
+        </Login>
+        
       </div>    
   );
 }
