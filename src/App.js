@@ -1,9 +1,9 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
-import Header from './component/header';
-import Login from './component/login';
-import Signup from './component/signup';
+import Header from './component/Header';
+import Login from './component/Login';
+import Signup from './component/Signup';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
