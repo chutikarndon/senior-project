@@ -1,25 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 
-function App() {
+import Header from './component/header';
+import Login from './component/login';
+import Signup from './component/signup';
+
+const useStyles = makeStyles((theme) => ({
+  appBar: {
+      borderRadius: 15,
+      margin: '30px 100px',
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: '600px',
+      border: '2px solid black',
+
+      [theme.breakpoints.down('xs')]: {
+          width: '90%',
+      },
+  },
+  wrapper: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      width: '100%',
+  },
+}));
+
+const App = () => {
+  const classes = useStyles();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <div className={classes.wrapper}>
+        <Header>
+          <Login>
+            <Signup/>
+          </Login>
+        </Header>
+      </div>    
   );
 }
+
 
 export default App;
