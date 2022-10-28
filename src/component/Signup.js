@@ -4,8 +4,8 @@ const Signup = () => {
     return(
         <div class="container py-5">
             <h3 class="text-center mb-3">Register S Meet</h3>
-            <div class="card" style="width:100%; max-width: 35rem;">
-                <div style="display: flex; justify-content: space-between; align-items: center;" class="card-header">
+            <div class="card">
+                <div class="card-header">
                     <p class="m-0">Signup Form</p><a href="/login" type="button"
                         class="btn btn-outline-primary btn-sm">Login</a>
                 </div>
@@ -48,7 +48,7 @@ const Signup = () => {
                                 <label for="floatingPassword">Enter your Password</label>
                             </div>
                         </div>
-                        <button style="width: 100%;" type="submit" class="btn btn-primary">Sign Up</button>
+                        <button type="submit" class="btn btn-primary">Sign Up</button>
                     </form>
                 </div>
             </div>

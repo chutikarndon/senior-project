@@ -1,9 +1,10 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+// import { BrowserRouter as Router,Routes } from 'react-router-dom';
 
-import Header from './component/Header';
 import Login from './component/Login';
-import Signup from './component/Signup';
+// import Header from './component/Header';
+// import Signup from './component/Signup';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -32,13 +33,16 @@ const App = () => {
   const classes = useStyles();
 
   return (
-      <div className={classes.wrapper}>
-        <Login>
-          <Header/>
-          <Signup/>
-        </Login>
-        
-      </div>    
+    // <Router>
+    //   <div className={classes.wrapper}>
+    //     <Routes exact path='/' component = {Login}/>
+    //     <Routes path='/Header' component = {Header}/>
+    //     <Routes path='/Signup' component = {Signup}/>
+    //   </div> 
+    // </Router> 
+    <div className={classes.wrapper}>
+      <Login/>
+  </div>   
   );
 }
 

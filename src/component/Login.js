@@ -1,19 +1,28 @@
 import { TextField, Typography} from "@material-ui/core";
 import React from "react";
+import { useNavigate } from "react-router-dom";
+
+
+
 import Header from "./Header";
 
 
 const Login = () => {
+    let navigate = useNavigate(); 
+    const routeChange = () =>{ 
+        let path = Header; 
+        navigate(path);
+    }
 return(
     <div>
         <Typography variant='h2' align='center'> video</Typography>
         <div class="card">
             <div class="card-header">
-                <p class="m-0">Login Form</p><a href="/Signup" type="button" class="btn btn-outline-primary btn-sm">Sign
-                    Up</a>
+                <p class="m-0">Login Form</p>
+                {/* <a href="/Signup" type="button" class="btn btn-outline-primary btn-sm">Sign Up</a> */}
             </div>
             <div class="card-body">
-                <form action={Login} method="post" onSubmit={Header}>
+                
                     {/* <% if(locals.messages.success){ %>
                     <div class="alert alert-success" role="alert">
                         <%= locals.messages.success %>
@@ -32,8 +41,8 @@ return(
                         <label for="floatingPassword">Password</label>
                         <TextField type="Enter your Password" class="form-control" name="Enter your Password" placeholder="Enter your Password"/>
                     </div>
-                    <button type="submit" class="btn btn-primary">Login</button>
-                </form>
+                    <button type="submit" class="btn btn-primary" onClick={routeChange}>Login</button>
+                
             </div>
         </div>
     </div>
