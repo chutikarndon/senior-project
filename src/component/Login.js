@@ -1,23 +1,30 @@
-import { TextField, Typography} from "@material-ui/core";
+import { TextField, Typography, Paper, Container} from "@material-ui/core";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-
-
+import { makeStyles } from "@material-ui/styles";
 
 // import Header from "./Header";
-
+const useStyles = makeStyles((theme) => ({
+    paper: {
+        width:'300px',
+        border: '2px solid black',
+        padding: '10px 20px',
+        margin: '8px 8px 8px 175px'
+    }
+}));
 
 const Login = () => {
+    const classes = useStyles();
     let navigate = useNavigate(); 
     return(
-        <div>
+        <Container>
             <Typography variant='h2' align='center'> video</Typography>
-            <div class="card">
-                <div class="card-header">
+            <Paper variant="outlined" className={classes.paper}>
+                <div class="card-header" align= 'center'>
                     <p class="m-0">Login Form</p>
                     <a href="/Signup" type="button" class="btn btn-outline-primary btn-sm">Sign Up</a>
                 </div>
-                <div class="card-body">
+                <div class="card-body" align= 'center'>
                     
                         {/* <% if(locals.messages.success){ %>
                         <div class="alert alert-success" role="alert">
@@ -39,8 +46,8 @@ const Login = () => {
                     </div>
                     <button type="submit" class="btn btn-primary" onClick={()=> navigate("/Header")}>Login</button>  
                 </div>
-            </div>
-        </div>
+            </Paper>
+        </Container>
             
     )
 }
