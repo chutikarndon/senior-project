@@ -1,6 +1,28 @@
-import React from "react";
+import React, {useState} from "react";
+import DragMove from "../DragMove";
+import logo from "../logo.svg";
+import { makeStyles } from "@material-ui/core";
+
+const useStyles = makeStyles((theme) => ({
+    img: {
+        height: '55px',
+        width: '55px'
+    }
+}));
 
 const RoomMeet = () => {
+    const classes = useStyles();
+    const [translate, setTranslate] = useState({
+        x: 0,
+        y: 0
+      });
+    
+      const handleDragMove = (e) => {
+        setTranslate({
+          x: translate.x + e.movementX,
+          y: translate.y + e.movementY
+        });
+      };
     return(
         <div>
             <div class="main-wrapper">
@@ -97,6 +119,13 @@ const RoomMeet = () => {
                     </form>
                 </div>
             </div>
+            <div className={classes.img}>
+                <DragMove onDragMove={handleDragMove}>
+                    <div  style={{transform: `translateX(${translate.x}px) translateY(${translate.y}px)`}}>
+                        <img src={logo}/>
+                    </div>
+                </DragMove>
+            </div>
             <script>
 
             </script>
@@ -170,3 +199,4 @@ const RoomMeet = () => {
         </div>
     )
 }
+export default RoomMeet;

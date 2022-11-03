@@ -1,10 +1,22 @@
 import React from "react";
+import { makeStyles } from "@material-ui/core";
+import {AppBar} from "@material-ui/core";
 
+const useStyles = makeStyles((theme) => ({
+    header: {
+        height: '55px',
+        display: 'flex', 
+    },
+    headerHelp: {
+        display: 'flex'
+    }
+}));
 
 const Header = () => {
+    const classes = useStyles();
     return(
         <div>
-            <div class="d-flex align-items-center"> {/*Header */}
+            <AppBar class="d-flex align-items-center" className={classes.header}> {/*Header */}
                 {/* <p class="m-0 px-3" style="font-weight: bold; color: #5F6368;">
                 <%= user.name %>
                 </p> */}
@@ -18,7 +30,7 @@ const Header = () => {
                         info
                     </span>
                 </a>
-                <a class="icon" href="C:\Users\piyawan\Desktop\proj_V4\image\S__4399107.jpg">
+                <a class="icon" href="C:\Users\piyawan\Desktop\proj_V4\webapp\image\S__4399107.jpg">
                     <span class="material-icons-outlined">
                         settings
                     </span>
@@ -28,7 +40,7 @@ const Header = () => {
                         logout
                     </span>
                 </a>
-            </div>
+            </AppBar>
             <div class="row g-3">{/* menu join = index.ejs*/}
                 <div class="col-md-6">
                     <h1 class="mb-3">
@@ -38,7 +50,7 @@ const Header = () => {
                          to make it free and
                         available for all.</p>
                     <div class="a123 my-5">
-                        <a class="btn btn-primary new-meeting" href="/new-meeting" role="button">New
+                        <a class="btn btn-primary new-meeting" href="/RoomMeet" role="button">New
                             Meeting</a>
                         <form action="join-room" method="POST">
                             <div class="input-group ">
