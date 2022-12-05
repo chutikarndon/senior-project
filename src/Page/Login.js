@@ -1,4 +1,4 @@
-import { TextField, Typography, Paper, Container} from "@material-ui/core";
+import {Typography, Paper, Container} from "@material-ui/core";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { makeStyles } from "@material-ui/styles";
@@ -18,12 +18,8 @@ const Login = () => {
     let navigate = useNavigate(); 
     return(
         <Container>
-            <Typography variant='h2' align='center'> video</Typography>
-            <Paper variant="outlined" className={classes.paper}>
-                <div class="card-header" align= 'center'>
-                    <p class="m-0">Login Form</p>
-                    <a href="/Signup" type="button" class="btn btn-outline-primary btn-sm">Sign Up</a>
-                </div>
+            <Typography variant='h2' align='center'> เข้าร่วมห้อง </Typography>
+            <Paper variant="outlined" className={classes.paper} align='center'>
                 <div class="card-body" align= 'center'>
                     
                         {/* <% if(locals.messages.success){ %>
@@ -37,14 +33,18 @@ const Login = () => {
                         </div>
                         <% } %> */}
                     <div class="form-floating mb-3">
-                        <label for="floatingInput">username</label>
-                        <TextField type="text" name="Enter your username" class="form-control" placeholder="Enter your username"/>
+                        <label for="floatingInput">ชื่อผู้ใช้</label>
+                        <input type="text" name="Enter your username" class="form-control"/>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <label for="floatingInput">id</label>
+                        <input type="text" name="Enter your username" class="form-control"/>
                     </div>
                     <div class="form-floating mb-3">
                         <label for="floatingPassword">Password</label>
-                        <TextField type="Enter your Password" class="form-control" name="Enter your Password" placeholder="Enter your Password"/>
+                        <input type="Enter your Password" class="form-control" name="Enter your Password"/>
                     </div>
-                    <button type="submit" class="btn btn-primary" onClick={()=> navigate("/Header")}>Login</button>  
+                    <button type="submit" class="btn btn-primary" onClick={()=> navigate("/RoomMeet")}>เข้าร่วม</button>  
                 </div>
             </Paper>
         </Container>

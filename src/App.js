@@ -2,10 +2,10 @@ import React from 'react';
 // import { makeStyles } from '@material-ui/core/styles';
 import { Route,Routes } from 'react-router-dom';
 
-import Login from './component/Login';
-import Header from './component/Header';
-import Signup from './component/Signup';
-import RoomMeet from './component/RoomMeet';
+import Login from './Page/Login';
+import Home from './Page/Home';
+import Signup from './Page/Signup';
+import RoomMeet from './Page/RoomMeet';
 
 // const useStyles = makeStyles((theme) => ({
 //   appBar: {
@@ -32,18 +32,14 @@ import RoomMeet from './component/RoomMeet';
 
 const App = () => {
   // const classes = useStyles();
-
   return (
     <Routes>
-      <Route path='/' element={<Login/>}></Route>
+      <Route path='/' element={<Home/>}></Route>
       <Route path='/Login' element={<Login/>}></Route>
-      <Route path='/Header' element={<Header/>}></Route>
+      <Route path='/Header' element={<Home/>}></Route>
       <Route path='/Signup' element={<Signup/>}></Route>
       <Route path='/RoomMeet' element={<RoomMeet/>}></Route>
-    </Routes> 
-  //   <div className={classes.wrapper}>
-  //     <Login/>
-  // </div>   
+    </Routes>  
   );
 }
 

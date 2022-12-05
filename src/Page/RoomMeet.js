@@ -1,16 +1,38 @@
 import React, {useState} from "react";
 import DragMove from "../DragMove";
+// import { Animate } from "react-simple-animate";
 import logo from "../logo.svg";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles, Paper,Grid, Container } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
     img: {
         height: '55px',
         width: '55px'
+    },
+    paper: {
+        border: '1px solid black',
+        paddingLeft:'1px',
+        paddingRight: '1px',
+        paddingTop: '0',
+        paddingBottom: '0'
+    },
+    gridOption: {
+        position: 'fixed',
+        bottom: '15px',
+    },
+    paperOption: {
+        width: '125px',
+        right: '10px',
+        top: '0'
+    },
+    button: {
+        height: '30px',
+        width: '50px'
     }
 }));
 
 const RoomMeet = () => {
+    // const state = {play: false};
     const classes = useStyles();
     const [translate, setTranslate] = useState({
         x: 0,
@@ -23,45 +45,44 @@ const RoomMeet = () => {
           y: translate.y + e.movementY
         });
       };
+      
     return(
-        <div>
+        <Container>
             <div class="main-wrapper">
                 <div id="video-grid"></div>
             </div>
-            <footer>
-                <div class="footer-wrapper">
-                    <div class="footer-elements-wrapper">
-                        <button id="share-toggle" class="footer-elements tooltip" tool_tip="Share Meeting link">
-                            <ion-icon name="paper-plane-outline"></ion-icon>
-                        </button>
-                        <button id="video-toggle" class="footer-elements tooltip" tool_tip="Video Off">
-                            <ion-icon name="videocam-outline"></ion-icon>
-                        </button>
-                        <button id="mic-toggle" class="footer-elements tooltip" tool_tip="Microphone Off">
-                            <ion-icon name="mic-outline"></ion-icon>
-                        </button>
-                        <button id="recording-toggle" class="footer-elements tooltip" tool_tip="Start Recording">
-                            <ion-icon name="recording-outline"></ion-icon>
-                            {/* </ion-icon> */}
-                        </button>
-                        <button id="cams-toggle" class="footer-elements tooltip" tool_tip="Change the camera">
-                            <ion-icon name="sync-outline"></ion-icon>
-                        </button>
-                        <button id="share-screen" class="footer-elements tooltip" tool_tip="Present Screen">
-                            <ion-icon name="tv-outline"></ion-icon>
-                        </button>
-                        <button id="meeting-toggle" class="footer-elements call-button tooltip" tool_tip="Join the Meeting">
-                            <ion-icon name="call-outline"></ion-icon>
-                        </button>
-                    </div>
-                    <div class="options-wrapper">
-                        <button class="footer-elements">
-                            <ion-icon name="ellipsis-vertical-outline"></ion-icon>
-                        </button>
-                    </div>
-                </div>
-            </footer>
-            <div class="tool-bar-wrapper">
+            <Grid class="footer-wrapper" container spacing={2} className={classes.gridOption}  >
+                <Paper class="footer-elements-wrapper" variant="outlined" className={classes.paper}>
+                    <button id="share-toggle" class="footer-elements tooltip" tool_tip="Share Meeting link">
+                        <ion-icon name="paper-plane-outline"></ion-icon>
+                    </button>
+                    <button id="video-toggle" class="footer-elements tooltip" tool_tip="Video Off">
+                        <ion-icon name="videocam-outline"></ion-icon>
+                    </button>
+                    <button id="mic-toggle" class="footer-elements tooltip" tool_tip="Microphone Off">
+                        <ion-icon name="mic-outline"></ion-icon>
+                    </button>
+                    <button id="recording-toggle" class="footer-elements tooltip" tool_tip="Start Recording">
+                        <ion-icon name="recording-outline"></ion-icon>
+                        {/* </ion-icon> */}
+                    </button>
+                    <button id="cams-toggle" class="footer-elements tooltip" tool_tip="Change the camera">
+                        <ion-icon name="sync-outline"></ion-icon>
+                    </button>
+                    <button id="share-screen" class="footer-elements tooltip" tool_tip="Present Screen">
+                        <ion-icon name="tv-outline"></ion-icon>
+                    </button>
+                    <button id="meeting-toggle" class="footer-elements call-button tooltip" tool_tip="Join the Meeting">
+                        <ion-icon name="call-outline"></ion-icon>
+                    </button>        
+                </Paper>
+                <Paper class="options-wrapper">
+                    <button class="footer-elements">
+                        <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+                    </button>
+                </Paper>
+            </Grid>
+            <Paper class="tool-bar-wrapper" className={classes.paperOption} >
                 <button id="peoples-count" class="tool-bar-button">
                     <ion-icon name="people-outline"></ion-icon>
                     <span class="user-number" id="user-number">
@@ -74,8 +95,8 @@ const RoomMeet = () => {
                 <button id="time" class="tool-bar-button">
                     00:00 AM
                 </button>
-            </div>
-            <div class="dialogue-container">
+            </Paper>
+            {/* <div class="dialogue-container">
                 <div class="dialogue-head">
                     <p class="dialogue-title">Your meeting's ready</p>
                     <button id="close-dialogue" class="dialogue-button">
@@ -91,11 +112,11 @@ const RoomMeet = () => {
                             <ion-icon name="copy-outline"></ion-icon>
                         </button>
                     </div>
-                    {/* <p class="caption">Joined as <%= user.name %>
-                    </p> */}
+                    <p class="caption">Joined as <%= user.name %>
+                    </p>
                 </div>
-            </div>
-            <div id="chat-panel" class="chat-box-wrapper">
+            </div> */}
+            {/* <div id="chat-panel" class="chat-box-wrapper">
                 <div class="chat-box-header">
                     <div class="chat-box-headline">
                         <ion-icon name="chatbox-outline"></ion-icon>
@@ -118,14 +139,34 @@ const RoomMeet = () => {
                         </button>
                     </form>
                 </div>
-            </div>
+            </div> */}
             <div className={classes.img}>
                 <DragMove onDragMove={handleDragMove}>
                     <div  style={{transform: `translateX(${translate.x}px) translateY(${translate.y}px)`}}>
-                        <img src={logo}/>
+                        <img src={logo} alt="logo"/>
                     </div>
                 </DragMove>
             </div>
+            {/* <div>
+                <Animate 
+                    play={state.play}
+                    duration={1}
+                    delay={0.3}
+                    start={{
+                      transform: "translateX(0px)"
+                    }}
+                    end={{ transform: "translateX(200px)" }}
+                >
+                    <div className={classes.img}>
+                        <img src={logo} alt="logo"/>
+                    </div>
+                </Animate>
+                <button
+                    onClick={() => this.setState(({ play }) => ({ play: !play }))}
+                    >
+                    Play
+                </button>
+            </div> */}
             <script>
 
             </script>
@@ -196,7 +237,7 @@ const RoomMeet = () => {
             }
             navigator.mediaDevices.enumerateDevices().then(gotDevices);
             </script> */}
-        </div>
+        </Container>
     )
 }
 export default RoomMeet;
