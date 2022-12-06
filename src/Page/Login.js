@@ -18,7 +18,7 @@ const Login = () => {
     let navigate = useNavigate(); 
     return(
         <Container>
-            <Typography variant='h2' align='center'> เข้าร่วมห้อง </Typography>
+            <Typography variant='h6' align='center'> เข้าร่วมห้อง </Typography>
             <Paper variant="outlined" className={classes.paper} align='center'>
                 <div class="card-body" align= 'center'>
                     

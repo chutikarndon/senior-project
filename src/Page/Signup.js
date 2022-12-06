@@ -1,57 +1,31 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { Typography } from "@material-ui/core";
 
 const Signup = () => {
+    let navigate = useNavigate();
     return(
-        <div class="container py-5">
-            <h3 class="text-center mb-3">Register S Meet</h3>
-            <div class="card">
-                <div class="card-header">
-                    <p class="m-0">Signup Form</p><a href="/login" type="button"
-                        class="btn btn-outline-primary btn-sm">Login</a>
+        <div >
+           <div >
+                <Typography variant="h6" align="center"> ลงทะเบียนเพื่อสร้างห้อง </Typography>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div align='center'>
+                        <label>ชื่อจริง</label>
+                        <input type="text" name="name" class="form-control" />
+                    </div>
                 </div>
-                <div class="card-body">
-                    <form action={Signup} method="POST" >
-                        {/* <% if(locals.messages.success){ %>
-                        <div class="alert alert-success" role="alert">
-                            <%= locals.messages.success %>
-                        </div>
-                        <% } %>
-                        <% if(locals.messages.err){ %>
-                        <div class="alert alert-danger" role="alert">
-                            <%= locals.messages.err %>
-                        </div>
-                        <% } %> */}
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <div class="form-floating">
-                                    <input type="text" name="name" class="form-control" placeholder="name"/>
-                                    <label>Enter your Name</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="form-floating">
-                                    <input type="text" name="username" class="form-control" placeholder="username"/>
-                                    <label>Enter your Username</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <div class="form-floating">
-                                <input type="email" name="email" class="form-control" placeholder="email"/>
-                                <label>Enter your Email</label>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <div class="form-floating">
-                                <input type="password" class="form-control" name="password" placeholder="password"/>
-                                <label for="floatingPassword">Enter your Password</label>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Sign Up</button>
-                    </form>
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating" align='center'>
+                        <label>นามสกุล</label>
+                        <input type="text" name="username" class="form-control"/>
+                    </div>
                 </div>
             </div>
+            <div align='center'>
+                <button type="submit" class="btn btn-primary">Sign Up</button>
+            </div> 
         </div>
     )
 }

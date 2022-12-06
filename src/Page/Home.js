@@ -6,6 +6,12 @@ const useStyles = makeStyles((theme) => ({
     container :{
         display: 'block',
         margin: 'bottom'
+    },
+    button: {
+        display: 'inline-block'
+    },
+    menu: {
+        position: 'center'
     }
 }));
 
@@ -14,9 +20,9 @@ const Header = () => {
     let navigate = useNavigate();
     return(
         <div>    
-            <AppBar position="fixed" color="transparent">
-                <Grid xs= {6} spacing = {3}>
-                    <Breadcrumbs>
+            <div position="fixed">
+                <Grid xs= {12}>
+                    <Breadcrumbs className={classes.menu}>
                         <Link href="#">
                             หน้าหลัก
                         </Link>
@@ -27,14 +33,14 @@ const Header = () => {
                             ติดต่อเรา
                         </Link>
                     </Breadcrumbs>
-                    <div>
+                    <div className={classes.button}>
                         <button class="btn btn-outline-primary" type="submit" id="button-addon2" onClick={()=> navigate("/Login")}>เข้าร่วม</button>
                     </div>
                 </Grid>
-            </AppBar>
-            {/* <div className={classes.container}>
+            </div>
+            <div className={classes.container}>
                 <button class="btn btn-outline-primary" type="submit" id="button-addon2" onClick={()=> navigate("/Signup")}>สร้างห้อง</button>
-            </div> */}
+            </div>
         </div>
     )
 }
