@@ -5,6 +5,7 @@ import { Button,makeStyles} from "@material-ui/core";
 const useStyles = makeStyles((theme) => ({
     button: {
         width:'20px',
+        backgroundColor: 'orange'
     }
 }));
 
@@ -12,21 +13,23 @@ const Header = () => {
     const classes = useStyles();
     let navigate = useNavigate();
     return(
-        <div className=" container mx-auto ">   
-            <div className="flex flex-row justify-between">
-                <div className="flex">
-                    <div className="flex-1 w-25 " href="#">
-                        <p className=" text-sm">หน้าหลัก</p>    
-                    </div >
-                    <div className=" flex-1 w-24 " href="#" onClick={()=> navigate("/")}>
-                        <p className=" text-sm">เกี่ยวกับ</p>
+        <div>
+            <div className=" container mx-auto">   
+                <div className="flex flex-row justify-between">
+                    <div className="flex">
+                        <div className="flex-1 w-25 " href="#">
+                            <p className=" text-sm">หน้าหลัก</p>    
+                        </div >
+                        <div className=" flex-1 w-24 " href="#" onClick={()=> navigate("/")}>
+                            <p className=" text-sm">เกี่ยวกับ</p>
+                        </div>
+                        <div className=" flex-1 w-24 " href="#" onClick={()=> navigate("/")}>
+                            <p className=" text-sm">ติดต่อเรา</p>
+                        </div>
                     </div>
-                    <div className=" flex-1 w-24 " href="#" onClick={()=> navigate("/")}>
-                        <p className=" text-sm">ติดต่อเรา</p>
+                    <div>
+                        <Button className={classes.button} onClick={()=> navigate("/Login")}>เข้าร่วม</Button>
                     </div>
-                </div>
-                <div>
-                    <Button className={classes.button} onClick={()=> navigate("/Login")}>เข้าร่วม</Button>
                 </div>
             </div>
             <div>

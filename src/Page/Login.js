@@ -32,19 +32,19 @@ const Login = () => {
                             <%= locals.messages.error %>
                         </div>
                         <% } %> */}
-                    <div class="form-floating mb-3">
+                    <div>
                         <label for="floatingInput">ชื่อผู้ใช้</label>
-                        <input type="text" name="Enter your username" class="form-control"/>
+                        <input type="text" name="Enter your username"/>
                     </div>
-                    <div class="form-floating mb-3">
+                    <div>
                         <label for="floatingInput">id</label>
-                        <input type="text" name="Enter your username" class="form-control"/>
+                        <input type="text" name="Enter your username" />
                     </div>
-                    <div class="form-floating mb-3">
+                    <div>
                         <label for="floatingPassword">Password</label>
-                        <input type="Enter your Password" class="form-control" name="Enter your Password"/>
+                        <input type="Enter your Password" name="Enter your Password"/>
                     </div>
-                    <button type="submit" class="btn btn-primary" onClick={()=> navigate("/RoomMeet")}>เข้าร่วม</button>  
+                    <button type="submit" onClick={()=> navigate("/RoomMeet")}>เข้าร่วม</button>  
                 </div>
             </Paper>
         </Container>
