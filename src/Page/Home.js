@@ -17,17 +17,17 @@ const Header = () => {
             <div className=" container mx-auto">   
                 <div className="flex flex-row justify-between">
                     <div className="flex">
-                        <div className="flex-1 w-25 " href="#">
+                        <div className="flex-1 w-25 pt-2" href="#">
                             <p className=" text-sm">หน้าหลัก</p>    
                         </div >
-                        <div className=" flex-1 w-24 " href="#" onClick={()=> navigate("/")}>
+                        <div className=" flex-1 w-24 pt-2" href="#" onClick={()=> navigate("/")}>
                             <p className=" text-sm">เกี่ยวกับ</p>
                         </div>
-                        <div className=" flex-1 w-24 " href="#" onClick={()=> navigate("/")}>
+                        <div className=" flex-1 w-24 pt-2" href="#" onClick={()=> navigate("/")}>
                             <p className=" text-sm">ติดต่อเรา</p>
                         </div>
                     </div>
-                    <div>
+                    <div className="pt-2">
                         <Button className={classes.button} onClick={()=> navigate("/Login")}>เข้าร่วม</Button>
                     </div>
                 </div>
