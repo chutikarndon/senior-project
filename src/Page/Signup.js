@@ -12,12 +12,12 @@ const Signup = () => {
             </div>
             <div className="box-content h-20 w-76 p-6 border-4 ">
                 <div className=" flex space-x-2">
-                    <p className=" flex-none text-sm">ชื่อจริง</p>
-                    <TextField className=" flex-initial w-44" type="text" name="name"/>
+                    <p className=" flex-none text-sm">ชื่อจริง</p>                                   {/*text*/}
+                    <TextField className=" flex-initial w-44" type="text" name="name"/>           {/*input name*/}
                 </div>
                 <div className=" flex space-x-1">
-                    <p className=" flex-none text-sm">นามสกุล</p>
-                    <TextField className=" flex-initial w-40" type="text" name="username"/>
+                    <p className=" flex-none text-sm">นามสกุล</p>                                  {/*text*/}
+                    <TextField className=" flex-initial w-40" type="text" name="username"/>       {/*input surname*/}
                 </div>
             </div>
             <div className="pt-7">
