@@ -21,7 +21,7 @@ const Signup = () => {
                 </div>
             </div>
             <div className="pt-7">
-                <button type="submit" class="btn btn-primary">สร้างห้อง</button>
+                <button onClick={()=> navigate("/Idpass")}>สร้างห้อง</button>
             </div> 
         </div>
     )

@@ -6,6 +6,7 @@ import Login from './Page/Login';
 import Home from './Page/Home';
 import Signup from './Page/Signup';
 import RoomMeet from './Page/RoomMeet';
+import Idpass from './Page/Idpass';
 
 const App = () => {
   
@@ -16,6 +17,7 @@ const App = () => {
         <Route path='/Login' element={<Login/>}></Route>
         <Route path='/Home' element={<Home/>}></Route>
         <Route path='/Signup' element={<Signup/>}></Route>
+        <Route path='/Idpass' element={<Idpass/>}></Route>
         <Route path='/RoomMeet' element={<RoomMeet/>}></Route>
       </Routes>
     </div>
