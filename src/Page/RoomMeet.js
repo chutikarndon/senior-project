@@ -2,10 +2,14 @@ import React, {useState} from "react";
 import DragMove from "../DragMove";
 // import { Animate } from "react-simple-animate";
 // import logo from "../logo.svg";
-import { makeStyles } from "@material-ui/core";
+import { Button, makeStyles } from "@material-ui/core";
+import {AccountCircleOutlined, ChatOutlined, KeyboardVoiceOutlined, CallEndOutlined, VideocamOutlined, SettingsOutlined, WhatshotOutlined} from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
-   
+   button: {
+    height: '5px',
+    width: '3px'
+   }
 }));
 
 const RoomMeet = () => {
@@ -24,8 +28,8 @@ const RoomMeet = () => {
       };
       
     return(
-        <div className="flex flex-col justify-center">            
-            <div className="flex flex-row justify-between pt-4 pl-6 pr-4">  {/* Header*/}
+        <div className="flex flex-col">            
+            <div className="flex flex-row justify-between mt-4 ml-6 mr-4">  {/* Header*/}
                 <div className="flex-none w-15 h-15">     {/* sidebar*/}
                     home
                 </div>    
@@ -33,24 +37,23 @@ const RoomMeet = () => {
                     other users video
                 </div>       
             </div> 
-            <div className=" flex justify-center">   {/* middle*/}
+            <div className=" flex justify-center mt-48">   {/* middle*/}
                 กระถางธูป
             </div>
             <div>
-            <div className="flex justify-between items-end pl-4 pr-2 pt-40">   {/* toolbar/ video me*/}
-                <div className=" box-content h-3 w-56 p-2 border-2 ">  {/* toolbar*/}
+            <div className="flex justify-between items-end ml-4 mr-2 mt-6">   {/* toolbar/ video me*/}
+                <div className="rounded-full box-content h-7 w-56 border-0 shadow-md bg-red-200 ">  {/* toolbar*/}
                     <div className=" flex">           
-                        toolbar
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
+                        <Button class=" flex-none w-8" className={classes.button} startIcon={<WhatshotOutlined fontSize="small"/>}></Button>
+                        <Button class=" flex-none w-8" className={classes.button} startIcon={<SettingsOutlined fontSize="small"/>}></Button>
+                        <Button class=" flex-none w-8" className={classes.button} startIcon={<VideocamOutlined fontSize="small"/>}></Button>
+                        <Button class=" flex-none w-8" className={classes.button} startIcon={<CallEndOutlined fontSize="small"/>}></Button>
+                        <Button class=" flex-none w-8" className={classes.button} startIcon={<KeyboardVoiceOutlined fontSize="small"/>}></Button>
+                        <Button class=" flex-none w-8" className={classes.button} startIcon={<ChatOutlined fontSize="small"/>}></Button>
+                        <Button class=" flex-none w-8" className={classes.button} startIcon={<AccountCircleOutlined fontSize="small"/>}></Button>
                     </div>
                 </div>
-                <div className=" box-content h-10 w-20 border-2 p-2 ">           {/* video me*/}
+                <div className="box-content h-10 w-20 border-2 p-2 ">           {/* video me*/}
                     me
                 </div>
             </div> 
