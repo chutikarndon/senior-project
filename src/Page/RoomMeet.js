@@ -33,8 +33,9 @@ const RoomMeet = () => {
                 <div className="flex-none w-15 h-15">     {/* sidebar*/}
                     home
                 </div>    
-                <div>      {/* other user*/}
+                <div className=" overflow-x-hidden">      {/* other user*/}
                     other users video
+                    <div className=" grid gap-2 grid-cols-none"></div>
                 </div>       
             </div> 
             <div className=" flex justify-center mt-48">   {/* middle*/}
@@ -68,7 +69,7 @@ const RoomMeet = () => {
                         <ion-icon name="close-outline"></ion-icon>
                     </button>
                 </div>
-                <div class="dialogue-body">
+                <div class="dialogue-body">  **share link meeting**
                     <p>Share this meeting link with others you want in the meeting</p>
                     <div class="share-container">
                         <p class="share-link">meet.google.com/sij-dwa-zjm</p>
