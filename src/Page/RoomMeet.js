@@ -11,6 +11,113 @@ const useStyles = makeStyles((theme) => ({
     width: '3px'
    }
 }));
+const Tabs = ({ color }) => {
+    const [openTab, setOpenTab] = React.useState(1);
+  return (
+    <>
+        <div className="flex flex-wrap">
+            <div className="w-full">
+                <ul className="flex mb-0 list-none flex-wrap pt-3 pb-4 flex-row" role="tablist">
+                    <li className="-mb-px mr-2 last:mr-0 flex-auto text-center">
+                        <a
+                            className={
+                            "text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal " +
+                            (openTab === 1
+                                ? "text-white bg-" + color + "-600"
+                                : "text-" + color + "-600 bg-white")
+                            }
+                            onClick={e => {
+                            e.preventDefault();
+                            setOpenTab(1);
+                            }}
+                            data-toggle="tab"
+                            href="#link1"
+                            role="tablist"
+                        >
+                            Profile
+                        </a>
+                    </li>
+                    <li className="-mb-px mr-2 last:mr-0 flex-auto text-center">
+                        <a
+                            className={
+                            "text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal " +
+                            (openTab === 2
+                                ? "text-white bg-" + color + "-600"
+                                : "text-" + color + "-600 bg-white")
+                            }
+                            onClick={e => {
+                            e.preventDefault();
+                            setOpenTab(2);
+                            }}
+                            data-toggle="tab"
+                            href="#link2"
+                            role="tablist"
+                        >
+                            Settings
+                        </a>
+                    </li>
+                    <li className="-mb-px mr-2 last:mr-0 flex-auto text-center">
+                        <a
+                            className={
+                            "text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal " +
+                            (openTab === 3
+                                ? "text-white bg-" + color + "-600"
+                                : "text-" + color + "-600 bg-white")
+                            }
+                            onClick={e => {
+                            e.preventDefault();
+                            setOpenTab(3);
+                            }}
+                            data-toggle="tab"
+                            href="#link3"
+                            role="tablist"
+                        >
+                            Options
+                        </a>
+                    </li>
+                </ul>
+                <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded">
+                    <div className="px-4 py-5 flex-auto">
+                        <div className="tab-content tab-space">
+                            <div className={openTab === 1 ? "block" : "hidden"} id="link1">
+                                <p>
+                                    Collaboratively administrate empowered markets via
+                                    plug-and-play networks. Dynamically procrastinate B2C users
+                                    after installed base benefits.
+                                    <br />
+                                    <br /> Dramatically visualize customer directed convergence
+                                    without revolutionary ROI.
+                                </p>
+                            </div>
+                            <div className={openTab === 2 ? "block" : "hidden"} id="link2">
+                                <p>
+                                    Completely synergize resource taxing relationships via
+                                    premier niche markets. Professionally cultivate one-to-one
+                                    customer service with robust ideas.
+                                    <br />
+                                    <br />
+                                    Dynamically innovate resource-leveling customer service for
+                                    state of the art customer service.
+                                </p>
+                            </div>
+                            <div className={openTab === 3 ? "block" : "hidden"} id="link3">
+                                <p>
+                                    Efficiently unleash cross-media information without
+                                    cross-media value. Quickly maximize timely deliverables for
+                                    real-time schemas.
+                                    <br />
+                                    <br /> Dramatically maintain clicks-and-mortar solutions
+                                    without functional solutions.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </>
+  );
+};
 
 const RoomMeet = () => {
     const classes = useStyles();
@@ -38,12 +145,13 @@ const RoomMeet = () => {
                     </Button>
                     {showModal?(
                         <>
-                            <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none w-8/12 h-5/6 mt-8 ml-32">
+                            <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none ">
                                 <div className="relative w-auto my-6 mx-auto max-w-3xl">
                                 {/*content*/}
                                     <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                                        <Tabs color="pink" />
                                         {/*header*/}
-                                        <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
+                                        {/* <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
                                             <h3 className="text-3xl font-semibold">
                                                 Modal Title
                                             </h3>
@@ -55,9 +163,9 @@ const RoomMeet = () => {
                                                 ×
                                                 </span>
                                             </button>
-                                        </div>
+                                        </div> */}
                                         {/*body*/}
-                                        <div className="relative p-6 flex-auto">
+                                        {/* <div className="relative p-6 flex-auto">
                                             <p className="my-4 text-slate-500 text-lg leading-relaxed">
                                                 I always felt like I could do anything. That’s the main
                                                 thing people are controlled by! Thoughts- their perception
@@ -65,9 +173,9 @@ const RoomMeet = () => {
                                                 themselves. If you're taught you can’t do anything, you
                                                 won’t do anything. I was taught I could do everything.
                                             </p>
-                                        </div>
+                                        </div> */}
                                         {/*footer*/}
-                                        <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
+                                        {/* <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
                                             <button
                                                 className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                                 type="button"
@@ -82,7 +190,7 @@ const RoomMeet = () => {
                                             >
                                                 Save Changes
                                             </button>
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </div>
                             </div>

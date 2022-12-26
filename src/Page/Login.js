@@ -43,14 +43,12 @@ const Login = () => {
         <div className=" flex flex-col items-center">
             {/* <div> button</div> back button */}
             <p className=" text-base pt-4 pb-9" align='center'> เข้าร่วมห้อง </p>
-            <div className="box-content h-28 w-76 p-4 border-4 ">
-                <form>
+            <form className="flex flex-col items-center">
+                <div className="box-content h-28 w-76 p-4 border-4 ">
                     <div>        
                         <div className=" flex space-x-2">
                             <p className=" flex-none text-sm" for="floatingInput">ชื่อผู้ใช้:</p>                             {/*text*/} 
-                            <form>
-                                <input class=" flex-initial w-46" className={classes.textUser} type="text" name="Enter your username"/>           {/*input username*/} 
-                            </form>
+                            <input class=" flex-initial w-46" className={classes.textUser} type="text" name="Enter your username"/>           {/*input username*/} 
                         </div>
                     </div>
                     <div className="pt-9">
@@ -63,11 +61,11 @@ const Login = () => {
                             <input class=" flex-initial w-44" className={classes.textPass} type="password" name="Enter your Password"/>        {/*input password*/} 
                         </div>
                     </div>
-                </form>
-            </div>
-            <div className="pt-7">
-                <Button className={classes.button} type="submit" onClick={()=> navigate("/RoomMeet")}>เข้าร่วม</Button>  
-            </div> 
+                </div>
+                <div className="pt-7">
+                    <Button className={classes.button} type="submit" onClick={()=> navigate("/RoomMeet")}>เข้าร่วม</Button>  
+                </div> 
+            </form>
         </div>
             
     )
