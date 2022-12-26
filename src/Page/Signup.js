@@ -37,14 +37,16 @@ const Signup = () => {
                 <p className=" text-base pt-4 pb-9"> ลงทะเบียนเพื่อสร้างห้อง </p>
             </div>
             <div className="box-content h-20 w-76 p-6 border-4 ">
-                <div className=" flex space-x-2 pt-4">
-                    <p className=" flex-none text-sm">ชื่อจริง</p>                                                        {/*text*/}
-                    <input class=" flex-initial w-44" className={classes.textName} type="text" name="name"/>           {/*input name*/}
-                </div>
-                <div className=" flex space-x-1 pt-1">
-                    <p className=" flex-none text-sm">นามสกุล</p>                                                      {/*text*/}
-                    <input class=" flex-initial w-40" className={classes.textSur} type="text" name="username"/>        {/*input surname*/}
-                </div>
+                <form>
+                    <div className=" flex space-x-2 pt-4">
+                        <p className=" flex-none text-sm">ชื่อจริง</p>                                                        {/*text*/}
+                        <input class=" flex-initial w-44" className={classes.textName} type="text" name="name"/>           {/*input name*/}
+                    </div>
+                    <div className=" flex space-x-1 pt-1">
+                        <p className=" flex-none text-sm">นามสกุล</p>                                                      {/*text*/}
+                        <input class=" flex-initial w-40" className={classes.textSur} type="text" name="username"/>        {/*input surname*/}
+                    </div>
+                </form>
             </div>
             <div className="pt-7">
                 <Button className={classes.button} onClick={()=> navigate("/Idpass")}>สร้างห้อง</Button>
