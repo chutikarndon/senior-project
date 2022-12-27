@@ -24,6 +24,14 @@ const useStyles = makeStyles((theme) => ({
         padding: '2px',
         border: '0.5px solid black',
         borderRadius: '4px'
+    },
+    textPass: {
+        fontSize: '10px',
+        width: '215px',
+        height: '22px',
+        padding: '2px',
+        border: '0.5px solid black',
+        borderRadius: '4px'
     }
 }));
 
@@ -35,14 +43,20 @@ const Signup = () => {
             {/* <div>back button</div> */}
             <p className=" text-base pt-4 pb-9"> ลงทะเบียนเพื่อสร้างห้อง </p>
             <form className="flex flex-col items-center">
-                <div className="box-content h-20 w-76 p-6 border-4 ">
-                    <div className=" flex space-x-2 pt-4">
+                <div className="box-content h-24 w-76 p-6 border-4 ">
+                    <div className=" flex space-x-2 pt-2">
                         <p className=" flex-none text-sm">ชื่อจริง</p>                                                        {/*text*/}
                         <input class=" flex-initial w-44" className={classes.textName} type="text" name="name"/>           {/*input name*/}
                     </div>
                     <div className=" flex space-x-1 pt-1">
                         <p className=" flex-none text-sm">นามสกุล</p>                                                      {/*text*/}
                         <input class=" flex-initial w-40" className={classes.textSur} type="text" name="username"/>        {/*input surname*/}
+                    </div>
+                    <div className="mt-4">
+                        <div className="flex space-x-1">
+                            <p className=" flex-none text-sm">password</p>                                                 {/*text*/}
+                            <input class=" flex-initial w-28" className={classes.textPass} type="text" name="username"/>    {/*input password*/}
+                        </div>
                     </div>
                 </div>
                 <div className="pt-7">
