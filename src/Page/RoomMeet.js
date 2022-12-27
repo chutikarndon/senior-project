@@ -28,21 +28,18 @@ const RoomMeet = () => {
       };
       
     return(
-        <div className="flex flex-col">            
-            <div className="flex flex-row justify-between mt-4 ml-6 mr-4">  {/* Header*/}
-                <div className=" flex-col">   
-                    <div className=" container w-16 bg-gray-50 shadow-md overflow-hidden border-spacing-1"> {/* sidebar*/}
-                        <div >
-                            <Button class="overflow-hidden rounded-full w-16 h-10 flex justify-center items-center hover:cursor-pointer" onClick={() => setIsActive(!isActive)} startIcon={<HomeOutlined fontSize="small"/>}> </Button>
-                        </div> 
-                        
+        <div>            
+            <div className="flex flex-row justify-between items-start mt-4 ml-6 mr-4">  {/* Header*/}
+                <div className=" container w-16 bg-gray-50 shadow-md overflow-hidden border-spacing-1"> {/* sidebar*/}
+                    <div >
+                        <Button class="overflow-hidden rounded-full w-16 h-10 flex justify-center items-center hover:cursor-pointer" onClick={() => setIsActive(!isActive)} startIcon={<HomeOutlined fontSize="small"/>}> </Button>
                     </div> 
                     {isActive && 
-                        <div className=" justify-start items-center flex overflow-x-hidden fixed inset-0 z-50 outline-none focus:outline-none ">
-                            <div >
+                        <div className=" absolute h-10">
+                            <div className=" flex justify-items-start border-spacing-1 w-16 h-3">
                                 <p>Item 1</p>
                             </div>
-                            <div >
+                            <div className=" flex justify-items-start border-spacing-1 w-16 h-3">
                                 <p>Item 2</p>
                             </div>
                             <div className=" flex justify-items-start border-spacing-1 w-16 h-3">
@@ -50,7 +47,7 @@ const RoomMeet = () => {
                             </div>
                         </div>
                     }
-                </div>           
+                </div>               
                 <div className=" overflow-x-hidden">      {/* other user*/}
                     other users video
                     <div className=" grid gap-2 grid-cols-none"></div>
