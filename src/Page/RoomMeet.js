@@ -13,6 +13,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 const RoomMeet = () => {
     const [isActive, setIsActive] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [showModal1, setShowModal1] = useState(false);
+    const [showModal2, setShowModal2] = useState(false);
+    const [showModal3, setShowModal3] = useState(false);
     const classes = useStyles();
     // const state = {play: false};
     const [translate, setTranslate] = useState({
@@ -30,20 +34,45 @@ const RoomMeet = () => {
     return(
         <div>            
             <div className="flex flex-row justify-between items-start mt-4 ml-6 mr-4">  {/* Header*/}
-                <div className=" container w-16 bg-gray-50 shadow-md overflow-hidden border-spacing-1"> {/* sidebar*/}
+                <div className=" container w-5 bg-red-200 shadow-md overflow-hidden border-spacing-1 rounded-t-lg"> {/* sidebar*/}
                     <div >
-                        <Button class="overflow-hidden rounded-full w-16 h-10 flex justify-center items-center hover:cursor-pointer" onClick={() => setIsActive(!isActive)} startIcon={<HomeOutlined fontSize="small"/>}> </Button>
+                        <Button class="overflow-hidden rounded-full w-8 h-7 flex justify-center items-center hover:cursor-pointer" onClick={() => setIsActive(!isActive)} startIcon={<HomeOutlined fontSize="small"/>}> </Button>
                     </div> 
                     {isActive && 
-                        <div className=" absolute h-10">
-                            <div className=" flex justify-items-start border-spacing-1 w-16 h-3">
-                                <p>Item 1</p>
-                            </div>
-                            <div className=" flex justify-items-start border-spacing-1 w-16 h-3">
-                                <p>Item 2</p>
-                            </div>
-                            <div className=" flex justify-items-start border-spacing-1 w-16 h-3">
-                                <p>Item 3</p>
+                        <div className=" h-20 visible transition absolute">
+                            <div className="container w-5 h-48 bg-red-200 shadow-md overflow-hidden border-spacing-1 rounded-b-lg">
+                                <div className=" flex justify-center items-center border-spacing-1 w-5 pt-5 ">
+                                    <button onClick={() => setShowModal(!showModal)}> 1</button>
+                                    {showModal && 
+                                        <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto w-80 h-52 absolute inset-0 z-50 outline-none focus:outline-none ml-44 bg-black">
+                                            <div></div>
+                                        </div>
+                                    }
+                                </div>
+                                <div className=" flex justify-center items-center border-spacing-1 w-5 pt-5">
+                                <button onClick={() => setShowModal1(!showModal1)}> 2</button>
+                                    {showModal1 && 
+                                        <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto w-80 h-52 absolute inset-0 z-50 outline-none focus:outline-none ml-44 bg-orange-500">
+                                            <div></div>
+                                        </div>
+                                    }
+                                </div>
+                                <div className=" flex justify-center items-center border-spacing-1 w-5 pt-5">
+                                <button onClick={() => setShowModal2(!showModal2)}> 3</button>
+                                    {showModal2 && 
+                                        <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto w-80 h-52 absolute inset-0 z-50 outline-none focus:outline-none ml-44 bg-red-600">
+                                            <div></div>
+                                        </div>
+                                    }
+                                </div>
+                                <div className=" flex justify-center items-center border-spacing-1 w-5 pt-5">
+                                <button onClick={() => setShowModal3(!showModal3)}> 4</button>
+                                    {showModal3 && 
+                                        <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto w-80 h-52 absolute inset-0 z-50 outline-none focus:outline-none ml-44 bg-lime-700">
+                                            <div></div>
+                                        </div>
+                                    }
+                                </div>
                             </div>
                         </div>
                     }
