@@ -2,8 +2,8 @@ import React, {useState} from "react";
 import DragMove from "../DragMove";
 // import { Animate } from "react-simple-animate";
 // import logo from "../logo.svg";
-import { Button, makeStyles } from "@material-ui/core";
-import {AccountCircleOutlined, ChatOutlined, KeyboardVoiceOutlined, CallEndOutlined, VideocamOutlined, SettingsOutlined, WhatshotOutlined} from '@material-ui/icons';
+import { Button, makeStyles} from "@material-ui/core";
+import {AccountCircleOutlined, ChatOutlined, KeyboardVoiceOutlined, CallEndOutlined, VideocamOutlined, SettingsOutlined, WhatshotOutlined, HomeOutlined} from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
    button: {
@@ -11,8 +11,12 @@ const useStyles = makeStyles((theme) => ({
     width: '3px'
    }
 }));
-
 const RoomMeet = () => {
+    const [isActive, setIsActive] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [showModal1, setShowModal1] = useState(false);
+    const [showModal2, setShowModal2] = useState(false);
+    const [showModal3, setShowModal3] = useState(false);
     const classes = useStyles();
     // const state = {play: false};
     const [translate, setTranslate] = useState({
@@ -28,11 +32,51 @@ const RoomMeet = () => {
       };
       
     return(
-        <div className="flex flex-col">            
-            <div className="flex flex-row justify-between mt-4 ml-6 mr-4">  {/* Header*/}
-                <div className="flex-none w-15 h-15">     {/* sidebar*/}
-                    home
-                </div>    
+        <div>            
+            <div className="flex flex-row justify-between items-start mt-4 ml-6 mr-4">  {/* Header*/}
+                <div className=" container w-5 bg-red-200 shadow-md overflow-hidden border-spacing-1 rounded-t-lg"> {/* sidebar*/}
+                    <div >
+                        <Button class="overflow-hidden rounded-full w-8 h-7 flex justify-center items-center hover:cursor-pointer" onClick={() => setIsActive(!isActive)} startIcon={<HomeOutlined fontSize="small"/>}> </Button>
+                    </div> 
+                    {isActive && 
+                        <div className=" h-20 visible transition absolute">
+                            <div className="container w-5 h-48 bg-red-200 shadow-md overflow-hidden border-spacing-1 rounded-b-lg">
+                                <div className=" flex justify-center items-center border-spacing-1 w-5 pt-5 ">
+                                    <button onClick={() => setShowModal(!showModal)}> 1</button>
+                                    {showModal && 
+                                        <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto w-96 h-64 absolute inset-0 z-auto outline-none focus:outline-none ml-40 bg-black">
+                                            <div></div>
+                                        </div>
+                                    }
+                                </div>
+                                <div className=" flex justify-center items-center border-spacing-1 w-5 pt-5">
+                                <button onClick={() => setShowModal1(!showModal1)}> 2</button>
+                                    {showModal1 && 
+                                        <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto w-96 h-64 absolute inset-0 z-50 outline-none focus:outline-none ml-40 bg-orange-500">
+                                            <div></div>
+                                        </div>
+                                    }
+                                </div>
+                                <div className=" flex justify-center items-center border-spacing-1 w-5 pt-5">
+                                <button onClick={() => setShowModal2(!showModal2)}> 3</button>
+                                    {showModal2 && 
+                                        <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto w-96 h-64 absolute inset-0 z-50 outline-none focus:outline-none ml-40 bg-red-600">
+                                            <div></div>
+                                        </div>
+                                    }
+                                </div>
+                                <div className=" flex justify-center items-center border-spacing-1 w-5 pt-5">
+                                <button onClick={() => setShowModal3(!showModal3)}> 4</button>
+                                    {showModal3 && 
+                                        <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto w-96 h-64 absolute inset-0 z-50 outline-none focus:outline-none ml-40 bg-lime-700">
+                                            <div></div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>               
                 <div className=" overflow-x-hidden">      {/* other user*/}
                     other users video
                     <div className=" grid gap-2 grid-cols-none"></div>
@@ -45,7 +89,7 @@ const RoomMeet = () => {
             <div className="flex justify-between items-end ml-4 mr-2 mt-6">   {/* toolbar/ video me*/}
                 <div className="rounded-full box-content h-7 w-56 border-0 shadow-md bg-red-200 ">  {/* toolbar*/}
                     <div className=" flex">           
-                        <Button class=" flex-none w-8" className={classes.button} startIcon={<WhatshotOutlined fontSize="small"/>}></Button>
+                        <Button class=" flex-none w-8" className={classes.button} startIcon={<WhatshotOutlined fontSize="small"/>} ></Button>
                         <Button class=" flex-none w-8" className={classes.button} startIcon={<SettingsOutlined fontSize="small"/>}></Button>
                         <Button class=" flex-none w-8" className={classes.button} startIcon={<VideocamOutlined fontSize="small"/>}></Button>
                         <Button class=" flex-none w-8" className={classes.button} startIcon={<CallEndOutlined fontSize="small"/>}></Button>
@@ -133,76 +177,7 @@ const RoomMeet = () => {
                     Play
                 </button>
             </div> */}
-            <script>
-
-            </script>
-            {/* <script>
-            const messageBoxButton = document.getElementById('message-box')
-            const chatCloseButton = document.getElementById('chat-close-button')
-            chatCloseButton.addEventListener('click', e => {
-
-                const chatPanel = document.getElementById('chat-panel')
-                const toolBarWrapper = document.querySelector('.tool-bar-wrapper')
-                toolBarWrapper.classList.toggle('hide-tool-bar')
-                chatPanel.classList.toggle('display-chat-panel')
-            })
-            messageBoxButton.addEventListener('click', e => {
-                if (e.target.classList.contains('dot'))
-                e.target.classList.remove('dot')
-                const chatPanel = document.getElementById('chat-panel')
-                const toolBarWrapper = document.querySelector('.tool-bar-wrapper')
-                toolBarWrapper.classList.toggle('hide-tool-bar')
-                chatPanel.classList.toggle('display-chat-panel')
-            })
-            </script>
-            <script>
-            const setTime = () => {
-                const timeButton = document.getElementById('time')
-                var time = new Date();
-                timeButton.innerHTML = `${time.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}`
-            }
-            setTime()
-            setInterval(() => {
-                setTime()
-            }, 500);
-            const shareToggleButton = document.getElementById('share-toggle')
-            shareToggleButton.addEventListener('click', e => {
-                const dialogue = document.querySelector('.dialogue-container')
-                dialogue.classList.toggle('dialogue-active')
-            })
-            const copyButton = document.querySelector('#copy-button')
-            const shareLink = document.querySelector('.share-link')
-            shareLink.innerHTML = window.location.href
-            copyButton.setAttribute('meeting_link', window.location.href)
-            const dialogueCloseButton = document.querySelector('#close-dialogue')
-            dialogueCloseButton.addEventListener('click', (e) => {
-                const dialogue = document.querySelector('.dialogue-container')
-                dialogue.classList.toggle('dialogue-active')
-            })
-            copyButton.addEventListener("mousedown", (e) => {
-                const copyText = e.target.getAttribute('meeting_link')
-                navigator.clipboard.writeText(copyText);
-                e.target.setAttribute("tool_tip", 'copied');
-            });
-            copyButton.addEventListener("mouseout", (e) => {
-                e.target.setAttribute("tool_tip", 'copy');
-            });
-            </script>
-            <script>
-            const cameraBtn = document.querySelector('#cams-toggle')
-            cam = {}
-            function gotDevices(mediaDevices) {
-                let count = true;
-                mediaDevices.forEach((mediaDevice) => {
-                if (mediaDevice.kind === "videoinput") {
-                    cam[mediaDevice.deviceId] = count;
-                    count = false;
-                }
-                });
-                cameraBtn.setAttribute('camera', JSON.stringify(cam))
-            }
-            navigator.mediaDevices.enumerateDevices().then(gotDevices);
-            </script> */}
+            
         </div>
     )
 }
