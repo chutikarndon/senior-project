@@ -14,23 +14,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 const RoomMeet = () => {
     const [isActive, setIsActive] = useState(false);
-    const ref = useRef();
-    const [isMenuOpen, setIsMenuOpen] = useState(false)
-    useEffect(() => {
-        const checkIfClickedOutside = e => {
-            if (isMenuOpen && ref.current && !ref.current.contains(e.target)) {
-                setIsMenuOpen(false)
-            }
-        }
-        document.addEventListener("mousedown", checkIfClickedOutside)
-        return () => {
-          // Cleanup the event listener
-          document.removeEventListener("mousedown", checkIfClickedOutside)
-        }
-    }, [isMenuOpen])
-    const [showModal1, setShowModal1] = useState(false);
-    const [showModal2, setShowModal2] = useState(false);
-    const [showModal3, setShowModal3] = useState(false);
     const [currentTab, setCurrentTab] = useState('1');
     const tabs = [
         {id: 1, tabTitle: 1,

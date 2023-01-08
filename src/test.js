@@ -243,6 +243,24 @@ navigator.mediaDevices.enumerateDevices().then(gotDevices);
 
 
 //old menu
+
+const ref = useRef();
+    const [isMenuOpen, setIsMenuOpen] = useState(false)
+    useEffect(() => {
+        const checkIfClickedOutside = e => {
+            if (isMenuOpen && ref.current && !ref.current.contains(e.target)) {
+                setIsMenuOpen(false)
+            }
+        }
+        document.addEventListener("mousedown", checkIfClickedOutside)
+        return () => {
+          // Cleanup the event listener
+          document.removeEventListener("mousedown", checkIfClickedOutside)
+        }
+    }, [isMenuOpen])
+    const [showModal1, setShowModal1] = useState(false);
+    const [showModal2, setShowModal2] = useState(false);
+    const [showModal3, setShowModal3] = useState(false);
 {/* <div className=" flex justify-center items-center border-spacing-1 w-5 pt-5">
                                 <button onClick={() => setShowModal1(!showModal1)}> 2</button>
                                     {showModal1 && (
