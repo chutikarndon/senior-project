@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { makeStyles,Button } from "@material-ui/core";
+import { makeStyles, Button } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -34,6 +34,31 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: '4px'
     }
 }));
+
+class signupForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { fname: "", lname: "" };
+  }
+  handleChange = (event) => {
+    this.setState({ [event.target.name]: event.target.value });
+  };
+
+  handleSubmit = (event) => {
+    alert("A form was submitted: " + this.state);
+
+    fetch("http://localhost:5000/signup", {
+      method: "POST",
+      // We convert the React state to JSON and send it as the POST body
+      body: JSON.stringify(this.state),
+    }).then(function (response) {
+      console.log(response);
+      return response.json();
+    });
+
+    event.preventDefault();
+  };
+}
 
 const Signup = () => {
     const classes = useStyles();
