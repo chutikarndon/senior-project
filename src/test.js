@@ -238,3 +238,32 @@ function gotDevices(mediaDevices) {
 }
 navigator.mediaDevices.enumerateDevices().then(gotDevices);
 </script> */}
+
+
+
+
+//old menu
+{/* <div className=" flex justify-center items-center border-spacing-1 w-5 pt-5">
+                                <button onClick={() => setShowModal1(!showModal1)}> 2</button>
+                                    {showModal1 && (
+                                        <div ref={ref} className="justify-center items-center flex overflow-x-hidden overflow-y-auto w-96 h-64 absolute inset-0 z-50 outline-none focus:outline-none ml-40 bg-orange-500">
+                                            <div></div>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className=" flex justify-center items-center border-spacing-1 w-5 pt-5">
+                                <button onClick={() => setShowModal2(!showModal2)}> 3</button>
+                                    {showModal2 && 
+                                        <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto w-96 h-64 absolute inset-0 z-50 outline-none focus:outline-none ml-40 bg-red-600">
+                                            <div></div>
+                                        </div>
+                                    }
+                                </div>
+                                <div className=" flex justify-center items-center border-spacing-1 w-5 pt-5">
+                                <button onClick={() => setShowModal3(!showModal3)}> 4</button>
+                                    {showModal3 && 
+                                        <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto w-96 h-64 absolute inset-0 z-50 outline-none focus:outline-none ml-40 bg-lime-700">
+                                            <div></div>
+                                        </div>
+                                    }
+                                </div> */}

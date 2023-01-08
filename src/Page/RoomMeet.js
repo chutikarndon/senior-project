@@ -1,5 +1,6 @@
-import React, {useState} from "react";
+import React, {useRef, useState, useEffect} from "react";
 import DragMove from "../DragMove";
+// import { InfoBox } from "../infoBox";
 // import { Animate } from "react-simple-animate";
 // import logo from "../logo.svg";
 import { Button, makeStyles} from "@material-ui/core";
@@ -13,10 +14,53 @@ const useStyles = makeStyles((theme) => ({
 }));
 const RoomMeet = () => {
     const [isActive, setIsActive] = useState(false);
-    const [showModal, setShowModal] = useState(false);
+    const ref = useRef();
+    const [isMenuOpen, setIsMenuOpen] = useState(false)
+    useEffect(() => {
+        const checkIfClickedOutside = e => {
+            if (isMenuOpen && ref.current && !ref.current.contains(e.target)) {
+                setIsMenuOpen(false)
+            }
+        }
+        document.addEventListener("mousedown", checkIfClickedOutside)
+        return () => {
+          // Cleanup the event listener
+          document.removeEventListener("mousedown", checkIfClickedOutside)
+        }
+    }, [isMenuOpen])
     const [showModal1, setShowModal1] = useState(false);
     const [showModal2, setShowModal2] = useState(false);
     const [showModal3, setShowModal3] = useState(false);
+    const [currentTab, setCurrentTab] = useState('1');
+    const tabs = [
+        {id: 1, tabTitle: 1,
+            content: 
+                <div>
+                    อาหาร
+                </div>
+            },
+        {id: 2, tabTitle: 2,
+            content: 
+                <div>
+                    ของหวาน
+                </div>
+        },
+        {id: 3, tabTitle: 3,
+            content: 
+                <div>
+                    เครื่องกระดาษ
+                </div>
+        },
+        {id: 4, tabTitle: 4,
+            content: 
+                <div>
+                    ตะกร้า 
+                </div>
+        }
+    ];
+    const handleTabClick = (e) => {
+        setCurrentTab(e.target.id);
+    }
     const classes = useStyles();
     // const state = {play: false};
     const [translate, setTranslate] = useState({
@@ -42,36 +86,18 @@ const RoomMeet = () => {
                         <div className=" h-20 visible transition absolute">
                             <div className="container w-5 h-48 bg-red-200 shadow-md overflow-hidden border-spacing-1 rounded-b-lg">
                                 <div className=" flex justify-center items-center border-spacing-1 w-5 pt-5 ">
-                                    <button onClick={() => setShowModal(!showModal)}> 1</button>
-                                    {showModal && 
-                                        <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto w-96 h-64 absolute inset-0 z-auto outline-none focus:outline-none ml-40 bg-black">
-                                            <div></div>
-                                        </div>
-                                    }
-                                </div>
-                                <div className=" flex justify-center items-center border-spacing-1 w-5 pt-5">
-                                <button onClick={() => setShowModal1(!showModal1)}> 2</button>
-                                    {showModal1 && 
-                                        <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto w-96 h-64 absolute inset-0 z-50 outline-none focus:outline-none ml-40 bg-orange-500">
-                                            <div></div>
-                                        </div>
-                                    }
-                                </div>
-                                <div className=" flex justify-center items-center border-spacing-1 w-5 pt-5">
-                                <button onClick={() => setShowModal2(!showModal2)}> 3</button>
-                                    {showModal2 && 
-                                        <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto w-96 h-64 absolute inset-0 z-50 outline-none focus:outline-none ml-40 bg-red-600">
-                                            <div></div>
-                                        </div>
-                                    }
-                                </div>
-                                <div className=" flex justify-center items-center border-spacing-1 w-5 pt-5">
-                                <button onClick={() => setShowModal3(!showModal3)}> 4</button>
-                                    {showModal3 && 
-                                        <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto w-96 h-64 absolute inset-0 z-50 outline-none focus:outline-none ml-40 bg-lime-700">
-                                            <div></div>
-                                        </div>
-                                    }
+                                    <div className=" flex flex-col justify-between space-y-4">
+                                        {tabs.map((tab,i) => 
+                                            <button key={i} id={tab.id} disabled={currentTab === `${tab.id}`} onClick={(handleTabClick)}>{tab.tabTitle}</button>
+                                        )}
+                                    </div>
+                                    <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto w-96 h-64 absolute inset-0 z-50 outline-none focus:outline-none ml-40 bg-orange-500">
+                                        {tabs.map((tab, i) =>
+                                            <div key={i}>
+                                                {currentTab === `${tab.id}` && <div><p>{tab.content}</p></div>}
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         </div>
