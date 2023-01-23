@@ -4,14 +4,14 @@ import { Button, makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   button: {
-    width: "40px",
-    height: "20px",
+    width: "100px",
+    height: "40px",
     padding: "2px",
     backgroundColor: "orange",
   },
   buttons: {
-    width: "40px",
-    height: "20px",
+    width: "100px",
+    height: "40px",
     padding: "2px",
     backgroundColor: "orange",
   },
@@ -38,21 +38,21 @@ const Header = () => {
         <div className="flex flex-row justify-between">
           <div className="flex">
             <div className="flex-1 w-25 pt-2" href="#">
-              <Link className=" text-xs underline">หน้าหลัก</Link>
+              <Link className=" text-xl underline">หน้าหลัก</Link>
             </div>
             <div
               className=" flex-1 w-24 pt-2 "
               href="#"
               onClick={() => navigate("/")}
             >
-              <Link className=" text-xs underline">เกี่ยวกับ</Link>
+              <Link className=" text-xl underline">เกี่ยวกับ</Link>
             </div>
             <div
               className=" flex-1 w-24 pt-2 "
               href="#"
               onClick={() => navigate("/")}
             >
-              <Link className=" text-xs underline">ติดต่อเรา</Link>
+              <Link className=" text-xl underline">ติดต่อเรา</Link>
             </div>
           </div>
           <div className="pt-2">
@@ -61,7 +61,7 @@ const Header = () => {
               variant="contained"
               onClick={() => navigate("/Login")}
             >
-              <p className="text-xs">เข้าร่วม</p>
+              <p className="text-xl">เข้าร่วม</p>
             </Button>
           </div>
         </div>
@@ -79,7 +79,7 @@ const Header = () => {
           variant="contained"
           onClick={() => navigate("/Signup")}
         >
-          <p className="text-xs">สร้างห้อง</p>
+          <p className="text-xl">สร้างห้อง</p>
         </Button>
       </div>
     </div>

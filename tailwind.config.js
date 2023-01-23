@@ -5,7 +5,16 @@ module.exports = {
   ],
   important: '#root',
   theme: {
-    extend: {},
+    extend: {
+      width: {
+        '128': '32rem',
+        '138': '40rem'
+      },
+      height:{
+        '128': '32rem',
+        '138': '40rem'
+      }
+    },
   },
   plugins: [],
 }
