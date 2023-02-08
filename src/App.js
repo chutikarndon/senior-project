@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Route,Routes } from 'react-router-dom';
 // import './styles/main.css';
 
@@ -7,6 +7,7 @@ import Home from './Page/Home';
 import Signup from './Page/Signup';
 import RoomMeet from './Page/RoomMeet';
 import Idpass from './Page/Idpass';
+import Fire  from './Page/Fire';
 
 const App = () => {
 
@@ -20,6 +21,7 @@ const App = () => {
         <Route path='/Signup' element={<Signup/>}></Route>
         <Route path='/Idpass' element={<Idpass/>}></Route>
         <Route path='/RoomMeet' element={<RoomMeet/>}></Route>
+        <Route path='/Fire' elememt={<Fire/>}></Route>
       </Routes>
     </div>
       
