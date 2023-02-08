@@ -94,8 +94,8 @@ app.get("/index", (req, res) => {
 app.get("/cart", (req, res) => {
   res.json({
     data: [
-      { productname: ["apple"], image: require("../src/image/apple.png") },
-      { productname: ["orange"], image: require("../src/image/orange.png") },
+      { 'productname': ["apple"], image: "C:\Users\piyawan\Desktop\proj_final\senior-proj\src\image\apple.png" },
+      { 'productname': ["orange"], image: "C:\Users\piyawan\Desktop\proj_final\senior-proj\src\image\orange.png" },
     ],
   });
 });
