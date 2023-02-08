@@ -1,5 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import DragMove from "../DragMove";
+import Tabs from "../Page/Tabs";
+import Fire from "../Page/Fire";
 // import { InfoBox } from "../infoBox";
 // import { Animate } from "react-simple-animate";
 // import logo from "../logo.svg";
@@ -60,6 +62,24 @@ const RoomMeet = ({ socket }) => {
         setBackendData(data);
       });
   }, []);
+
+const RoomMeet = () => {
+    
+    const [isActive, setIsActive] = useState(false);
+    const [setting,setSetting] = useState(false);
+    const [member, setMember] = useState(false);
+    const [isVoice, setVoice] = useState(false);
+    const [isVideo, setVideo] = useState(false);
+    const [backendData, setBackendData] = useState([{}])
+        useEffect(() => {
+            fetch("/cart").then(
+            response => response.json()
+            ).then(
+            data => {
+                setBackendData(data)
+            }
+            )
+        }, [])
 
   const [currentTab, setCurrentTab] = useState("1");
   const tabs = [

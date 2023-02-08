@@ -285,3 +285,252 @@ const ref = useRef();
                                         </div>
                                     }
                                 </div> */}
+
+
+//tabs
+    // const [backendData, setBackendData] = useState([{}])
+    // useEffect(() => {
+    //     fetch("/cart").then(
+    //     response => response.json()
+    //     ).then(
+    //     data => {
+    //         setBackendData(data)
+    //     }
+    //     )
+    // }, [])
+    // const [ product, setProduct] = useState({
+    //     pName: "",
+    //     pImg: ""
+    // })
+    // const handleChange = (event) => {
+    //     const {name , value} = event.target;
+    //     setProduct((prevState) => {
+    //         return {
+    //             ...prevState,
+    //             [name] : value,
+    //         };
+    //     });
+    // };
+    // const onSubmit = e => {
+    //     e.preventDefault()
+
+    //     console.log('submit value', product)
+    // }
+
+    // const [currentTab, setCurrentTab] = useState('1');
+    // const tabs = [
+    //     {id: 1, 
+    //         tabTitle: '1'
+    //         // <img className=" w-6 h-6" src={require("../image/rice.png")} alt="rice"></img>
+    //          ,
+    //         content: 
+    //             <div className=" grid grid-cols-4 gap-3 text-xl">
+    //                 <button className=" flex flex-col items-center container bg-red-100 rounded" type="submit" onClick={onSubmit}>
+    //                     <form onSubmit={onSubmit}>
+    //                         <img className=" w-36 h-36" src={require("../image/grape.png")} name="pImg" value={pImg}></img>
+    //                         <p className=" text-center" name="pName" value={pName}>เป็ด</p>
+    //                     </form>
+    //                 </button>
+    //                 <button className=" flex flex-col items-center container bg-white rounded">
+    //                     <img className=" w-36 h-36" src={require("../image/grape.png")}></img>
+    //                     <p className=" text-center pb-1">ไก่</p>                   
+    //                 </button>
+    //                 <button className=" flex flex-col items-center container bg-white rounded">
+    //                     <img className=" w-36 h-36" src={require("../image/grape.png")}></img>
+    //                     <p className=" text-center pb-1">หมูสามชั้น</p>
+    //                 </button>
+    //                 <button className=" flex flex-col items-center container bg-white rounded">
+    //                     <img className=" w-36 h-36" src={require("../image/grape.png")}></img>
+    //                     <p className=" text-center pb-1">ปลา</p>
+    //                 </button>
+    //                 <button className=" flex flex-col items-center container bg-white rounded">
+    //                     <img className=" w-36 h-36" src={require("../image/grape.png")}></img>
+    //                     <p className=" text-center pb-1">ผัดหมี่ซั่ว</p>
+    //                 </button>
+    //                 <button className=" flex flex-col items-center container bg-white rounded">
+    //                     <img className=" w-36 h-36" src={require("../image/grape.png")}></img>
+    //                     <p className=" text-center pb-1">ต้มจืด</p>
+    //                 </button>
+    //                 <button className=" flex flex-col items-center container bg-white rounded">
+    //                     <img className=" w-36 h-36" src={require("../image/grape.png")}></img>
+    //                     <p className=" text-center pb-1">พะโล้</p>
+    //                 </button>
+    //                 <button className=" flex flex-col items-center container bg-white rounded">
+    //                     <img className=" w-36 h-36" src={require("../image/grape.png")}></img>
+    //                     <p className=" text-center pb-1">ปลาหมึกแห้ง</p>
+    //                 </button>
+    //                 <button className=" flex flex-col items-center container bg-white rounded">
+    //                     <img className="w-36 h-36" src={require("../image/grape.png")}></img>
+    //                     <p className=" text-center pb-1">ผัดหน่อไม้กุ้ง</p>
+    //                 </button>
+    //                 <button className=" flex flex-col items-center container bg-white rounded">
+    //                     <img className="w-36 h-36" src={require("../image/grape.png")}></img>
+    //                     <p className=" text-center pb-1">ข้าวสวย</p>
+    //                 </button>
+    //                 <button className=" flex flex-col items-center container bg-white rounded">
+    //                     <img className=" w-36 h-36" src={require("../image/grape.png")}></img>
+    //                     <p className=" text-center pb-1">ชาจีน</p>
+    //                 </button>
+    //                 <button className=" flex flex-col items-center container bg-white rounded">
+    //                     <img className=" w-36 h-36" src={require("../image/grape.png")}></img>
+    //                     <p className=" text-center pb-1">น้ำเปล่า</p>
+    //                 </button>
+    //             </div> 
+    //         },
+    //     {id: 2, tabTitle: 2,
+    //             //  <img className=" w-6 h-6" src={require("../image/orange (1).png")} alt=" dessert"></img>,
+                
+    //         content: 
+                
+    //                 <div className=" grid grid-cols-4 gap-3 text-xl">
+    //                     <button className=" flex flex-col items-center container bg-white rounded">
+    //                         <img className=" w-36 h-36" src={require("../image/orange.png")}></img>
+    //                         <p className=" text-center pb-1">ขนมสาลี</p> 
+    //                     </button>
+    //                     <button className=" flex flex-col items-center container bg-white rounded">
+    //                         <img className=" w-36 h-36" src={require("../image/orange.png")}></img>
+    //                         <p className=" text-center pb-1">ขนมไข่</p>
+    //                     </button>
+    //                     <button className=" flex flex-col items-center container bg-white rounded">
+    //                         <img className=" w-36 h-36" src={require("../image/orange.png")}></img>
+    //                         <p className=" text-center pb-1">ถ้วยฟู</p>
+    //                     </button>
+    //                     <button className=" flex flex-col items-center container bg-white rounded">
+    //                         <img className=" w-36 h-36" src={require("../image/orange.png")}></img>
+    //                         <p className=" text-center pb-1">จันทร์อับ</p>
+    //                     </button>
+    //                     <button className=" flex flex-col items-center container bg-white rounded">
+    //                         <img className=" w-36 h-36" src={require("../image/orange.png")}></img>
+    //                         <p className=" text-center pb-1">กัวท้อ</p>
+    //                     </button>
+    //                     <button className=" flex flex-col items-center container bg-white rounded">
+    //                         <img className="w-36 h-36" src={require("../image/orange.png")}></img>
+    //                         <p className=" text-center pb-1">ซาลาเปา</p>
+    //                     </button>
+    //                     <button className=" flex flex-col items-center container bg-white rounded">
+    //                         <img className=" w-36 h-36" src={require("../image/orange.png")}></img>
+    //                         <p className=" text-center pb-1">ขนมเข่ง</p>
+    //                     </button>
+    //                     <button className=" flex flex-col items-center container bg-white rounded">
+    //                         <img className=" w-36 h-36" src={require("../image/orange.png")}></img>
+    //                         <p className=" text-center pb-1">ขนมเทียน</p>
+    //                     </button>
+    //                     <button className=" flex flex-col items-center container bg-white rounded">
+    //                         <img className=" w-36 h-36" src={require("../image/orange.png")}></img>
+    //                         <p className=" text-center pb-1">ส้ม</p>
+    //                     </button>
+    //                     <button className=" flex flex-col items-center container bg-white rounded">
+    //                         <img className="w-36 h-36" src={require("../image/apple.png")}></img>
+    //                         <p className=" text-center pb-1">แอปเปิ้ล</p>
+    //                     </button>
+    //                     <button className=" flex flex-col items-center container bg-white rounded">
+    //                         <img className=" w-36 h-36" src={require("../image/grape.png")}></img>
+    //                         <p className=" text-center pb-1">องุ่น</p>
+    //                     </button>
+    //                     <button className=" flex flex-col items-center container bg-white rounded">
+    //                         <img className=" w-36 h-36" src={require("../image/banana.png")}></img>
+    //                         <p className=" text-center pb-1">กล้วยหอม</p>
+    //                     </button>
+    //                     <button className=" flex flex-col items-center container bg-white rounded">
+    //                         <img className=" w-36 h-36" src={require("../image/pomelo.png")}></img>
+    //                         <p className=" text-center pb-1">ส้มโอ</p>
+    //                     </button>
+    //                     <button className=" flex flex-col items-center container bg-white rounded">
+    //                         <img className=" w-36 h-36" src={require("../image/pomelo.png")}></img>
+    //                         <p className=" text-center pb-1">แก้วมังกร</p>
+    //                     </button>
+    //                     <button className=" flex flex-col items-center container bg-white rounded">
+    //                         <img className=" w-36 h-36" src={require("../image/pomelo.png")}></img>
+    //                         <p className=" text-center pb-1">สาลี</p>
+    //                     </button>
+    //                     <button className=" flex flex-col items-center container bg-white rounded">
+    //                         <img className=" w-36 h-36" src={require("../image/pomelo.png")}></img>
+    //                         <p className=" text-center pb-1">สัปปะรด</p>
+    //                     </button>
+    //                 </div>  
+                
+    //     },
+    //     {id: 3, tabTitle: 3 , 
+    //         //     <img className=" w-6 h-6" src={require("../image/firecracker (1).png")} alt="firecracker"></img>,
+    //         content: 
+    //             <div className=" grid grid-cols-4 gap-3 text-xl">
+    //                 <button className=" flex flex-col items-center container bg-white rounded">
+    //                     <img className=" w-36 h-36" src={require("../image/banana.png")}></img>
+    //                     <p className=" text-center pb-1">เสื้อผ้า</p>
+    //                 </button>
+    //                 <button className=" flex flex-col items-center container bg-white rounded">
+    //                     <img className="w-36 h-36" src={require("../image/banana.png")}></img>
+    //                     <p className=" text-center pb-1">ใบเบิกทาง</p>
+    //                 </button>
+    //                 <button className=" flex flex-col items-center container bg-white rounded">
+    //                     <img className=" w-36 h-36" src={require("../image/banana.png")}></img>
+    //                     <p className=" text-center pb-1">เงินทอง</p>
+    //                 </button>
+    //                 <button className=" flex flex-col items-center container bg-white rounded">
+    //                     <img className=" w-36 h-36" src={require("../image/banana.png")}></img>
+    //                     <p className=" text-center pb-1">ของเครื่องใช้</p>
+    //                 </button>
+    //                 <button className=" flex flex-col items-center container bg-white rounded">
+    //                     <img className=" w-36 h-36" src={require("../image/banana.png")}></img>
+    //                     <p className=" text-center pb-1">กิมจั้ว</p>
+    //                 </button>
+    //                 <button className=" flex flex-col items-center container bg-white rounded">
+    //                     <img className=" w-36 h-36" src={require("../image/banana.png")}></img>
+    //                     <p className=" text-center pb-1">ธนบัตรยมโลก</p>    
+    //                 </button>
+    //                 <button className=" flex flex-col items-center container bg-white rounded">
+    //                     <img className=" w-36 h-36" src={require("../image/banana.png")}></img>
+    //                     <p className=" text-center pb-1">ตั่วกิม</p>
+    //                 </button>
+    //             </div>
+    //     },
+    //     {id: 4, 
+    //         tabTitle: 4,
+    //             // <img className=" w-6 h-6" src={require("../image/shoppingCart.png")} alt="shopping cart"></img>,
+    //         content: 
+    //             <div>
+    //                 <div className=" grid grid-cols-4 gap-3 text-xs">    
+    //                     {typeof backendData.data === "undefined" ? (   
+    //                         <p>Loading...</p>
+    //                         ) : ( 
+    //                         backendData.data.map((data,i) => 
+    //                             <button key ={i} className =" flex flex-col items-center container bg-white rounded">
+    //                                 <img className=" w-36 h-36" key={i} src={data.image} alt=""/>
+    //                                 {/* <p className=" w-36 h-36" key={i}>{data.image}</p> */}
+    //                                 <p className=" text-center text-xl pb-1" key={i}>{data.productname}</p>
+    //                             </button>)        
+    //                     )} 
+    //                 </div>
+    //             </div>    
+    //     }
+    // ];
+    // const handleTabClick = (e) => {
+    //     setCurrentTab(e.target.id);
+    // }
+
+
+{/* <div className=" container w-12 bg-amber-300 shadow-md overflow-hidden border-spacing-1 rounded-t-lg"> 
+                    <div >
+                        <button class=" rounded-full w-12 h-14 flex justify-center items-center hover:cursor-pointer" onClick={() => setIsActive(!isActive)}><img className=" w-9 h-9" src={require("../image/home.png")} alt="home"></img></button>
+                    </div> 
+                    {isActive && 
+                        <div className=" h-20 visible transition absolute">
+                            <div className="container w-12 h-64 bg-amber-300 shadow-md overflow-hidden border-spacing-1 rounded-b-lg">
+                                <div className=" flex justify-center items-center border-spacing-12 w-12 pt-5 ">
+                                    <div className=" flex flex-col justify-between items-center space-y-7">
+                                        {tabs.map((tab,i) => 
+                                            <button key={i} id={tab.id} disabled={currentTab === `${tab.id}`} onClick={(handleTabClick)} className=" w-12 h-8 hover:bg-amber-500">{tab.tabTitle}</button>
+                                        )}
+                                    </div>
+                                    <div className="flex snap-y w-138 h-128 absolute inset-0 z-50 mx-96 my-1 bg-red-400 p-3 rounded">
+                                        {tabs.map((tab, i) =>
+                                            <div key={i} id={tab.id} className=" overflow-y-auto">
+                                               {currentTab === `${tab.id}` && <div>{tab.content}</div>}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>                */}
