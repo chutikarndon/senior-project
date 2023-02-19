@@ -8,6 +8,8 @@ import Fire from "../Page/Fire";
 import { makeStyles } from "@material-ui/core";
 import { useLocation } from "react-router-dom";
 import io from "socket.io-client";
+import Peer from "simple-peer";
+import styled from "styled-components";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -16,6 +18,41 @@ const useStyles = makeStyles((theme) => ({
     width: "3px",
   },
 }));
+
+const Container = styled.div`
+    padding: 20px;
+    display: flex;
+    height: 100vh;
+    width: 90%;
+    margin: auto;
+    flex-wrap: wrap;
+`;
+
+const StyledVideo = styled.video`
+    height: 40%;
+    width: 40%;
+`;
+
+const Video = (props) => {
+    const ref = useRef();
+
+    useEffect(() => {
+        props.peer.on("stream", stream => {
+            ref.current.srcObject = stream;
+        })
+    }, []);
+
+    return (
+        <StyledVideo playsInline autoPlay ref={ref} />
+    );
+}
+
+
+const videoConstraints = {
+    height: window.innerHeight / 2,
+    width: window.innerWidth / 2
+};
+
 
 const RoomMeet = (props) => {
   const [isActive, setIsActive] = useState(false);
@@ -46,67 +83,142 @@ const RoomMeet = (props) => {
     });
   };
 
-  const localVideoRef = useRef(null);
-  const [mediaStream, setMediaStream] = useState();
-  const remoteVideoRefs = useRef([]);
-  const [remoteStreams, setRemoteStreams] = useState([]);
-  const location = useLocation();
-  const [username, setUsername] = useState();
-  const roomId = location.state.roomId;
-  const [activeUsers, setActiveUsers] = useState([]);
-  const [socket, setSocket] = useState(null);
+  // const localVideoRef = useRef(null);
+  // const [mediaStream, setMediaStream] = useState();
+  // const remoteVideoRefs = useRef([]);
+  // const [remoteStreams, setRemoteStreams] = useState([]);
+  // const location = useLocation();
+  // const [username, setUsername] = useState();
+  // const roomId = location.state.roomId;
+  // const [activeUsers, setActiveUsers] = useState([]);
+  // const [socket, setSocket] = useState(null);
 
-  const [peers, setPeers] = useState([]);
-  const userVideo = useRef();
-  const peersRef = useRef([]);
+  // const [peers, setPeers] = useState([]);
+  // const userVideo = useRef();
+  // const peersRef = useRef([]);
+  // // useEffect(() => {
+  // //   const getDeviceMedia = async () => {
+  // //     const stream = await navigator.mediaDevices.getUserMedia({
+  // //       video: true,
+  // //       audio: true,
+  // //     });
+  // //     setMediaStream(stream);
+  // //     if (localVideoRef.current) {
+  // //       localVideoRef.current.srcObject = stream;
+  // //     }
+  // //   };
+  // //   getDeviceMedia();
+  // // }, []);
+
   // useEffect(() => {
-  //   const getDeviceMedia = async () => {
-  //     const stream = await navigator.mediaDevices.getUserMedia({
+  //   const socket = io("http://localhost:3000");
+  //   setSocket(socket);
+  //   socket.on("connection", () => console.log("connected"));
+  //   socket.emit("joinroom", location.state.roomId, location.state.username);
+  //   socket.on("all-users", (users) => {
+  //     console.log("Active Users");
+  //     console.log(users);
+  //     setActiveUsers(users);
+  //   });
+
+  //   navigator.mediaDevices
+  //     .getUserMedia({
   //       video: true,
   //       audio: true,
+  //     })
+  //     .then((stream) => {
+  //       setMediaStream(stream);
+  //       if (localVideoRef.current) {
+  //         localVideoRef.current.srcObject = stream;
+  //       }
+        
   //     });
-  //     setMediaStream(stream);
-  //     if (localVideoRef.current) {
-  //       localVideoRef.current.srcObject = stream;
-  //     }
-  //   };
-  //   getDeviceMedia();
+
+  //   socket.emit("add-stream", localVideoRef);
+
+  //   // if (activeUsers.length > 1) {
+  //   //   socket.on("new-remote-stream", (stream) => {
+  //   //     setRemoteStreams([...remoteStreams, stream]);
+  //   //   });
+  //   // }
+
+  //   return () => socket.disconnect();
   // }, []);
 
-  useEffect(() => {
-    const socket = io("http://localhost:3000");
-    setSocket(socket);
-    socket.on("connection", () => console.log("connected"));
-    socket.emit("joinroom", location.state.roomId, location.state.username);
-    socket.on("all-users", (users) => {
-      console.log("Active Users");
-      console.log(users);
-      setActiveUsers(users);
-    });
+  const [peers, setPeers] = useState([]);
+  const socketRef = useRef();
+  const userVideo = useRef();
+  const peersRef = useRef([]);
+  const location = useLocation();
+  const roomID = location.state.roomId;
+  const userID = location.state.username;
 
-    navigator.mediaDevices
-      .getUserMedia({
-        video: true,
-        audio: true,
+  useEffect(() => {
+      socketRef.current = io.connect("http://localhost:3000");
+      navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
+          userVideo.current.srcObject = stream;
+          socketRef.current.emit("join room", roomID);
+          socketRef.current.on("all users", users => {
+              const peers = [];
+              users.forEach(userID => {
+                  const peer = createPeer(userID, socketRef.current.id, stream);
+                  peersRef.current.push({
+                      peerID: userID,
+                      peer,
+                  })
+                  peers.push(peer);
+              })
+              setPeers(peers);
+          })
+
+          socketRef.current.on("user joined", payload => {
+              const peer = addPeer(payload.signal, payload.callerID, stream);
+              peersRef.current.push({
+                  peerID: payload.callerID,
+                  peer,
+              })
+
+              setPeers(users => [...users, peer]);
+          });
+
+          socketRef.current.on("receiving returned signal", payload => {
+              const item = peersRef.current.find(p => p.peerID === payload.id);
+              item.peer.signal(payload.signal);
+          });
       })
-      .then((stream) => {
-        setMediaStream(stream);
-        if (localVideoRef.current) {
-          localVideoRef.current.srcObject = stream;
-        }
-        
+      return ()=>{socketRef.disconnect();
+      }
+  }, []);
+
+  function createPeer(userToSignal, callerID, stream) {
+      const peer = new Peer({
+          initiator: true,
+          trickle: false,
+          stream,
       });
 
-    socket.emit("add-stream", localVideoRef);
+      peer.on("signal", signal => {
+          socketRef.current.emit("sending signal", { userToSignal, callerID, signal })
+      })
 
-    // if (activeUsers.length > 1) {
-    //   socket.on("new-remote-stream", (stream) => {
-    //     setRemoteStreams([...remoteStreams, stream]);
-    //   });
-    // }
+      return peer;
+  }
 
-    return () => socket.disconnect();
-  }, []);
+  function addPeer(incomingSignal, callerID, stream) {
+      const peer = new Peer({
+          initiator: false,
+          trickle: false,
+          stream,
+      })
+
+      peer.on("signal", signal => {
+          socketRef.current.emit("returning signal", { signal, callerID })
+      })
+
+      peer.signal(incomingSignal);
+
+      return peer;
+    }
   return (
     <div>
       <div className="flex flex-row justify-between items-start mt-10 ml-12 mr-4">
@@ -116,9 +228,14 @@ const RoomMeet = (props) => {
         <div className=" overflow-x-auto">
           {" "}
           {/* other user*/}
-          {remoteStreams.map((stream, index) => (
-            <video key={index} autoPlay srcObject={stream} />
-          ))}
+          <Container>
+            <StyledVideo muted ref={userVideo} autoPlay playsInline />
+            {peers.map((peer, index) => {
+                return (
+                    <Video key={index} peer={peer} />
+                );
+            })}
+        </Container>
           <div className=" flex flex-row gap-3 p-2">
             <div className=" w-44 h-32"></div>
           </div>
@@ -257,7 +374,7 @@ const RoomMeet = (props) => {
           <div className="box-content h-32 w-44 border-2 p-2 ">
             {" "}
             {/* video me*/}
-            <video ref={localVideoRef} autoPlay />
+            <video ref={userVideo} autoPlay />
           </div>
         </div>
       </div>

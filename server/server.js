@@ -15,7 +15,6 @@ const http = require("http").Server(app);
 // });
 const path = require("path");
 
-let users = [];
 app.use(cors());
 const io = require("socket.io")(http, {
   cors: {
@@ -27,46 +26,47 @@ const io = require("socket.io")(http, {
 
 let interval;
 
-io.on("connection", (socket) => {
-  console.log("Someone Connected");
-  socket.on("joinroom", (roomId, username) => {
-    console.log("User Joined Room");
-    console.log(roomId, username);
-    socket.join(roomId);
-    addUser(username, roomId);
-    socket.to(roomId).emit("user-connected", username);
-    io.to(roomId).emit("all-users", getRoomUsers(roomId));
-    // socket.to(roomId).emit("add-stream", (stream) => {
-    //   users.forEach((user) => {
-    //     if (user !== socket) {
-    //       console.log("add new video")
-    //       socket.emit("new-remote-stream", stream);
-    //     }
-    //   });
-    // });
+const users = {};
 
-    socket.on("sending signal", (payload) => {
-      io.to(payload.userToSignal).emit("user joined", {
-        signal: payload.signal,
-        callerID: payload.callerID,
-      });
+const socketToRoom = {};
+
+io.on('connection', socket => {
+    socket.on("join room", roomID => {
+        if (users[roomID]) {
+            const length = users[roomID].length;
+            if (length === 4) {
+                socket.emit("room full");
+                return;
+            }
+            users[roomID].push(socket.id);
+        } else {
+            users[roomID] = [socket.id];
+        }
+        socketToRoom[socket.id] = roomID;
+        const usersInThisRoom = users[roomID].filter(id => id !== socket.id);
+
+        socket.emit("all users", usersInThisRoom);
     });
 
-    socket.on("returning signal", (payload) => {
-      io.to(payload.callerID).emit("receiving returned signal", {
-        signal: payload.signal,
-        id: socket.id,
-      });
+    socket.on("sending signal", payload => {
+        io.to(payload.userToSignal).emit('user joined', { signal: payload.signal, callerID: payload.callerID });
     });
 
-    socket.on("disconnect", () => {
-      console.log("disconnected");
-      socket.leave(roomId);
-      userLeave(username);
-      io.to(roomId).emit("all-users", getRoomUsers(roomId));
+    socket.on("returning signal", payload => {
+        io.to(payload.callerID).emit('receiving returned signal', { signal: payload.signal, id: socket.id });
     });
-  });
+
+    socket.on('disconnect', () => {
+        const roomID = socketToRoom[socket.id];
+        let room = users[roomID];
+        if (room) {
+            room = room.filter(id => id !== socket.id);
+            users[roomID] = room;
+        }
+    });
+
 });
+
 app.use(bodyParser.json()); // for parsing application/json
 const allowedOrigins = [
   "http://localhost",
