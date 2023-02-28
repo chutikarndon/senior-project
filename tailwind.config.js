@@ -13,6 +13,9 @@ module.exports = {
       height:{
         '128': '32rem',
         '138': '40rem'
+      },
+      backgroundImage: {
+        'backgroundRoommeet': "url('../image/bg.jpg')"
       }
     },
   },

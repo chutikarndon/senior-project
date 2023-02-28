@@ -34,7 +34,7 @@ io.on('connection', socket => {
     socket.on("join room", roomID => {
         if (users[roomID]) {
             const length = users[roomID].length;
-            if (length === 4) {
+            if (length === 10) {
                 socket.emit("room full");
                 return;
             }
@@ -124,6 +124,18 @@ app.get("/cart", (req, res) => {
         productname: ["orange"],
         image: "C:UserspiyawanDesktopproj_finalsenior-projsrcimageorange.png",
       },
+      {
+        productname: ["orange"],
+        image: "C:UserspiyawanDesktopproj_finalsenior-projsrcimageorange.png",
+      },
+      {
+        productname: ["orange"],
+        image: "C:UserspiyawanDesktopproj_finalsenior-projsrcimageorange.png",
+      },
+      {
+        productname: ["orange"],
+        image: "C:UserspiyawanDesktopproj_finalsenior-projsrcimageorange.png",
+      }
     ],
   });
 });

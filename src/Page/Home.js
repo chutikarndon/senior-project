@@ -68,7 +68,7 @@ const Header = () => {
       </div>
       <div>
         {typeof backendData.festival === "undefined" ? (
-          <p>Loading...</p>
+          <div><svg className=' animate-spin w-5 h-5'></svg></div>
         ) : (
           backendData.festival.map((festival, i) => <p key={i}>{festival}</p>)
         )}

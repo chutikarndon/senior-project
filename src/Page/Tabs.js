@@ -1,6 +1,11 @@
 
 import React, { useState,useEffect } from "react";
+import { io } from "socket.io-client";
 
+// const handleClick=(e)=>{
+//     const id = e.currentTarget.id;
+//     Socket.emit("collect",{id,roomId})
+// }
 const Tabs = () => {
     const [isActive, setIsActive] = useState(false);
     const [openTab, setOpenTab] = React.useState(1);

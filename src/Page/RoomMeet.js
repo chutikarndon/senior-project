@@ -12,6 +12,8 @@ import Peer from "simple-peer";
 import styled from "styled-components";
 
 
+
+
 const useStyles = makeStyles((theme) => ({
   button: {
     height: "5px",
@@ -29,8 +31,8 @@ const Container = styled.div`
 `;
 
 const StyledVideo = styled.video`
-    height: 40%;
-    width: 40%;
+    height: 13%;
+    width: 13%;
 `;
 
 const Video = (props) => {
@@ -68,6 +70,23 @@ const RoomMeet = (props) => {
         setBackendData(data);
       });
   }, []);
+
+  /*tab menu */
+  const [isMenu, setMenu] = useState(false);
+  const [openTab, setOpenTab] = React.useState(1);
+  const handleClick=(e)=>{
+    const id = e.currentTarget.id;
+    socketRef.current.emit("collect",{id,roomID})
+  }
+
+  /*delete button */
+    const[isDeleteMenuOpen,setIsDeleteMenuOpen] = useState(false);
+    const toggleDeleteMenu=()=>{
+      setIsDeleteMenuOpen(!isDeleteMenuOpen);
+    };
+    const handleDelete = (Id) =>{
+        socketRef.current.emit("delete",{Id,roomID})
+    }
 
   const classes = useStyles();
   // const state = {play: false};
@@ -220,242 +239,513 @@ const RoomMeet = (props) => {
       return peer;
     }
   return (
-    <div>
-      <div className="flex flex-row justify-between items-start mt-10 ml-12 mr-4">
-        {" "}
-        {/* Header*/}
-        <Tabs />
-        <div className=" overflow-x-auto">
+    <div className=" bg-[url('C:/Users/piyawan/Desktop/proj_final/senior-proj/src/image/bg.jpg')] bg-repeat bg-cover">
+      <div className=" flex flex-col justify-items-center" >
+        <div className="flex flex-row justify-between items-start mt-10 ml-12 mr-4  h-36" style={{height: "40%"}}>
           {" "}
-          {/* other user*/}
-          <Container>
-            <StyledVideo muted ref={userVideo} autoPlay playsInline />
-            {peers.map((peer, index) => {
-                return (
-                    <Video key={index} peer={peer} />
-                );
-            })}
-        </Container>
-          <div className=" flex flex-row gap-3 p-2">
-            <div className=" w-44 h-32"></div>
-          </div>
-        </div>
-      </div>
-      <div className=" flex justify-center mt-16">
-        {" "}
-        {/* middle*/}
-        <div className=" flex flex-col absolute">
-          <div className=" grid grid-cols-5 gap-3 text-xs">
-            {" "}
-            {/*อาหารคาว*/}
-            {typeof backendData.data === "undefined" ? (
-              <p>Loading...</p>
-            ) : (
-              backendData.data.map((data, i) => (
-                <div key={i}>
-                  <img className=" w-14 h-14" key={i} src={data.image} alt="" />
-                </div>
-              ))
-            )}
-          </div>
-          <div className=" grid grid-cols-5 gap-3 text-xs">
-            {" "}
-            {/*ของหวาน*/}
-            {typeof backendData.data === "undefined" ? (
-              <p>Loading...</p>
-            ) : (
-              backendData.data.map((data, i) => (
-                <div key={i}>
-                  <img className=" w-14 h-14" key={i} src={data.image} alt="" />
-                </div>
-              ))
-            )}
-          </div>
-          <div className=" grid grid-cols-5 gap-3 text-xs">
-            {" "}
-            {/*เครื่องกระดาษ*/}
-            {typeof backendData.data === "undefined" ? (
-              <p>Loading...</p>
-            ) : (
-              backendData.data.map((data, i) => (
-                <div key={i}>
-                  <img className=" w-14 h-14" key={i} src={data.image} alt="" />
-                </div>
-              ))
-            )}
-          </div>
-          กระถางธูป
-        </div>
-      </div>
-      <div>
-        <div className="flex justify-between items-end ml-24 mr-2 mt-80 ">
-          {" "}
-          {/* toolbar/ video me*/}
-          <div className="flex justify-self-center pl-2 rounded-full box-content h-10 w-80 border-0 shadow-md bg-amber-100">
-            {" "}
-            {/* toolbar*/}
-            <button class=" w-14 h-9" onClick={() => setIsActive(!isActive)}>
-              <img
-                className=" w-6 h-6"
-                src={require("../image/fire.png")}
-                alt="fire"
-              ></img>
-            </button>
-            {isActive && (
-              <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto absolute inset-0 right-5 left-5 top-5 bottom-28 bg-red-50">
-                <Fire />
+          {/* Header*/}
+          <div>
+            {/*tab menu */}
+            <div className=" container w-12 bg-amber-300 shadow-md overflow-hidden border-spacing-1 rounded-t-lg">
+                  <div>
+                      <button className=" rounded-full w-12 h-14 flex justify-center items-center hover:cursor-pointer" onClick={() => setMenu(!isMenu)}><img className=" w-9 h-9" src={require("../image/home.png")} alt=""></img></button>
+                  </div>
+                  {isMenu &&
+                      <div className=" h-20 visible transition absolute">
+                          <div className="container w-12 h-80 bg-amber-300 shadow-md overflow-hidden border-spacing-1 rounded-b-lg">
+                              <div className=" flex justify-center items-center border-spacing-12 w-12 pt-5 ">
+                                  <div className=" flex flex-col justify-between items-center space-y-7" role="tablist">
+                                      <button
+                                          className={
+                                          "w-12 h-10 rounded block leading-normal " +
+                                          (openTab === 1
+                                              ? "bg-amber-200"  
+                                              : " bg-amber-300")
+                                          }
+                                          onClick={e => {
+                                          e.preventDefault();
+                                          setOpenTab(1);
+                                          }}
+                                          data-toggle="tab"
+                                          href="#link1"
+                                          role="tablist"
+                                      >
+                                          <img className=" w-10 h-10" src={require("../image/rice.png")} alt="rice"/>
+                                      </button>
+                                      <button
+                                          className={
+                                          "w-12 h-10 rounded block leading-normal " +
+                                          (openTab === 2
+                                              ? "bg-amber-200"  
+                                              : " bg-amber-300")
+                                          }
+                                          onClick={e => {
+                                          e.preventDefault();
+                                          setOpenTab(2);
+                                          }}
+                                          data-toggle="tab"
+                                          href="#link2"
+                                          role="tablist"
+                                      >
+                                          <img className=" w-10 h-10" src={require("../image/orange (1).png")} alt=" dessert"/>
+                                      </button>
+                                      <button
+                                          className={
+                                          "w-12 h-10 rounded block leading-normal " +
+                                          (openTab === 3
+                                              ? "bg-amber-200"
+                                              : " bg-amber-300")
+                                          }
+                                          onClick={e => {
+                                          e.preventDefault();
+                                          setOpenTab(3);
+                                          }}
+                                          data-toggle="tab"
+                                          href="#link3"
+                                          role="tablist"
+                                      >
+                                          <img className=" w-10 h-10" src={require("../image/firecracker (1).png")} alt="firecracker"/>
+                                      </button>
+                                      <button
+                                          className={
+                                          "w-12 h-10 rounded block leading-normal " +
+                                          (openTab === 4
+                                              ? "bg-amber-200"
+                                              : " bg-amber-300")
+                                          }
+                                          onClick={e => {
+                                          e.preventDefault();
+                                          setOpenTab(4);
+                                          }}
+                                          data-toggle="tab"
+                                          href="#link4"
+                                          role="tablist"
+                                      >
+                                          <img className=" w-10 h-10" src={require("../image/shoppingCart.png")} alt="shopping cart"/>
+                                      </button>
+                                  </div>
+                                  <div className="flex snap-y w-138 h-128 absolute inset-0 z-50 mx-96 my-1 bg-red-400 p-3 rounded">
+                                      <div className=" overflow-y-auto">
+                                          <div className={openTab === 1 ? "block" : "hidden"} id="link1">
+                                              <div className=" grid grid-cols-4 gap-3 text-xl">
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl " handleClick={handleClick} id={"0"}>
+                                                      <img className=" w-36 h-36" src={require("../image/grape.png")} alt=""/>
+                                                      <p className=" text-center" >เป็ด</p>  
+                                                  </button>
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"1"}>
+                                                      <img className=" w-36 h-36" src={require("../image/grape.png")} alt="" />
+                                                      <p className=" text-center pb-1" >ไก่</p>                   
+                                                  </button>
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"2"}>
+                                                      <img className=" w-36 h-36" src={require("../image/grape.png")} alt=""/>
+                                                      <p className=" text-center pb-1">หมูสามชั้น</p>
+                                                  </button>
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"3"}>
+                                                      <img className=" w-36 h-36" src={require("../image/grape.png")} alt=""/>
+                                                      <p className=" text-center pb-1">ปลา</p>
+                                                  </button>
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"0"}>
+                                                      <img className=" w-36 h-36" src={require("../image/grape.png")} alt=""/>
+                                                      <p className=" text-center pb-1">ผัดหมี่ซั่ว</p>
+                                                  </button>
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"4"}>
+                                                      <img className=" w-36 h-36" src={require("../image/grape.png")} alt=""/>
+                                                      <p className=" text-center pb-1">ต้มจืด</p>
+                                                  </button>
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"5"}>
+                                                      <img className=" w-36 h-36" src={require("../image/grape.png")} alt=""/> 
+                                                      <p className=" text-center pb-1">พะโล้</p>
+                                                  </button>
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"6"}>
+                                                      <img className=" w-36 h-36" src={require("../image/grape.png")} alt=""/>
+                                                      <p className=" text-center pb-1">ปลาหมึกแห้ง</p>
+                                                  </button>
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"7"}>
+                                                      <img className="w-36 h-36" src={require("../image/grape.png")} alt=""/>
+                                                      <p className=" text-center pb-1">ผัดหน่อไม้กุ้ง</p>
+                                                  </button>
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"8"}>
+                                                      <img className="w-36 h-36" src={require("../image/grape.png")} alt=""/>
+                                                      <p className=" text-center pb-1">ข้าวสวย</p>
+                                                  </button>
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"9"}>
+                                                      <img className=" w-36 h-36" src={require("../image/grape.png")} alt=""/>
+                                                      <p className=" text-center pb-1">ชาจีน</p>
+                                                  </button>
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"10"}>
+                                                      <img className=" w-36 h-36" src={require("../image/grape.png")} alt=""/>
+                                                      <p className=" text-center pb-1">น้ำเปล่า</p>
+                                                  </button>
+                                              </div> 
+                                          </div>
+                                          <div className={openTab === 2 ? "block" : "hidden"} id="link2">
+                                              <div className=" grid grid-cols-4 gap-3 text-xl">
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"11"}>
+                                                      <img className=" w-36 h-36" src={require("../image/orange.png")} alt=""/>
+                                                      <p className=" text-center pb-1">ขนมสาลี</p> 
+                                                  </button>
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"12"}>
+                                                      <img className=" w-36 h-36" src={require("../image/orange.png")} alt=""/>
+                                                      <p className=" text-center pb-1">ขนมไข่</p>
+                                                  </button>
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"13"}>
+                                                      <img className=" w-36 h-36" src={require("../image/orange.png")} alt=""/>
+                                                      <p className=" text-center pb-1">ถ้วยฟู</p>
+                                                  </button>
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"14"}>
+                                                      <img className=" w-36 h-36" src={require("../image/orange.png")} alt=""/>
+                                                      <p className=" text-center pb-1">จันทร์อับ</p>
+                                                  </button>
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"15"}>
+                                                      <img className=" w-36 h-36" src={require("../image/orange.png")} alt=""/>
+                                                      <p className=" text-center pb-1">กัวท้อ</p>
+                                                  </button>
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"16"}>
+                                                      <img className="w-36 h-36" src={require("../image/orange.png")} alt=""/>
+                                                      <p className=" text-center pb-1">ซาลาเปา</p>
+                                                  </button>
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"17"}>
+                                                      <img className=" w-36 h-36" src={require("../image/orange.png")} alt=""/>
+                                                      <p className=" text-center pb-1">ขนมเข่ง</p>
+                                                  </button>
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"18"}>
+                                                      <img className=" w-36 h-36" src={require("../image/orange.png")} alt=""/>
+                                                      <p className=" text-center pb-1">ขนมเทียน</p>
+                                                  </button>
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"19"}>
+                                                      <img className=" w-36 h-36" src={require("../image/orange.png")} alt=""/>
+                                                      <p className=" text-center pb-1">ส้ม</p>
+                                                  </button>
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"20"}>
+                                                      <img className="w-36 h-36" src={require("../image/apple.png")} alt=""/>
+                                                      <p className=" text-center pb-1">แอปเปิ้ล</p>
+                                                  </button>
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"21"}>
+                                                      <img className=" w-36 h-36" src={require("../image/grape.png")} alt=""/>
+                                                      <p className=" text-center pb-1">องุ่น</p>
+                                                  </button>
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"22"}>
+                                                      <img className=" w-36 h-36" src={require("../image/banana.png")} alt=""/>
+                                                      <p className=" text-center pb-1">กล้วยหอม</p>
+                                                  </button>
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"23"}>
+                                                      <img className=" w-36 h-36" src={require("../image/pomelo.png")} alt=""/>
+                                                      <p className=" text-center pb-1">ส้มโอ</p>
+                                                  </button>
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"24"}>
+                                                      <img className=" w-36 h-36" src={require("../image/dragonfruit.png")} alt=""/>
+                                                      <p className=" text-center pb-1">แก้วมังกร</p>
+                                                  </button>
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"25"}>
+                                                      <img className=" w-36 h-36" src={require("../image/chinese pear.png")} alt=""/>
+                                                      <p className=" text-center pb-1">สาลี</p>
+                                                  </button>
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"26"}>
+                                                      <img className=" w-36 h-36" src={require("../image/pineapple.png")} alt=""/>
+                                                      <p className=" text-center pb-1">สัปปะรด</p>
+                                                  </button>
+                                              </div>  
+                                          </div>
+                                          <div className={openTab === 3 ? "block" : "hidden"} id="link3">
+                                              <div className=" grid grid-cols-4 gap-3 text-xl">
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"27"}>
+                                                      <img className=" w-36 h-36" src={require("../image/banana.png")} alt=""/>
+                                                      <p className=" text-center pb-1">เสื้อผ้า</p>
+                                                  </button>
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"28"}>
+                                                      <img className="w-36 h-36" src={require("../image/banana.png")} alt=""/>
+                                                      <p className=" text-center pb-1">ใบเบิกทาง</p>
+                                                  </button>
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"29"}>
+                                                      <img className=" w-36 h-36" src={require("../image/banana.png")} alt=""/>
+                                                      <p className=" text-center pb-1">เงินทอง</p>
+                                                  </button>
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"30"}>
+                                                      <img className=" w-36 h-36" src={require("../image/banana.png")} alt=""/>
+                                                      <p className=" text-center pb-1">ของเครื่องใช้</p>
+                                                  </button>
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"31"}>
+                                                      <img className=" w-36 h-36" src={require("../image/banana.png")} alt=""/>
+                                                      <p className=" text-center pb-1">กิมจั้ว</p>
+                                                  </button>
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"32"}>
+                                                      <img className=" w-36 h-36" src={require("../image/banana.png")} alt=""/>
+                                                      <p className=" text-center pb-1">ธนบัตรยมโลก</p>    
+                                                  </button>
+                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"33"}>
+                                                      <img className=" w-36 h-36" src={require("../image/banana.png")} alt=""/>
+                                                      <p className=" text-center pb-1">ตั่วกิม</p>
+                                                  </button>
+                                              </div>
+                                          </div>
+                                          <div className={openTab === 4 ? "block" : "hidden"} id="link4">   {/* create delete button */}
+                                              <div className=" grid grid-cols-4 gap-3 text-xs">    
+                                                  {typeof backendData.data === "undefined" ? (   
+                                                      <p>Loading...</p>
+                                                      ) : (  
+                                                      backendData.data.map((data,i) => 
+                                                          <button key ={i} className =" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" onClick={toggleDeleteMenu}>
+                                                              <img className=" w-36 h-36" key={i} src={data.image} alt=""/>
+                                                              <p className=" text-center text-xl pb-1" key={i}>{data.productname}</p>
+                                                          </button>)        
+                                                  )} 
+                                              </div>
+                                              {isDeleteMenuOpen &&
+                                                <div className="flex flex-col items-center w-56 h-24 bg-white absolute inset-x-1 left-52 p-2 rounded-md">
+                                                    <p className="text-center">Are you sure you want to delete</p>
+                                                    <div className=" flex flex-row">
+                                                      <button className=" mt-1 w-7 h-7 rounded-md bg-orange-200 hover:border-2 border-orange-50" ><img src={require("../image/delete.png")}/></button>
+                                                      <button className=" mt-1 ml-2 w-7 h-7 rounded-md bg-orange-200 hover:border-2 border-orange-50" onClick={toggleDeleteMenu}><img src={require("../image/close.png")}/></button>
+                                                    </div>
+                                                </div>
+                                              }
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  }
               </div>
-            )}
-            <button class=" w-14 h-9" onClick={() => setSetting(!setting)}>
-              <img
-                className=" w-6 h-6 hover:border"
-                src={require("../image/settings.png")}
-                alt="settings"
-              ></img>
-            </button>
-            {setting && (
-              <div className="w-40 h-44 bg-slate-500 absolute bottom-28 rounded-sm "></div>
-            )}
-            <button class=" w-14 h-9" onClick={() => setVideo(!isVideo)}>
-              {isVideo ? (
-                <img
-                  className=" w-6 h-6"
-                  src={require("../image/no-video.png")}
-                  alt="no video"
-                ></img>
-              ) : (
-                <img
-                  className=" w-6 h-6"
-                  src={require("../image/video.png")}
-                  alt="video"
-                ></img>
-              )}
-            </button>
-            <button class=" w-14 h-9">
-              <img
-                className=" w-7 h-7"
-                src={require("../image/call-end.png")}
-                alt="call end"
-              ></img>
-            </button>
-            <button class=" w-14 h-9" onClick={() => setVoice(!isVoice)}>
-              {isVoice ? (
-                <img
-                  className=" w-6 h-6"
-                  src={require("../image/voice (1).png")}
-                  alt="no voice"
-                ></img>
-              ) : (
-                <img
-                  className=" w-6 h-6"
-                  src={require("../image/voice.png")}
-                  alt="voice"
-                ></img>
-              )}
-            </button>
-            <button class=" w-14 h-9">
-              <img
-                className=" w-6 h-6"
-                src={require("../image/chat.png")}
-                alt="chat"
-              ></img>
-            </button>
-            <button class=" w-14 h-9 " onClick={() => setMember(!member)}>
-              <img
-                className=" w-6 h-6"
-                src={require("../image/user.png")}
-                alt="user"
-              ></img>
-            </button>
-            {member && (
-              <div className="w-40 h-44 bg-slate-500 absolute bottom-28 left-80 rounded-sm"></div>
-            )}
           </div>
-          <div className="box-content h-32 w-44 border-2 p-2 ">
+          <div className=" overflow-x-auto  ">
             {" "}
-            {/* video me*/}
-            <video ref={userVideo} autoPlay />
+            {/* other user*/}
+            {/* <div className=" flex flex-row w-96">
+              <div className="w-44 h-32" muted ref={userVideo} autoPlay playsInline />
+              
+            </div> */}
+            <div className=" flex flex-row gap-3 p-2">
+              <StyledVideo muted ref={userVideo} autoPlay playsInline/>
+              {peers.map((peer, index) => {
+                  return (
+                      <Video key={index} peer={peer} />
+                  );
+              })}
+            </div>
           </div>
         </div>
-      </div>
-      {/* <div class="main-wrapper">
-                <div id="video-grid"></div>
-            </div> */}
-      {/* <div class="dialogue-container">
-                <div class="dialogue-head">
-                    <p class="dialogue-title">Your meeting's ready</p>
-                    <button id="close-dialogue" class="dialogue-button">
-                        <ion-icon name="close-outline"></ion-icon>
-                    </button>
-                </div>
-                <div class="dialogue-body">  **share link meeting**
-                    <p>Share this meeting link with others you want in the meeting</p>
-                    <div class="share-container">
-                        <p class="share-link">meet.google.com/sij-dwa-zjm</p>
-                        <button id="copy-button" class="dialogue-button tooltip" tool_tip="copy"
-                            meeting_link="meet.google.com/sij-dwa-zjm">
-                            <ion-icon name="copy-outline"></ion-icon>
-                        </button>
+        <div className=" flex justify-center" style={{height: "40%"}}>
+          {" "}
+          {/* middle*/}
+          <div className=" flex justify-center">
+            <div className=" flex flex-col justify-end relative h-96  content-center pb-9">
+              <div className=" grid grid-cols-5 gap-3 text-xs">
+                {" "}
+                {/*อาหารคาว*/}
+                {typeof backendData.data === "undefined" ? (
+                  <p><svg className=' animate-spin w-5 h-5'></svg></p>
+                ) : (
+                  backendData.data.map((data, i) => (
+                    <div key={i}>
+                      <img className=" w-14 h-14" key={i} src={data.image} alt="" />
                     </div>
-                    <p class="caption">Joined as <%= user.name %>
-                    </p>
-                </div>
-            </div> */}
-      {/* <div id="chat-panel" class="chat-box-wrapper">
-                <div class="chat-box-header">
-                    <div class="chat-box-headline">
-                        <ion-icon name="chatbox-outline"></ion-icon>
-                        <span>Chat</span>
+                  ))
+                )}
+              </div>
+              <div className=" grid grid-cols-5 gap-3 text-xs">
+                {" "}
+                {/*ของหวาน*/}
+                {typeof backendData.data === "undefined" ? (
+                  <p><svg className=' animate-spin w-5 h-5'></svg></p>
+                ) : (
+                  backendData.data.map((data, i) => (
+                    <div key={i}>
+                      <img className=" w-14 h-14" key={i} src={data.image} alt="" />
                     </div>
-                    <button id="chat-close-button" class="cross-button">
-                        <ion-icon name="close-outline"></ion-icon>
-                    </button>
-                </div>
-                <div class="chat-box">
-
-                </div>
-                <div class="chat-box-control">
-                    <form class="chat-input-wrapper">
-                        <div class="input-box-wrapper" chat-id="asdf">
-                            <input type="text" class="chat-input" id="chat-input" placeholder="Send Message"/>
-                        </div>
-                        <button type="submit" class="chat-input-button">
-                            <ion-icon name="send-outline"></ion-icon>
-                        </button>
-                    </form>
-                </div>
-            </div> */}
-      <div className={classes.img}>
-        <DragMove onDragMove={handleDragMove}>
-          <div
-            style={{
-              transform: `translateX(${translate.x}px) translateY(${translate.y}px)`,
-            }}
-          >
-            {/* <img src={logo} alt="logo"/> */}
+                  ))
+                )}
+              </div>
+              <div className=" grid grid-cols-5 gap-3 text-xs">
+                {" "}
+                {/*เครื่องกระดาษ*/}
+                {typeof backendData.data === "undefined" ? (
+                  <p><svg className=' animate-spin w-5 h-5'></svg></p>
+                ) : (
+                  backendData.data.map((data, i) => (
+                    <div key={i}>
+                      <img className=" w-14 h-14" key={i} src={data.image} alt="" />
+                    </div>
+                  ))
+                )}
+              </div>
+              <div className=" absolute inset-96 left-32 w-24 h-2">
+                <img src={require("../image/incense-stick.png")} />
+              </div>
+            </div>
           </div>
-        </DragMove>
+        </div>
+        <div>
+          <div className="flex justify-between items-end ml-24 mr-2" style={{height: "30%"}}>
+            {" "}
+            {/* toolbar/ video me*/}
+            <div className="flex justify-self-center pl-2 rounded-full box-content h-10 w-80 border-0 shadow-md bg-amber-100">
+              {" "}
+              {/* toolbar*/}
+              <button class=" w-14 h-9" onClick={() => setIsActive(!isActive)}>
+                <img
+                  className=" w-6 h-6"
+                  src={require("../image/fire.png")}
+                  alt="fire"
+                ></img>
+              </button>
+              {isActive && (
+                <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto absolute inset-0 right-5 left-5 top-5 bottom-28 bg-red-50">
+                  <Fire />
+                </div>
+              )}
+              <button class=" w-14 h-9" onClick={() => setSetting(!setting)}>
+                <img
+                  className=" w-6 h-6 hover:border"
+                  src={require("../image/settings.png")}
+                  alt="settings"
+                ></img>
+              </button>
+              {setting && (
+                <div className="w-40 h-44 bg-slate-500 absolute bottom-28 rounded-sm "></div>
+              )}
+              <button class=" w-14 h-9" onClick={() => setVideo(!isVideo)}>
+                {isVideo ? (
+                  <img
+                    className=" w-6 h-6"
+                    src={require("../image/no-video.png")}
+                    alt="no video"
+                    
+                  ></img>
+                ) : (
+                  <img
+                    className=" w-6 h-6"
+                    src={require("../image/video.png")}
+                    alt="video"
+                  ></img>
+                )}
+              </button>
+              <button class=" w-14 h-9">
+                <img
+                  className=" w-7 h-7"
+                  src={require("../image/call-end.png")}
+                  alt="call end"
+                ></img>
+              </button>
+              <button class=" w-14 h-9" onClick={() => setVoice(!isVoice)}>
+                {isVoice ? (
+                  <img
+                    className=" w-6 h-6"
+                    src={require("../image/voice (1).png")}
+                    alt="no voice"
+                  ></img>
+                ) : (
+                  <img
+                    className=" w-6 h-6"
+                    src={require("../image/voice.png")}
+                    alt="voice"
+                  ></img>
+                )}
+              </button>
+              <button class=" w-14 h-9">
+                <img
+                  className=" w-6 h-6"
+                  src={require("../image/chat.png")}
+                  alt="chat"
+                ></img>
+              </button>
+              <button class=" w-14 h-9 " onClick={() => setMember(!member)}>
+                <img
+                  className=" w-6 h-6"
+                  src={require("../image/user.png")}
+                  alt="user"
+                ></img>
+              </button>
+              {member && (
+                <div className="w-40 h-44 bg-slate-500 absolute bottom-28 left-80 rounded-sm"></div>
+              )}
+            </div>
+            <div className="box-content h-32 w-44 border-2 p-2 ">
+              {" "}
+              {/* video me*/}
+              <video ref={userVideo} muted={isVoice} autoPlay={!isVideo} />
+            </div>
+          </div>
+        </div>
+        {/* <div class="main-wrapper">
+                  <div id="video-grid"></div>
+              </div> */}
+        {/* <div class="dialogue-container">
+                  <div class="dialogue-head">
+                      <p class="dialogue-title">Your meeting's ready</p>
+                      <button id="close-dialogue" class="dialogue-button">
+                          <ion-icon name="close-outline"></ion-icon>
+                      </button>
+                  </div>
+                  <div class="dialogue-body">  **share link meeting**
+                      <p>Share this meeting link with others you want in the meeting</p>
+                      <div class="share-container">
+                          <p class="share-link">meet.google.com/sij-dwa-zjm</p>
+                          <button id="copy-button" class="dialogue-button tooltip" tool_tip="copy"
+                              meeting_link="meet.google.com/sij-dwa-zjm">
+                              <ion-icon name="copy-outline"></ion-icon>
+                          </button>
+                      </div>
+                      <p class="caption">Joined as <%= user.name %>
+                      </p>
+                  </div>
+              </div> */}
+        {/* <div id="chat-panel" class="chat-box-wrapper">
+                  <div class="chat-box-header">
+                      <div class="chat-box-headline">
+                          <ion-icon name="chatbox-outline"></ion-icon>
+                          <span>Chat</span>
+                      </div>
+                      <button id="chat-close-button" class="cross-button">
+                          <ion-icon name="close-outline"></ion-icon>
+                      </button>
+                  </div>
+                  <div class="chat-box">
+
+                  </div>
+                  <div class="chat-box-control">
+                      <form class="chat-input-wrapper">
+                          <div class="input-box-wrapper" chat-id="asdf">
+                              <input type="text" class="chat-input" id="chat-input" placeholder="Send Message"/>
+                          </div>
+                          <button type="submit" class="chat-input-button">
+                              <ion-icon name="send-outline"></ion-icon>
+                          </button>
+                      </form>
+                  </div>
+              </div> */}
+        <div className={classes.img}>
+          <DragMove onDragMove={handleDragMove}>
+            <div
+              style={{
+                transform: `translateX(${translate.x}px) translateY(${translate.y}px)`,
+              }}
+            >
+              {/* <img src={logo} alt="logo"/> */}
+            </div>
+          </DragMove>
+        </div>
+        {/* <div>
+                  <Animate 
+                      play={state.play}
+                      duration={1}
+                      delay={0.3}
+                      start={{
+                        transform: "translateX(0px)"
+                      }}
+                      end={{ transform: "translateX(200px)" }}
+                  >
+                      <div className={classes.img}>
+                          <img src={logo} alt="logo"/>
+                      </div>
+                  </Animate>
+                  <button
+                      onClick={() => this.setState(({ play }) => ({ play: !play }))}
+                      >
+                      Play
+                  </button>
+              </div> */}
       </div>
-      {/* <div>
-                <Animate 
-                    play={state.play}
-                    duration={1}
-                    delay={0.3}
-                    start={{
-                      transform: "translateX(0px)"
-                    }}
-                    end={{ transform: "translateX(200px)" }}
-                >
-                    <div className={classes.img}>
-                        <img src={logo} alt="logo"/>
-                    </div>
-                </Animate>
-                <button
-                    onClick={() => this.setState(({ play }) => ({ play: !play }))}
-                    >
-                    Play
-                </button>
-            </div> */}
     </div>
   );
 };
