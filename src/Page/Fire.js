@@ -23,10 +23,14 @@ const Fire = () =>{
         }
         )
     }, [])
+
     return(
         <div className=" flex flex-col items-center">
-            <div>fire</div>
-            <div className=" mt-72 pb-3 w-138 h-36 bg-amber-100 border-2 border-amber-200">
+            <div className="flex flex-row">
+                <div className=" absolute inset-0 left-2 top-2"><img className=" w-10 h-10" src={require("../image/close.png")}/></div>
+                <div>fire</div> 
+            </div>    
+            <div className="  pb-3 w-138 h-36 bg-amber-100 border-2 border-amber-200 absolute bottom-5">
                 <div className=" p-2 flex flex-row gap-3">  {/*เครื่องกระดาษ*/}  
                     {typeof backendData.data === "undefined" ? (   
                         <p>Loading...</p>

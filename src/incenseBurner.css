@@ -1,0 +1,73 @@
+/* @keyframes burn {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.incense-burner {
+  width: 96px;
+  height: 96px;
+  background-color: #ccc;
+ 
+  animation: burn 2s linear infinite;
+} */
+
+
+  .incense-burner {
+    position: relative;
+    width: 90px;
+    height: 90px;
+  }
+
+  .base {
+    position: absolute;
+    bottom: 0;
+    width: 60%;
+    height: 20%;
+    background: #333;
+    border-radius: 50% 50% 0 0;
+    transform: translateX(20%);
+    transition: transform 1s ease-in-out;
+  }
+
+  .smoke {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-top: 60px solid #eee;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    transform: translate(-50%, -60px) scaleY(0);
+    transition: transform 1s ease-in-out, border-top-width 1s ease-in-out;
+  }
+
+  .stick {
+    position: absolute;
+    bottom: 20%;
+    left: 50%;
+    width: 20px;
+    height: 60%;
+    background: #333;
+    border-radius: 50%;
+    transform: translateX(-50%) scaleY(0);
+    transition: transform 1s ease-in-out;
+  }
+  .incense-burner.active .base {
+    transform: translateX(-20%);
+  }
+  
+  .incense-burner.active .smoke {
+    transform: translate(-50%, -60px) scaleY(1);
+    border-top-width: 20px;
+  }
+  
+  .incense-burner.active .stick {
+    transform: translateX(-50%) scaleY(1);
+  }
+  
+

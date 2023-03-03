@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import DragMove from "../DragMove";
-import Tabs from "../Page/Tabs";
-import Fire from "../Page/Fire";
+// import Tabs from "../Page/Tabs";
+// import Fire from "../Page/Fire";
+import '../incenseBurner.css';
 // import { InfoBox } from "../infoBox";
 // import { Animate } from "react-simple-animate";
 // import logo from "../logo.svg";
@@ -80,21 +81,25 @@ const RoomMeet = (props) => {
   }
 
   /*delete button */
-    const[isDeleteMenuOpen,setIsDeleteMenuOpen] = useState(false);
-    const toggleDeleteMenu=()=>{
-      setIsDeleteMenuOpen(!isDeleteMenuOpen);
-    };
-    const handleDelete = (Id) =>{
-        socketRef.current.emit("delete",{Id,roomID})
-    }
+  const[isDeleteMenuOpen,setIsDeleteMenuOpen] = useState(false);
+  const toggleDeleteMenu=()=>{
+    setIsDeleteMenuOpen(!isDeleteMenuOpen);
+  };
+  const handleDelete = (Id) =>{
+    socketRef.current.emit("delete",{Id,roomID})
+  }
+
+  /* incense burner */
+  const [isBurning,setIsBurning] = useState(false);
 
   const classes = useStyles();
   // const state = {play: false};
+
+  /*drag move fire page */
   const [translate, setTranslate] = useState({
     x: 0,
     y: 0,
   });
-
   const handleDragMove = (e) => {
     setTranslate({
       x: translate.x + e.movementX,
@@ -240,8 +245,8 @@ const RoomMeet = (props) => {
     }
   return (
     <div className=" bg-[url('C:/Users/piyawan/Desktop/proj_final/senior-proj/src/image/bg.jpg')] bg-repeat bg-cover">
-      <div className=" flex flex-col justify-items-center" >
-        <div className="flex flex-row justify-between items-start mt-10 ml-12 mr-4  h-36" style={{height: "40%"}}>
+      <div className=" flex flex-col justify-items-center h-screen" >
+        <div className="flex flex-row justify-between items-start mt-10 ml-12 mr-4 h-5/6 " >
           {" "}
           {/* Header*/}
           <div>
@@ -478,23 +483,23 @@ const RoomMeet = (props) => {
                                                   </button>
                                               </div>
                                           </div>
-                                          <div className={openTab === 4 ? "block" : "hidden"} id="link4">   {/* create delete button */}
+                                          <div className={openTab === 4 ? "block" : "hidden"} id="link4" class=" relative">   {/* create delete button */}
                                               <div className=" grid grid-cols-4 gap-3 text-xs">    
                                                   {typeof backendData.data === "undefined" ? (   
                                                       <p>Loading...</p>
                                                       ) : (  
                                                       backendData.data.map((data,i) => 
-                                                          <button key ={i} className =" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" onClick={toggleDeleteMenu}>
+                                                          <button key ={i} className =" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" onClick={(i)=>setIsDeleteMenuOpen(true)} >
                                                               <img className=" w-36 h-36" key={i} src={data.image} alt=""/>
                                                               <p className=" text-center text-xl pb-1" key={i}>{data.productname}</p>
                                                           </button>)        
                                                   )} 
                                               </div>
                                               {isDeleteMenuOpen &&
-                                                <div className="flex flex-col items-center w-56 h-24 bg-white absolute inset-x-1 left-52 p-2 rounded-md">
+                                                <div className="flex flex-col items-center w-56 h-24 bg-white absolute inset-0 top-52 left-52 p-2 rounded-md">
                                                     <p className="text-center">Are you sure you want to delete</p>
                                                     <div className=" flex flex-row">
-                                                      <button className=" mt-1 w-7 h-7 rounded-md bg-orange-200 hover:border-2 border-orange-50" ><img src={require("../image/delete.png")}/></button>
+                                                      <button className=" mt-1 w-7 h-7 rounded-md bg-orange-200 hover:border-2 border-orange-50" onClick={(i)=>handleDelete(i)}><img src={require("../image/delete.png")}/></button>
                                                       <button className=" mt-1 ml-2 w-7 h-7 rounded-md bg-orange-200 hover:border-2 border-orange-50" onClick={toggleDeleteMenu}><img src={require("../image/close.png")}/></button>
                                                     </div>
                                                 </div>
@@ -525,12 +530,12 @@ const RoomMeet = (props) => {
             </div>
           </div>
         </div>
-        <div className=" flex justify-center" style={{height: "40%"}}>
+        <div className=" flex justify-center" >
           {" "}
           {/* middle*/}
           <div className=" flex justify-center">
-            <div className=" flex flex-col justify-end relative h-96  content-center pb-9">
-              <div className=" grid grid-cols-5 gap-3 text-xs">
+            <div className=" flex flex-col justify-end relative h-5/6  content-center pb-3">
+              <div className=" grid grid-cols-5 text-xs">
                 {" "}
                 {/*อาหารคาว*/}
                 {typeof backendData.data === "undefined" ? (
@@ -538,12 +543,12 @@ const RoomMeet = (props) => {
                 ) : (
                   backendData.data.map((data, i) => (
                     <div key={i}>
-                      <img className=" w-14 h-14" key={i} src={data.image} alt="" />
+                      <img className=" w-18 h-18" key={i} src={data.image} alt="" />
                     </div>
                   ))
                 )}
               </div>
-              <div className=" grid grid-cols-5 gap-3 text-xs">
+              <div className=" grid grid-cols-5 text-xs">
                 {" "}
                 {/*ของหวาน*/}
                 {typeof backendData.data === "undefined" ? (
@@ -551,12 +556,12 @@ const RoomMeet = (props) => {
                 ) : (
                   backendData.data.map((data, i) => (
                     <div key={i}>
-                      <img className=" w-14 h-14" key={i} src={data.image} alt="" />
+                      <img className=" w-18 h-18" key={i} src={data.image} alt="" />
                     </div>
                   ))
                 )}
               </div>
-              <div className=" grid grid-cols-5 gap-3 text-xs">
+              <div className=" grid grid-cols-5 text-xs">
                 {" "}
                 {/*เครื่องกระดาษ*/}
                 {typeof backendData.data === "undefined" ? (
@@ -564,19 +569,24 @@ const RoomMeet = (props) => {
                 ) : (
                   backendData.data.map((data, i) => (
                     <div key={i}>
-                      <img className=" w-14 h-14" key={i} src={data.image} alt="" />
+                      <img className=" w-18 h-18" key={i} src={data.image} alt="" />
                     </div>
                   ))
                 )}
               </div>
-              <div className=" absolute inset-96 left-32 w-24 h-2">
-                <img src={require("../image/incense-stick.png")} />
+              <div className=" absolute inset-56 left-32 w-24 h-24">
+                <div className={`incense-burner ${isBurning ? 'isBurning' : ''}`} onClick={()=>setIsBurning(!isBurning)}>
+                    <div className=" base"></div>
+                    <div className=" smoke"></div>
+                    <div className=" stick"></div>
+                </div>
+                {/* <img src={require("../image/incense-stick.png")} /> */}
               </div>
             </div>
           </div>
         </div>
         <div>
-          <div className="flex justify-between items-end ml-24 mr-2" style={{height: "30%"}}>
+          <div className="flex justify-between items-end ml-24 mr-2 h-2/3 " >
             {" "}
             {/* toolbar/ video me*/}
             <div className="flex justify-self-center pl-2 rounded-full box-content h-10 w-80 border-0 shadow-md bg-amber-100">
@@ -590,8 +600,29 @@ const RoomMeet = (props) => {
                 ></img>
               </button>
               {isActive && (
-                <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto absolute inset-0 right-5 left-5 top-5 bottom-28 bg-red-50">
-                  <Fire />
+                <div className="justify-center flex overflow-x-hidden overflow-y-auto absolute inset-0 right-5 left-5 top-5 bottom-28 bg-red-50 border-2 border-red-700">
+                  <div className=" flex flex-col items-center">
+                    <div className="flex flex-row">
+                        <div className=" absolute inset-0 left-2 top-2 hover:cursor-pointer w-10 h-10" onClick={()=>setIsActive(!isActive)}><img className=" w-10 h-10" src={require("../image/close.png")}/></div>
+                        <div>fire</div> 
+                    </div>    
+                      <div className="  pb-3 w-138 h-36 bg-amber-100 border-2 border-amber-700 absolute bottom-5 overflow-x-auto overflow-y-hidden">
+                        <div className=" p-2 flex flex-row gap-3">  {/*เครื่องกระดาษ*/}  
+                            {typeof backendData.data === "undefined" ? (   
+                                <p>Loading...</p>
+                            ) : (  
+                                backendData.data.map((data,i) => 
+                                    <div key ={i}>
+                                        <DragMove onDragMove={handleDragMove}>
+                                            <div  style={{transform: `translateX(${translate.x}px) translateY(${translate.y}px)`}}>
+                                                <img className="w-32 h-32 " key={i} src={data.image} alt=""/>
+                                            </div>
+                                        </DragMove>
+                                    </div>)        
+                                )} 
+                        </div>   
+                      </div>   
+                  </div>
                 </div>
               )}
               <button class=" w-14 h-9" onClick={() => setSetting(!setting)}>
@@ -663,7 +694,7 @@ const RoomMeet = (props) => {
             <div className="box-content h-32 w-44 border-2 p-2 ">
               {" "}
               {/* video me*/}
-              <video ref={userVideo} muted={isVoice} autoPlay={!isVideo} />
+              <video ref={userVideo} muted={true} autoPlay={!isVideo} />
             </div>
           </div>
         </div>
