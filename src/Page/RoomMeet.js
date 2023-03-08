@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import DragMove from "../DragMove";
 // import Tabs from "../Page/Tabs";
 // import Fire from "../Page/Fire";
-import '../incenseBurner.css';
+import "../incenseBurner.css";
 // import { InfoBox } from "../infoBox";
 // import { Animate } from "react-simple-animate";
 // import logo from "../logo.svg";
@@ -12,9 +12,6 @@ import io from "socket.io-client";
 import Peer from "simple-peer";
 import styled from "styled-components";
 
-
-
-
 const useStyles = makeStyles((theme) => ({
   button: {
     height: "5px",
@@ -23,39 +20,35 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Container = styled.div`
-    padding: 20px;
-    display: flex;
-    height: 100vh;
-    width: 90%;
-    margin: auto;
-    flex-wrap: wrap;
+  padding: 20px;
+  display: flex;
+  height: 100vh;
+  width: 90%;
+  margin: auto;
+  flex-wrap: wrap;
 `;
 
 const StyledVideo = styled.video`
-    height: 13%;
-    width: 13%;
+  height: 13%;
+  width: 13%;
 `;
 
 const Video = (props) => {
-    const ref = useRef();
+  const ref = useRef();
 
-    useEffect(() => {
-        props.peer.on("stream", stream => {
-            ref.current.srcObject = stream;
-        })
-    }, []);
+  useEffect(() => {
+    props.peer.on("stream", (stream) => {
+      ref.current.srcObject = stream;
+    });
+  }, []);
 
-    return (
-        <StyledVideo playsInline autoPlay ref={ref} />
-    );
-}
-
-
-const videoConstraints = {
-    height: window.innerHeight / 2,
-    width: window.innerWidth / 2
+  return <StyledVideo playsInline autoPlay ref={ref} />;
 };
 
+const videoConstraints = {
+  height: window.innerHeight / 2,
+  width: window.innerWidth / 2,
+};
 
 const RoomMeet = (props) => {
   const [isActive, setIsActive] = useState(false);
@@ -64,33 +57,29 @@ const RoomMeet = (props) => {
   const [isVoice, setVoice] = useState(false);
   const [isVideo, setVideo] = useState(false);
   const [backendData, setBackendData] = useState([{}]);
-  useEffect(() => {
-    fetch("/cart")
+  const location = useLocation();
+  const roomID = location.state.roomId;
+  const userID = location.state.username;
+
+  function fetchData() {
+    fetch(`/cart/${roomID}`)
       .then((response) => response.json())
       .then((data) => {
         setBackendData(data);
       });
+  }
+
+  const [productsData, setProductsData] = useState([{}]);
+  useEffect(() => {
+    fetch("/getProducts")
+      .then((response) => response.json())
+      .then((data) => {
+        setProductsData(data);
+      });
   }, []);
 
-  /*tab menu */
-  const [isMenu, setMenu] = useState(false);
-  const [openTab, setOpenTab] = React.useState(1);
-  const handleClick=(e)=>{
-    const id = e.currentTarget.id;
-    socketRef.current.emit("collect",{id,roomID})
-  }
-
-  /*delete button */
-  const[isDeleteMenuOpen,setIsDeleteMenuOpen] = useState(false);
-  const toggleDeleteMenu=()=>{
-    setIsDeleteMenuOpen(!isDeleteMenuOpen);
-  };
-  const handleDelete = (Id) =>{
-    socketRef.current.emit("delete",{Id,roomID})
-  }
-
   /* incense burner */
-  const [isBurning,setIsBurning] = useState(false);
+  const [isBurning, setIsBurning] = useState(false);
 
   const classes = useStyles();
   // const state = {play: false};
@@ -155,7 +144,7 @@ const RoomMeet = (props) => {
   //       if (localVideoRef.current) {
   //         localVideoRef.current.srcObject = stream;
   //       }
-        
+
   //     });
 
   //   socket.emit("add-stream", localVideoRef);
@@ -173,219 +162,380 @@ const RoomMeet = (props) => {
   const socketRef = useRef();
   const userVideo = useRef();
   const peersRef = useRef([]);
-  const location = useLocation();
-  const roomID = location.state.roomId;
-  const userID = location.state.username;
 
   useEffect(() => {
-      socketRef.current = io.connect("http://localhost:3000");
-      navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
-          userVideo.current.srcObject = stream;
-          socketRef.current.emit("join room", roomID);
-          socketRef.current.on("all users", users => {
-              const peers = [];
-              users.forEach(userID => {
-                  const peer = createPeer(userID, socketRef.current.id, stream);
-                  peersRef.current.push({
-                      peerID: userID,
-                      peer,
-                  })
-                  peers.push(peer);
-              })
-              setPeers(peers);
-          })
+    socketRef.current = io.connect("http://localhost:3000");
+    navigator.mediaDevices
+      .getUserMedia({ video: true, audio: true })
+      .then((stream) => {
+        userVideo.current.srcObject = stream;
+        socketRef.current.emit("join room", roomID);
+        socketRef.current.on("all users", (users) => {
+          const peers = [];
+          users.forEach((userID) => {
+            const peer = createPeer(userID, socketRef.current.id, stream);
+            peersRef.current.push({
+              peerID: userID,
+              peer,
+            });
+            peers.push(peer);
+          });
+          setPeers(peers);
+        });
 
-          socketRef.current.on("user joined", payload => {
-              const peer = addPeer(payload.signal, payload.callerID, stream);
-              peersRef.current.push({
-                  peerID: payload.callerID,
-                  peer,
-              })
-
-              setPeers(users => [...users, peer]);
+        socketRef.current.on("user joined", (payload) => {
+          const peer = addPeer(payload.signal, payload.callerID, stream);
+          peersRef.current.push({
+            peerID: payload.callerID,
+            peer,
           });
 
-          socketRef.current.on("receiving returned signal", payload => {
-              const item = peersRef.current.find(p => p.peerID === payload.id);
-              item.peer.signal(payload.signal);
-          });
-      })
-      return ()=>{socketRef.disconnect();
-      }
+          setPeers((users) => [...users, peer]);
+        });
+
+        socketRef.current.on("receiving returned signal", (payload) => {
+          const item = peersRef.current.find((p) => p.peerID === payload.id);
+          item.peer.signal(payload.signal);
+        });
+      });
+    return () => {
+      socketRef.disconnect();
+    };
   }, []);
 
   function createPeer(userToSignal, callerID, stream) {
-      const peer = new Peer({
-          initiator: true,
-          trickle: false,
-          stream,
+    const peer = new Peer({
+      initiator: true,
+      trickle: false,
+      stream,
+    });
+
+    peer.on("signal", (signal) => {
+      socketRef.current.emit("sending signal", {
+        userToSignal,
+        callerID,
+        signal,
       });
+    });
 
-      peer.on("signal", signal => {
-          socketRef.current.emit("sending signal", { userToSignal, callerID, signal })
-      })
-
-      return peer;
+    return peer;
   }
 
   function addPeer(incomingSignal, callerID, stream) {
-      const peer = new Peer({
-          initiator: false,
-          trickle: false,
-          stream,
-      })
+    const peer = new Peer({
+      initiator: false,
+      trickle: false,
+      stream,
+    });
 
-      peer.on("signal", signal => {
-          socketRef.current.emit("returning signal", { signal, callerID })
-      })
+    peer.on("signal", (signal) => {
+      socketRef.current.emit("returning signal", { signal, callerID });
+    });
 
-      peer.signal(incomingSignal);
+    peer.signal(incomingSignal);
 
-      return peer;
+    return peer;
+  }
+
+  /*tab menu */
+  const [isMenu, setMenu] = useState(false);
+  const [openTab, setOpenTab] = React.useState(1);
+  const handleClick = (e) => {
+    const id = e.currentTarget.id;
+    socketRef.current.emit("collect", { id, roomID });
+  };
+
+  /*delete button */
+  const [isDeleteMenuOpen, setIsDeleteMenuOpen] = useState(false);
+  const toggleDeleteMenu = () => {
+    setIsDeleteMenuOpen(!isDeleteMenuOpen);
+  };
+  const handleDelete = (id) => {
+    socketRef.current.emit("delete", { id, roomID });
+    fetchData();
+    setIsDeleteMenuOpen(false);
+  };
+
+  const toggleCamera = () => {
+    setVideo((prevState) => !prevState);
+  };
+
+  useEffect(() => {
+    if (!isVideo) {
+      // Turn off the camera by setting the srcObject of the video element to null
+      userVideo.current.srcObject = null;
+    } else {
     }
+  }, [isVideo]);
+
   return (
-    <div className=" bg-[url('C:/Users/piyawan/Desktop/proj_final/senior-proj/src/image/bg.jpg')] bg-repeat bg-cover">
-      <div className=" flex flex-col justify-items-center h-screen" >
-        <div className="flex flex-row justify-between items-start mt-10 ml-12 mr-4 h-5/6 " >
+    <div className=" bg-backgroundRoommeet bg-repeat bg-cover">
+      <div className=" flex flex-col justify-items-center h-screen">
+        <div className="flex flex-row justify-between items-start mt-10 ml-12 mr-4 h-5/6 ">
           {" "}
           {/* Header*/}
           <div>
             {/*tab menu */}
             <div className=" container w-12 bg-amber-300 shadow-md overflow-hidden border-spacing-1 rounded-t-lg">
-                  <div>
-                      <button className=" rounded-full w-12 h-14 flex justify-center items-center hover:cursor-pointer" onClick={() => setMenu(!isMenu)}><img className=" w-9 h-9" src={require("../image/home.png")} alt=""></img></button>
-                  </div>
-                  {isMenu &&
-                      <div className=" h-20 visible transition absolute">
-                          <div className="container w-12 h-80 bg-amber-300 shadow-md overflow-hidden border-spacing-1 rounded-b-lg">
-                              <div className=" flex justify-center items-center border-spacing-12 w-12 pt-5 ">
-                                  <div className=" flex flex-col justify-between items-center space-y-7" role="tablist">
-                                      <button
-                                          className={
-                                          "w-12 h-10 rounded block leading-normal " +
-                                          (openTab === 1
-                                              ? "bg-amber-200"  
-                                              : " bg-amber-300")
-                                          }
-                                          onClick={e => {
-                                          e.preventDefault();
-                                          setOpenTab(1);
-                                          }}
-                                          data-toggle="tab"
-                                          href="#link1"
-                                          role="tablist"
-                                      >
-                                          <img className=" w-10 h-10" src={require("../image/rice.png")} alt="rice"/>
-                                      </button>
-                                      <button
-                                          className={
-                                          "w-12 h-10 rounded block leading-normal " +
-                                          (openTab === 2
-                                              ? "bg-amber-200"  
-                                              : " bg-amber-300")
-                                          }
-                                          onClick={e => {
-                                          e.preventDefault();
-                                          setOpenTab(2);
-                                          }}
-                                          data-toggle="tab"
-                                          href="#link2"
-                                          role="tablist"
-                                      >
-                                          <img className=" w-10 h-10" src={require("../image/orange (1).png")} alt=" dessert"/>
-                                      </button>
-                                      <button
-                                          className={
-                                          "w-12 h-10 rounded block leading-normal " +
-                                          (openTab === 3
-                                              ? "bg-amber-200"
-                                              : " bg-amber-300")
-                                          }
-                                          onClick={e => {
-                                          e.preventDefault();
-                                          setOpenTab(3);
-                                          }}
-                                          data-toggle="tab"
-                                          href="#link3"
-                                          role="tablist"
-                                      >
-                                          <img className=" w-10 h-10" src={require("../image/firecracker (1).png")} alt="firecracker"/>
-                                      </button>
-                                      <button
-                                          className={
-                                          "w-12 h-10 rounded block leading-normal " +
-                                          (openTab === 4
-                                              ? "bg-amber-200"
-                                              : " bg-amber-300")
-                                          }
-                                          onClick={e => {
-                                          e.preventDefault();
-                                          setOpenTab(4);
-                                          }}
-                                          data-toggle="tab"
-                                          href="#link4"
-                                          role="tablist"
-                                      >
-                                          <img className=" w-10 h-10" src={require("../image/shoppingCart.png")} alt="shopping cart"/>
-                                      </button>
-                                  </div>
-                                  <div className="flex snap-y w-138 h-128 absolute inset-0 z-50 mx-96 my-1 bg-red-400 p-3 rounded">
-                                      <div className=" overflow-y-auto">
-                                          <div className={openTab === 1 ? "block" : "hidden"} id="link1">
-                                              <div className=" grid grid-cols-4 gap-3 text-xl">
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl " handleClick={handleClick} id={"0"}>
-                                                      <img className=" w-36 h-36" src={require("../image/grape.png")} alt=""/>
-                                                      <p className=" text-center" >เป็ด</p>  
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"1"}>
-                                                      <img className=" w-36 h-36" src={require("../image/grape.png")} alt="" />
-                                                      <p className=" text-center pb-1" >ไก่</p>                   
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"2"}>
-                                                      <img className=" w-36 h-36" src={require("../image/grape.png")} alt=""/>
-                                                      <p className=" text-center pb-1">หมูสามชั้น</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"3"}>
-                                                      <img className=" w-36 h-36" src={require("../image/grape.png")} alt=""/>
-                                                      <p className=" text-center pb-1">ปลา</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"0"}>
-                                                      <img className=" w-36 h-36" src={require("../image/grape.png")} alt=""/>
-                                                      <p className=" text-center pb-1">ผัดหมี่ซั่ว</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"4"}>
-                                                      <img className=" w-36 h-36" src={require("../image/grape.png")} alt=""/>
-                                                      <p className=" text-center pb-1">ต้มจืด</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"5"}>
-                                                      <img className=" w-36 h-36" src={require("../image/grape.png")} alt=""/> 
-                                                      <p className=" text-center pb-1">พะโล้</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"6"}>
-                                                      <img className=" w-36 h-36" src={require("../image/grape.png")} alt=""/>
-                                                      <p className=" text-center pb-1">ปลาหมึกแห้ง</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"7"}>
-                                                      <img className="w-36 h-36" src={require("../image/grape.png")} alt=""/>
-                                                      <p className=" text-center pb-1">ผัดหน่อไม้กุ้ง</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"8"}>
-                                                      <img className="w-36 h-36" src={require("../image/grape.png")} alt=""/>
-                                                      <p className=" text-center pb-1">ข้าวสวย</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"9"}>
-                                                      <img className=" w-36 h-36" src={require("../image/grape.png")} alt=""/>
-                                                      <p className=" text-center pb-1">ชาจีน</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"10"}>
-                                                      <img className=" w-36 h-36" src={require("../image/grape.png")} alt=""/>
-                                                      <p className=" text-center pb-1">น้ำเปล่า</p>
-                                                  </button>
-                                              </div> 
-                                          </div>
-                                          <div className={openTab === 2 ? "block" : "hidden"} id="link2">
-                                              <div className=" grid grid-cols-4 gap-3 text-xl">
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"11"}>
+              <div>
+                <button
+                  className=" rounded-full w-12 h-14 flex justify-center items-center hover:cursor-pointer"
+                  onClick={() => setMenu(!isMenu)}
+                >
+                  <img
+                    className=" w-9 h-9"
+                    src={require("../image/home.png")}
+                    alt=""
+                  ></img>
+                </button>
+              </div>
+              {isMenu && (
+                <div className=" h-20 visible transition absolute">
+                  <div className="container w-12 h-80 bg-amber-300 shadow-md overflow-hidden border-spacing-1 rounded-b-lg">
+                    <div className=" flex justify-center items-center border-spacing-12 w-12 pt-5 ">
+                      <div
+                        className=" flex flex-col justify-between items-center space-y-7"
+                        role="tablist"
+                      >
+                        <button
+                          className={
+                            "w-12 h-10 rounded block leading-normal " +
+                            (openTab === 1 ? "bg-amber-200" : " bg-amber-300")
+                          }
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setOpenTab(1);
+                          }}
+                          data-toggle="tab"
+                          href="#link1"
+                          role="tablist"
+                        >
+                          <img
+                            className=" w-10 h-10"
+                            src={require("../image/rice.png")}
+                            alt="rice"
+                          />
+                        </button>
+                        <button
+                          className={
+                            "w-12 h-10 rounded block leading-normal " +
+                            (openTab === 2 ? "bg-amber-200" : " bg-amber-300")
+                          }
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setOpenTab(2);
+                          }}
+                          data-toggle="tab"
+                          href="#link2"
+                          role="tablist"
+                        >
+                          <img
+                            className=" w-10 h-10"
+                            src={require("../image/orange (1).png")}
+                            alt=" dessert"
+                          />
+                        </button>
+                        <button
+                          className={
+                            "w-12 h-10 rounded block leading-normal " +
+                            (openTab === 3 ? "bg-amber-200" : " bg-amber-300")
+                          }
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setOpenTab(3);
+                          }}
+                          data-toggle="tab"
+                          href="#link3"
+                          role="tablist"
+                        >
+                          <img
+                            className=" w-10 h-10"
+                            src={require("../image/firecracker (1).png")}
+                            alt="firecracker"
+                          />
+                        </button>
+                        <button
+                          className={
+                            "w-12 h-10 rounded block leading-normal " +
+                            (openTab === 4 ? "bg-amber-200" : " bg-amber-300")
+                          }
+                          onClick={(e) => {
+                            fetchData();
+                            e.preventDefault();
+                            setOpenTab(4);
+                          }}
+                          data-toggle="tab"
+                          href="#link4"
+                          role="tablist"
+                        >
+                          <img
+                            className=" w-10 h-10"
+                            src={require("../image/shoppingCart.png")}
+                            alt="shopping cart"
+                          />
+                        </button>
+                      </div>
+                      <div className="flex snap-y w-138 h-128 absolute inset-0 z-50 mx-96 my-1 bg-red-400 p-3 rounded">
+                        <div className=" overflow-y-auto">
+                          <div
+                            className={openTab === 1 ? "block" : "hidden"}
+                            id="link1"
+                          >
+                            <div className=" grid grid-cols-4 gap-3 text-xl">
+                              <button
+                                className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl "
+                                onClick={handleClick}
+                                id={"0"}
+                              >
+                                <img
+                                  className=" w-36 h-36"
+                                  src={require("../image/grape.png")}
+                                  alt=""
+                                />
+                                <p className=" text-center">เป็ด</p>
+                              </button>
+                              <button
+                                className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl"
+                                onClick={handleClick}
+                                id={"1"}
+                              >
+                                <img
+                                  className=" w-36 h-36"
+                                  src={require("../image/grape.png")}
+                                  alt=""
+                                />
+                                <p className=" text-center pb-1">ไก่</p>
+                              </button>
+                              <button
+                                className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl"
+                                onClick={handleClick}
+                                id={"2"}
+                              >
+                                <img
+                                  className=" w-36 h-36"
+                                  src={require("../image/grape.png")}
+                                  alt=""
+                                />
+                                <p className=" text-center pb-1">หมูสามชั้น</p>
+                              </button>
+                              <button
+                                className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl"
+                                handleClick={handleClick}
+                                id={"3"}
+                              >
+                                <img
+                                  className=" w-36 h-36"
+                                  src={require("../image/grape.png")}
+                                  alt=""
+                                />
+                                <p className=" text-center pb-1">ปลา</p>
+                              </button>
+                              <button
+                                className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl"
+                                handleClick={handleClick}
+                                id={"0"}
+                              >
+                                <img
+                                  className=" w-36 h-36"
+                                  src={require("../image/grape.png")}
+                                  alt=""
+                                />
+                                <p className=" text-center pb-1">ผัดหมี่ซั่ว</p>
+                              </button>
+                              <button
+                                className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl"
+                                handleClick={handleClick}
+                                id={"4"}
+                              >
+                                <img
+                                  className=" w-36 h-36"
+                                  src={require("../image/grape.png")}
+                                  alt=""
+                                />
+                                <p className=" text-center pb-1">ต้มจืด</p>
+                              </button>
+                              <button
+                                className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl"
+                                handleClick={handleClick}
+                                id={"5"}
+                              >
+                                <img
+                                  className=" w-36 h-36"
+                                  src={require("../image/grape.png")}
+                                  alt=""
+                                />
+                                <p className=" text-center pb-1">พะโล้</p>
+                              </button>
+                              <button
+                                className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl"
+                                handleClick={handleClick}
+                                id={"6"}
+                              >
+                                <img
+                                  className=" w-36 h-36"
+                                  src={require("../image/grape.png")}
+                                  alt=""
+                                />
+                                <p className=" text-center pb-1">ปลาหมึกแห้ง</p>
+                              </button>
+                              <button
+                                className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl"
+                                handleClick={handleClick}
+                                id={"7"}
+                              >
+                                <img
+                                  className="w-36 h-36"
+                                  src={require("../image/grape.png")}
+                                  alt=""
+                                />
+                                <p className=" text-center pb-1">
+                                  ผัดหน่อไม้กุ้ง
+                                </p>
+                              </button>
+                              <button
+                                className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl"
+                                handleClick={handleClick}
+                                id={"8"}
+                              >
+                                <img
+                                  className="w-36 h-36"
+                                  src={require("../image/grape.png")}
+                                  alt=""
+                                />
+                                <p className=" text-center pb-1">ข้าวสวย</p>
+                              </button>
+                              <button
+                                className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl"
+                                handleClick={handleClick}
+                                id={"9"}
+                              >
+                                <img
+                                  className=" w-36 h-36"
+                                  src={require("../image/grape.png")}
+                                  alt=""
+                                />
+                                <p className=" text-center pb-1">ชาจีน</p>
+                              </button>
+                              <button
+                                className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl"
+                                handleClick={handleClick}
+                                id={"10"}
+                              >
+                                <img
+                                  className=" w-36 h-36"
+                                  src={require("../image/grape.png")}
+                                  alt=""
+                                />
+                                <p className=" text-center pb-1">น้ำเปล่า</p>
+                              </button>
+                            </div>
+                          </div>
+                          <div
+                            className={openTab === 2 ? "block" : "hidden"}
+                            id="link2"
+                          >
+                            <div className=" grid grid-cols-4 gap-3 text-xl">
+                              {/* <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"11"}>
                                                       <img className=" w-36 h-36" src={require("../image/orange.png")} alt=""/>
                                                       <p className=" text-center pb-1">ขนมสาลี</p> 
                                                   </button>
@@ -416,102 +566,189 @@ const RoomMeet = (props) => {
                                                   <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"18"}>
                                                       <img className=" w-36 h-36" src={require("../image/orange.png")} alt=""/>
                                                       <p className=" text-center pb-1">ขนมเทียน</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"19"}>
-                                                      <img className=" w-36 h-36" src={require("../image/orange.png")} alt=""/>
-                                                      <p className=" text-center pb-1">ส้ม</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"20"}>
-                                                      <img className="w-36 h-36" src={require("../image/apple.png")} alt=""/>
-                                                      <p className=" text-center pb-1">แอปเปิ้ล</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"21"}>
-                                                      <img className=" w-36 h-36" src={require("../image/grape.png")} alt=""/>
-                                                      <p className=" text-center pb-1">องุ่น</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"22"}>
-                                                      <img className=" w-36 h-36" src={require("../image/banana.png")} alt=""/>
-                                                      <p className=" text-center pb-1">กล้วยหอม</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"23"}>
-                                                      <img className=" w-36 h-36" src={require("../image/pomelo.png")} alt=""/>
-                                                      <p className=" text-center pb-1">ส้มโอ</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"24"}>
-                                                      <img className=" w-36 h-36" src={require("../image/dragonfruit.png")} alt=""/>
-                                                      <p className=" text-center pb-1">แก้วมังกร</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"25"}>
-                                                      <img className=" w-36 h-36" src={require("../image/chinese pear.png")} alt=""/>
-                                                      <p className=" text-center pb-1">สาลี</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"26"}>
-                                                      <img className=" w-36 h-36" src={require("../image/pineapple.png")} alt=""/>
-                                                      <p className=" text-center pb-1">สัปปะรด</p>
-                                                  </button>
-                                              </div>  
-                                          </div>
-                                          <div className={openTab === 3 ? "block" : "hidden"} id="link3">
-                                              <div className=" grid grid-cols-4 gap-3 text-xl">
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"27"}>
-                                                      <img className=" w-36 h-36" src={require("../image/banana.png")} alt=""/>
-                                                      <p className=" text-center pb-1">เสื้อผ้า</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"28"}>
-                                                      <img className="w-36 h-36" src={require("../image/banana.png")} alt=""/>
-                                                      <p className=" text-center pb-1">ใบเบิกทาง</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"29"}>
-                                                      <img className=" w-36 h-36" src={require("../image/banana.png")} alt=""/>
-                                                      <p className=" text-center pb-1">เงินทอง</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"30"}>
-                                                      <img className=" w-36 h-36" src={require("../image/banana.png")} alt=""/>
-                                                      <p className=" text-center pb-1">ของเครื่องใช้</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"31"}>
-                                                      <img className=" w-36 h-36" src={require("../image/banana.png")} alt=""/>
-                                                      <p className=" text-center pb-1">กิมจั้ว</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"32"}>
-                                                      <img className=" w-36 h-36" src={require("../image/banana.png")} alt=""/>
-                                                      <p className=" text-center pb-1">ธนบัตรยมโลก</p>    
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"33"}>
-                                                      <img className=" w-36 h-36" src={require("../image/banana.png")} alt=""/>
-                                                      <p className=" text-center pb-1">ตั่วกิม</p>
-                                                  </button>
-                                              </div>
-                                          </div>
-                                          <div className={openTab === 4 ? "block" : "hidden"} id="link4" class=" relative">   {/* create delete button */}
-                                              <div className=" grid grid-cols-4 gap-3 text-xs">    
-                                                  {typeof backendData.data === "undefined" ? (   
-                                                      <p>Loading...</p>
-                                                      ) : (  
-                                                      backendData.data.map((data,i) => 
-                                                          <button key ={i} className =" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" onClick={(i)=>setIsDeleteMenuOpen(true)} >
-                                                              <img className=" w-36 h-36" key={i} src={data.image} alt=""/>
-                                                              <p className=" text-center text-xl pb-1" key={i}>{data.productname}</p>
-                                                          </button>)        
-                                                  )} 
-                                              </div>
-                                              {isDeleteMenuOpen &&
-                                                <div className="flex flex-col items-center w-56 h-24 bg-white absolute inset-0 top-52 left-52 p-2 rounded-md">
-                                                    <p className="text-center">Are you sure you want to delete</p>
-                                                    <div className=" flex flex-row">
-                                                      <button className=" mt-1 w-7 h-7 rounded-md bg-orange-200 hover:border-2 border-orange-50" onClick={(i)=>handleDelete(i)}><img src={require("../image/delete.png")}/></button>
-                                                      <button className=" mt-1 ml-2 w-7 h-7 rounded-md bg-orange-200 hover:border-2 border-orange-50" onClick={toggleDeleteMenu}><img src={require("../image/close.png")}/></button>
-                                                    </div>
-                                                </div>
-                                              }
-                                          </div>
-                                      </div>
-                                  </div>
-                              </div>
+                                                  </button> */}
+                              {typeof productsData.fruits === "undefined" ? (
+                                <p>Loading...</p>
+                              ) : (
+                                productsData.fruits.map((data, i) => (
+                                  <button
+                                    key={i}
+                                    className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl"
+                                    onClick={handleClick}
+                                    id={data.id}
+                                  >
+                                    <img
+                                      className=" w-36 h-36"
+                                      key={i}
+                                      src={data.imageUrl}
+                                      alt=""
+                                    />
+                                    <p
+                                      className=" text-center text-xl pb-1"
+                                      key={i}
+                                    >
+                                      {data.name}
+                                    </p>
+                                  </button>
+                                ))
+                              )}
+                            </div>
                           </div>
+                          <div
+                            className={openTab === 3 ? "block" : "hidden"}
+                            id="link3"
+                          >
+                            <div className=" grid grid-cols-4 gap-3 text-xl">
+                              <button
+                                className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl"
+                                handleClick={handleClick}
+                                id={"27"}
+                              >
+                                <img
+                                  className=" w-36 h-36"
+                                  src={require("../image/banana.png")}
+                                  alt=""
+                                />
+                                <p className=" text-center pb-1">เสื้อผ้า</p>
+                              </button>
+                              <button
+                                className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl"
+                                handleClick={handleClick}
+                                id={"28"}
+                              >
+                                <img
+                                  className="w-36 h-36"
+                                  src={require("../image/banana.png")}
+                                  alt=""
+                                />
+                                <p className=" text-center pb-1">ใบเบิกทาง</p>
+                              </button>
+                              <button
+                                className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl"
+                                handleClick={handleClick}
+                                id={"29"}
+                              >
+                                <img
+                                  className=" w-36 h-36"
+                                  src={require("../image/banana.png")}
+                                  alt=""
+                                />
+                                <p className=" text-center pb-1">เงินทอง</p>
+                              </button>
+                              <button
+                                className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl"
+                                handleClick={handleClick}
+                                id={"30"}
+                              >
+                                <img
+                                  className=" w-36 h-36"
+                                  src={require("../image/banana.png")}
+                                  alt=""
+                                />
+                                <p className=" text-center pb-1">
+                                  ของเครื่องใช้
+                                </p>
+                              </button>
+                              <button
+                                className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl"
+                                handleClick={handleClick}
+                                id={"31"}
+                              >
+                                <img
+                                  className=" w-36 h-36"
+                                  src={require("../image/banana.png")}
+                                  alt=""
+                                />
+                                <p className=" text-center pb-1">กิมจั้ว</p>
+                              </button>
+                              <button
+                                className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl"
+                                handleClick={handleClick}
+                                id={"32"}
+                              >
+                                <img
+                                  className=" w-36 h-36"
+                                  src={require("../image/banana.png")}
+                                  alt=""
+                                />
+                                <p className=" text-center pb-1">ธนบัตรยมโลก</p>
+                              </button>
+                              <button
+                                className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl"
+                                handleClick={handleClick}
+                                id={"33"}
+                              >
+                                <img
+                                  className=" w-36 h-36"
+                                  src={require("../image/banana.png")}
+                                  alt=""
+                                />
+                                <p className=" text-center pb-1">ตั่วกิม</p>
+                              </button>
+                            </div>
+                          </div>
+                          <div
+                            className={openTab === 4 ? "block" : "hidden"}
+                            id="link4"
+                            class=" relative"
+                          >
+                            {" "}
+                            {/* create delete button */}
+                            <div className=" grid grid-cols-4 gap-3 text-xs">
+                              {typeof backendData.roomCart === "undefined" ? (
+                                <p>Loading...</p>
+                              ) : (
+                                backendData.roomCart.map((data, i) => (
+                                  <button
+                                    key={i}
+                                    className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl"
+                                    onClick={(data) => setIsDeleteMenuOpen(true)}
+                                  >
+                                    <img
+                                      className=" w-36 h-36"
+                                      key={i}
+                                      src={data.image}
+                                      alt=""
+                                    />
+                                    <p
+                                      className=" text-center text-xl pb-1"
+                                      key={i}
+                                    >
+                                      {data}
+                                    </p>
+                                  </button>
+                                ))
+                              )}
+                            </div>
+                            {isDeleteMenuOpen && (
+                              <div className="flex flex-col items-center w-56 h-24 bg-white absolute inset-0 top-52 left-52 p-2 rounded-md">
+                                <p className="text-center">
+                                  Are you sure you want to delete
+                                </p>
+                                <div className=" flex flex-row">
+                                  <button
+                                    className=" mt-1 w-7 h-7 rounded-md bg-orange-200 hover:border-2 border-orange-50"
+                                    onClick={(data) => handleDelete()}
+                                  >
+                                    <img src={require("../image/delete.png")} />
+                                  </button>
+                                  <button
+                                    className=" mt-1 ml-2 w-7 h-7 rounded-md bg-orange-200 hover:border-2 border-orange-50"
+                                    onClick={toggleDeleteMenu}
+                                  >
+                                    <img src={require("../image/close.png")} />
+                                  </button>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
                       </div>
-                  }
-              </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
           <div className=" overflow-x-auto  ">
             {" "}
@@ -521,16 +758,14 @@ const RoomMeet = (props) => {
               
             </div> */}
             <div className=" flex flex-row gap-3 p-2">
-              <StyledVideo muted ref={userVideo} autoPlay playsInline/>
+              <StyledVideo muted ref={userVideo} autoPlay playsInline />
               {peers.map((peer, index) => {
-                  return (
-                      <Video key={index} peer={peer} />
-                  );
+                return <Video key={index} peer={peer} />;
               })}
             </div>
           </div>
         </div>
-        <div className=" flex justify-center" >
+        <div className=" flex justify-center">
           {" "}
           {/* middle*/}
           <div className=" flex justify-center">
@@ -539,11 +774,18 @@ const RoomMeet = (props) => {
                 {" "}
                 {/*อาหารคาว*/}
                 {typeof backendData.data === "undefined" ? (
-                  <p><svg className=' animate-spin w-5 h-5'></svg></p>
+                  <p>
+                    <svg className=" animate-spin w-5 h-5"></svg>
+                  </p>
                 ) : (
                   backendData.data.map((data, i) => (
                     <div key={i}>
-                      <img className=" w-18 h-18" key={i} src={data.image} alt="" />
+                      <img
+                        className=" w-18 h-18"
+                        key={i}
+                        src={data.image}
+                        alt=""
+                      />
                     </div>
                   ))
                 )}
@@ -552,11 +794,18 @@ const RoomMeet = (props) => {
                 {" "}
                 {/*ของหวาน*/}
                 {typeof backendData.data === "undefined" ? (
-                  <p><svg className=' animate-spin w-5 h-5'></svg></p>
+                  <p>
+                    <svg className=" animate-spin w-5 h-5"></svg>
+                  </p>
                 ) : (
                   backendData.data.map((data, i) => (
                     <div key={i}>
-                      <img className=" w-18 h-18" key={i} src={data.image} alt="" />
+                      <img
+                        className=" w-18 h-18"
+                        key={i}
+                        src={data.image}
+                        alt=""
+                      />
                     </div>
                   ))
                 )}
@@ -565,20 +814,30 @@ const RoomMeet = (props) => {
                 {" "}
                 {/*เครื่องกระดาษ*/}
                 {typeof backendData.data === "undefined" ? (
-                  <p><svg className=' animate-spin w-5 h-5'></svg></p>
+                  <p>
+                    <svg className=" animate-spin w-5 h-5"></svg>
+                  </p>
                 ) : (
                   backendData.data.map((data, i) => (
                     <div key={i}>
-                      <img className=" w-18 h-18" key={i} src={data.image} alt="" />
+                      <img
+                        className=" w-18 h-18"
+                        key={i}
+                        src={data.image}
+                        alt=""
+                      />
                     </div>
                   ))
                 )}
               </div>
               <div className=" absolute inset-56 left-32 w-24 h-24">
-                <div className={`incense-burner ${isBurning ? 'isBurning' : ''}`} onClick={()=>setIsBurning(!isBurning)}>
-                    <div className=" base"></div>
-                    <div className=" smoke"></div>
-                    <div className=" stick"></div>
+                <div
+                  className={`incense-burner ${isBurning ? "isBurning" : ""}`}
+                  onClick={() => setIsBurning(!isBurning)}
+                >
+                  <div className=" base"></div>
+                  <div className=" smoke"></div>
+                  <div className=" stick"></div>
                 </div>
                 {/* <img src={require("../image/incense-stick.png")} /> */}
               </div>
@@ -586,7 +845,7 @@ const RoomMeet = (props) => {
           </div>
         </div>
         <div>
-          <div className="flex justify-between items-end ml-24 mr-2 h-2/3 " >
+          <div className="flex justify-between items-end ml-24 mr-2 h-2/3 ">
             {" "}
             {/* toolbar/ video me*/}
             <div className="flex justify-self-center pl-2 rounded-full box-content h-10 w-80 border-0 shadow-md bg-amber-100">
@@ -603,25 +862,45 @@ const RoomMeet = (props) => {
                 <div className="justify-center flex overflow-x-hidden overflow-y-auto absolute inset-0 right-5 left-5 top-5 bottom-28 bg-red-50 border-2 border-red-700">
                   <div className=" flex flex-col items-center">
                     <div className="flex flex-row">
-                        <div className=" absolute inset-0 left-2 top-2 hover:cursor-pointer w-10 h-10" onClick={()=>setIsActive(!isActive)}><img className=" w-10 h-10" src={require("../image/close.png")}/></div>
-                        <div>fire</div> 
-                    </div>    
-                      <div className="  pb-3 w-138 h-36 bg-amber-100 border-2 border-amber-700 absolute bottom-5 overflow-x-auto overflow-y-hidden">
-                        <div className=" p-2 flex flex-row gap-3">  {/*เครื่องกระดาษ*/}  
-                            {typeof backendData.data === "undefined" ? (   
-                                <p>Loading...</p>
-                            ) : (  
-                                backendData.data.map((data,i) => 
-                                    <div key ={i}>
-                                        <DragMove onDragMove={handleDragMove}>
-                                            <div  style={{transform: `translateX(${translate.x}px) translateY(${translate.y}px)`}}>
-                                                <img className="w-32 h-32 " key={i} src={data.image} alt=""/>
-                                            </div>
-                                        </DragMove>
-                                    </div>)        
-                                )} 
-                        </div>   
-                      </div>   
+                      <div
+                        className=" absolute inset-0 left-2 top-2 hover:cursor-pointer w-10 h-10"
+                        onClick={() => setIsActive(!isActive)}
+                      >
+                        <img
+                          className=" w-10 h-10"
+                          src={require("../image/close.png")}
+                        />
+                      </div>
+                      <div>fire</div>
+                    </div>
+                    <div className="  pb-3 w-138 h-36 bg-amber-100 border-2 border-amber-700 absolute bottom-5 overflow-x-auto overflow-y-hidden">
+                      <div className=" p-2 flex flex-row gap-3">
+                        {" "}
+                        {/*เครื่องกระดาษ*/}
+                        {typeof backendData.data === "undefined" ? (
+                          <p>Loading...</p>
+                        ) : (
+                          backendData.data.map((data, i) => (
+                            <div key={i}>
+                              <DragMove onDragMove={handleDragMove}>
+                                <div
+                                  style={{
+                                    transform: `translateX(${translate.x}px) translateY(${translate.y}px)`,
+                                  }}
+                                >
+                                  <img
+                                    className="w-32 h-32 "
+                                    key={i}
+                                    src={data.image}
+                                    alt=""
+                                  />
+                                </div>
+                              </DragMove>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
@@ -635,19 +914,18 @@ const RoomMeet = (props) => {
               {setting && (
                 <div className="w-40 h-44 bg-slate-500 absolute bottom-28 rounded-sm "></div>
               )}
-              <button class=" w-14 h-9" onClick={() => setVideo(!isVideo)}>
+              <button class=" w-14 h-9" onClick={toggleCamera}>
                 {isVideo ? (
-                  <img
-                    className=" w-6 h-6"
-                    src={require("../image/no-video.png")}
-                    alt="no video"
-                    
-                  ></img>
-                ) : (
                   <img
                     className=" w-6 h-6"
                     src={require("../image/video.png")}
                     alt="video"
+                  ></img>
+                ) : (
+                  <img
+                    className=" w-6 h-6"
+                    src={require("../image/no-video.png")}
+                    alt="no video"
                   ></img>
                 )}
               </button>
@@ -694,7 +972,7 @@ const RoomMeet = (props) => {
             <div className="box-content h-32 w-44 border-2 p-2 ">
               {" "}
               {/* video me*/}
-              <video ref={userVideo} muted={true} autoPlay={!isVideo} />
+              <video ref={userVideo} muted={true} autoPlay={true} />
             </div>
           </div>
         </div>
