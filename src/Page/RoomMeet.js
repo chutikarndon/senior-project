@@ -246,14 +246,14 @@ const RoomMeet = (props) => {
   return (
     <div className=" bg-[url('C:/Users/piyawan/Desktop/proj_final/senior-proj/src/image/bg.jpg')] bg-repeat bg-cover">
       <div className=" flex flex-col justify-items-center h-screen" >
-        <div className="flex flex-row justify-between items-start mt-10 ml-12 mr-4 h-5/6 " >
+        <div className="flex flex-row justify-between items-start mt-8 ml-12 mr-4 h-3/5 " >
           {" "}
           {/* Header*/}
           <div>
             {/*tab menu */}
             <div className=" container w-12 bg-amber-300 shadow-md overflow-hidden border-spacing-1 rounded-t-lg">
                   <div>
-                      <button className=" rounded-full w-12 h-14 flex justify-center items-center hover:cursor-pointer" onClick={() => setMenu(!isMenu)}><img className=" w-9 h-9" src={require("../image/home.png")} alt=""></img></button>
+                      <button className=" rounded-full w-12 h-14 flex justify-center items-center hover:cursor-pointer" onClick={() => setMenu(!isMenu)}><img className=" w-9 h-9" src={require("../image/shoppingCart.png")} alt=""></img></button>
                   </div>
                   {isMenu &&
                       <div className=" h-20 visible transition absolute">
@@ -326,7 +326,7 @@ const RoomMeet = (props) => {
                                           href="#link4"
                                           role="tablist"
                                       >
-                                          <img className=" w-10 h-10" src={require("../image/shoppingCart.png")} alt="shopping cart"/>
+                                          <img className=" w-10 h-10" src={require("../image/circle-table.png")} alt="shopping cart"/>
                                       </button>
                                   </div>
                                   <div className="flex snap-y w-138 h-128 absolute inset-0 z-50 mx-96 my-1 bg-red-400 p-3 rounded">
@@ -529,113 +529,124 @@ const RoomMeet = (props) => {
               })}
             </div>
           </div>
+          <div>
+            <button class=" w-14 h-14" onClick={() => setSetting(!setting)}>
+              <img
+                className=" w-7 h-7 hover:border"
+                src={require("../image/settings.png")}
+                alt="settings"
+              ></img>
+            </button>
+            {setting && (
+              <div className="w-40 h-44 bg-slate-500 absolute rounded-sm right-10"></div>
+            )} 
+          </div>
         </div>
-        <div className=" flex justify-center" >
+        <div className=" flex justify-center items-end h-2/5" >
           {" "}
           {/* middle*/}
-          <div className=" flex justify-center">
-            <div className=" flex flex-col justify-end relative h-5/6  content-center pb-3">
-              <div className=" grid grid-cols-5 text-xs">
-                {" "}
-                {/*อาหารคาว*/}
-                {typeof backendData.data === "undefined" ? (
-                  <p><svg className=' animate-spin w-5 h-5'></svg></p>
-                ) : (
-                  backendData.data.map((data, i) => (
-                    <div key={i}>
-                      <img className=" w-18 h-18" key={i} src={data.image} alt="" />
-                    </div>
-                  ))
-                )}
-              </div>
-              <div className=" grid grid-cols-5 text-xs">
-                {" "}
-                {/*ของหวาน*/}
-                {typeof backendData.data === "undefined" ? (
-                  <p><svg className=' animate-spin w-5 h-5'></svg></p>
-                ) : (
-                  backendData.data.map((data, i) => (
-                    <div key={i}>
-                      <img className=" w-18 h-18" key={i} src={data.image} alt="" />
-                    </div>
-                  ))
-                )}
-              </div>
-              <div className=" grid grid-cols-5 text-xs">
-                {" "}
-                {/*เครื่องกระดาษ*/}
-                {typeof backendData.data === "undefined" ? (
-                  <p><svg className=' animate-spin w-5 h-5'></svg></p>
-                ) : (
-                  backendData.data.map((data, i) => (
-                    <div key={i}>
-                      <img className=" w-18 h-18" key={i} src={data.image} alt="" />
-                    </div>
-                  ))
-                )}
-              </div>
-              <div className=" absolute inset-56 left-32 w-24 h-24">
-                <div className={`incense-burner ${isBurning ? 'isBurning' : ''}`} onClick={()=>setIsBurning(!isBurning)}>
-                    <div className=" base"></div>
-                    <div className=" smoke"></div>
-                    <div className=" stick"></div>
+          <div className=" flex justify-center w-2/5  h-full rounded-full">
+            <div className=" flex flex-col justify-center items-center relative">
+              <div className=" mt-14">
+                <div className=" grid grid-cols-5 text-xs">
+                  {" "}
+                  {/*อาหารคาว*/}
+                  {typeof backendData.data === "undefined" ? (
+                    <p><svg className=' animate-spin w-5 h-5'></svg></p>
+                  ) : (
+                    backendData.data.map((data, i) => (
+                      <div key={i}>
+                        <img className=" w-18 h-18" key={i} src={data.image} alt="" />
+                      </div>
+                    ))
+                  )}
                 </div>
-                {/* <img src={require("../image/incense-stick.png")} /> */}
+                <div className=" grid grid-cols-5 text-xs">
+                  {" "}
+                  {/*ของหวาน*/}
+                  {typeof backendData.data === "undefined" ? (
+                    <p><svg className=' animate-spin w-5 h-5'></svg></p>
+                  ) : (
+                    backendData.data.map((data, i) => (
+                      <div key={i}>
+                        <img className=" w-18 h-18" key={i} src={data.image} alt="" />
+                      </div>
+                    ))
+                  )}
+                </div>
+                <div className=" grid grid-cols-5 text-xs">
+                  {" "}
+                  {/*เครื่องกระดาษ*/}
+                  {typeof backendData.data === "undefined" ? (
+                    <p><svg className=' animate-spin w-5 h-5'></svg></p>
+                  ) : (
+                    backendData.data.map((data, i) => (
+                      <div key={i}>
+                        <img className=" w-18 h-18" key={i} src={data.image} alt="" />
+                      </div>
+                    ))
+                  )}
+                </div>
               </div>
+              <div className=" mt-14">
+                <div className="relative inset-0 w-24 h-28 border-2 border-gray-900">
+                  <div className={`static w-24 h-12 rounded-full bg-[#964B00] mt-[50px] ${isBurning ? 'isBurning' : ''}`} onClick={()=>setIsBurning(!isBurning)}>
+                      <div className=" absolute w-3/5 h-3 bg-[#333] bottom-0 left-[19px] rounded-t-md"></div> {/* base*/} 
+                      <div className=" smoke"></div> {/*smoke */}
+                      <div className=" absolute bottom-14 left-1/4 w-2 h-2/5 bg-[#333] "></div>
+                      <div className=" absolute bottom-14 left-2/4 w-2 h-2/5 bg-[#333] "></div>
+                      <div className=" absolute bottom-14 left-3/4 w-2 h-2/5 bg-[#333] "></div> {/*stick */}
+                  </div>
+                  {/* <img src={require("../image/incense-stick.png")} /> */}
+                </div>
+              </div>  
             </div>
           </div>
         </div>
-        <div>
-          <div className="flex justify-between items-end ml-24 mr-2 h-2/3 " >
+        <div className=" flex flex-row justify-between mb-5 h-1/6">
+          <div className=" ml-10">
+            <button class=" w-14 h-9" onClick={() => setIsActive(!isActive)}>
+              <img
+                className=" w-6 h-6"
+                src={require("../image/fire.png")}
+                alt="fire"
+              ></img>
+            </button>
+            {isActive && (
+              <div className="justify-center flex overflow-x-hidden overflow-y-auto absolute inset-0 right-5 left-5 top-5 bottom-28 bg-red-50 border-2 border-red-700">
+                <div className=" flex flex-col items-center">
+                  <div className="flex flex-row">
+                    <div className=" absolute inset-0 left-2 top-2 hover:cursor-pointer w-10 h-10" onClick={()=>setIsActive(!isActive)}><img className=" w-10 h-10" src={require("../image/close.png")}/></div>
+                    <div>fire</div> 
+                  </div>    
+                  <div className="  pb-3 w-138 h-36 bg-amber-100 border-2 border-amber-700 absolute bottom-5 overflow-x-auto overflow-y-hidden">
+                    <div className=" p-2 flex flex-row gap-3">  {/*เครื่องกระดาษ*/}  
+                      {typeof backendData.data === "undefined" ? (   
+                        <p>Loading...</p>
+                      ) : (  
+                        backendData.data.map((data,i) => 
+                          <div key ={i}>
+                            <DragMove onDragMove={handleDragMove}>
+                              <div  style={{transform: `translateX(${translate.x}px) translateY(${translate.y}px)`}}>
+                                <img className="w-32 h-32 " key={i} src={data.image} alt=""/>
+                              </div>
+                            </DragMove>
+                          </div>)        
+                      )} 
+                    </div>   
+                  </div>   
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="flex justify-end items-end ml-24  mr-2 " >
             {" "}
             {/* toolbar/ video me*/}
-            <div className="flex justify-self-center pl-2 rounded-full box-content h-10 w-80 border-0 shadow-md bg-amber-100">
+            <div className="flex justify-self-center pl-2 rounded-full  border-0 shadow-md bg-amber-100 mr-5">
               {" "}
               {/* toolbar*/}
-              <button class=" w-14 h-9" onClick={() => setIsActive(!isActive)}>
-                <img
-                  className=" w-6 h-6"
-                  src={require("../image/fire.png")}
-                  alt="fire"
-                ></img>
-              </button>
-              {isActive && (
-                <div className="justify-center flex overflow-x-hidden overflow-y-auto absolute inset-0 right-5 left-5 top-5 bottom-28 bg-red-50 border-2 border-red-700">
-                  <div className=" flex flex-col items-center">
-                    <div className="flex flex-row">
-                        <div className=" absolute inset-0 left-2 top-2 hover:cursor-pointer w-10 h-10" onClick={()=>setIsActive(!isActive)}><img className=" w-10 h-10" src={require("../image/close.png")}/></div>
-                        <div>fire</div> 
-                    </div>    
-                      <div className="  pb-3 w-138 h-36 bg-amber-100 border-2 border-amber-700 absolute bottom-5 overflow-x-auto overflow-y-hidden">
-                        <div className=" p-2 flex flex-row gap-3">  {/*เครื่องกระดาษ*/}  
-                            {typeof backendData.data === "undefined" ? (   
-                                <p>Loading...</p>
-                            ) : (  
-                                backendData.data.map((data,i) => 
-                                    <div key ={i}>
-                                        <DragMove onDragMove={handleDragMove}>
-                                            <div  style={{transform: `translateX(${translate.x}px) translateY(${translate.y}px)`}}>
-                                                <img className="w-32 h-32 " key={i} src={data.image} alt=""/>
-                                            </div>
-                                        </DragMove>
-                                    </div>)        
-                                )} 
-                        </div>   
-                      </div>   
-                  </div>
-                </div>
-              )}
-              <button class=" w-14 h-9" onClick={() => setSetting(!setting)}>
-                <img
-                  className=" w-6 h-6 hover:border"
-                  src={require("../image/settings.png")}
-                  alt="settings"
-                ></img>
-              </button>
-              {setting && (
-                <div className="w-40 h-44 bg-slate-500 absolute bottom-28 rounded-sm "></div>
-              )}
-              <button class=" w-14 h-9" onClick={() => setVideo(!isVideo)}>
+              
+              <button class=" w-12 h-9" onClick={() => setVideo(!isVideo)}>
                 {isVideo ? (
                   <img
                     className=" w-6 h-6"
@@ -651,14 +662,8 @@ const RoomMeet = (props) => {
                   ></img>
                 )}
               </button>
-              <button class=" w-14 h-9">
-                <img
-                  className=" w-7 h-7"
-                  src={require("../image/call-end.png")}
-                  alt="call end"
-                ></img>
-              </button>
-              <button class=" w-14 h-9" onClick={() => setVoice(!isVoice)}>
+              
+              <button class=" w-12 h-9" onClick={() => setVoice(!isVoice)}>
                 {isVoice ? (
                   <img
                     className=" w-6 h-6"
@@ -673,14 +678,14 @@ const RoomMeet = (props) => {
                   ></img>
                 )}
               </button>
-              <button class=" w-14 h-9">
+              <button class=" w-12 h-9">
                 <img
                   className=" w-6 h-6"
                   src={require("../image/chat.png")}
                   alt="chat"
                 ></img>
               </button>
-              <button class=" w-14 h-9 " onClick={() => setMember(!member)}>
+              <button class=" w-12 h-9 " onClick={() => setMember(!member)}>
                 <img
                   className=" w-6 h-6"
                   src={require("../image/user.png")}
@@ -688,8 +693,15 @@ const RoomMeet = (props) => {
                 ></img>
               </button>
               {member && (
-                <div className="w-40 h-44 bg-slate-500 absolute bottom-28 left-80 rounded-sm"></div>
+                <div className="w-40 h-44 bg-slate-500 absolute bottom-20 right-56 rounded-sm"></div>
               )}
+              <button class=" w-12 h-9">
+                <img
+                  className=" w-7 h-7"
+                  src={require("../image/call-end.png")}
+                  alt="call end"
+                ></img>
+              </button>
             </div>
             <div className="box-content h-32 w-44 border-2 p-2 ">
               {" "}
