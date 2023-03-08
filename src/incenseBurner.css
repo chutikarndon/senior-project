@@ -14,17 +14,20 @@
  
   animation: burn 2s linear infinite;
 } */
-
+/* $item_count: 10; */
 
   .incense-burner {
-    position: relative;
+    position: static;
     width: 90px;
-    height: 90px;
+    height: 80px;
+    border-radius: 50% 50% 50% 50%;
+    background-color: crimson;
   }
 
   .base {
     position: absolute;
     bottom: 0;
+    left: 4;
     width: 60%;
     height: 20%;
     background: #333;
@@ -32,7 +35,14 @@
     transform: translateX(20%);
     transition: transform 1s ease-in-out;
   }
-
+/* $item_count : 10;
+  .smoke {
+    display: block;
+    position: absolute;
+    width: 15%
+    height: calc(100% / #{$item_count});
+  } */
+/* 
   .smoke {
     position: absolute;
     top: 0;
@@ -44,7 +54,7 @@
     border-right: 20px solid transparent;
     transform: translate(-50%, -60px) scaleY(0);
     transition: transform 1s ease-in-out, border-top-width 1s ease-in-out;
-  }
+  } */
 
   .stick {
     position: absolute;

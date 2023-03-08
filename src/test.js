@@ -534,3 +534,49 @@ const ref = useRef();
                         </div>
                     }
                 </div>                */}
+
+
+
+              <button class=" w-14 h-9" onClick={() => setIsActive(!isActive)}>
+                <img
+                  className=" w-6 h-6"
+                  src={require("../image/fire.png")}
+                  alt="fire"
+                ></img>
+              </button>
+              {isActive && (
+                <div className="justify-center flex overflow-x-hidden overflow-y-auto absolute inset-0 right-5 left-5 top-5 bottom-28 bg-red-50 border-2 border-red-700">
+                  <div className=" flex flex-col items-center">
+                    <div className="flex flex-row">
+                        <div className=" absolute inset-0 left-2 top-2 hover:cursor-pointer w-10 h-10" onClick={()=>setIsActive(!isActive)}><img className=" w-10 h-10" src={require("../image/close.png")}/></div>
+                        <div>fire</div> 
+                    </div>    
+                      <div className="  pb-3 w-138 h-36 bg-amber-100 border-2 border-amber-700 absolute bottom-5 overflow-x-auto overflow-y-hidden">
+                        <div className=" p-2 flex flex-row gap-3">  {/*เครื่องกระดาษ*/}  
+                        {typeof backendData.data === "undefined" ? (   
+                            <p>Loading...</p>
+                        ) : (  
+                            backendData.data.map((data,i) => 
+                                <div key ={i}>
+                                    <DragMove onDragMove={handleDragMove}>
+                                        <div  style={{transform: `translateX(${translate.x}px) translateY(${translate.y}px)`}}>
+                                            <img className="w-32 h-32 " key={i} src={data.image} alt=""/>
+                                        </div>
+                                    </DragMove>
+                                </div>)        
+                            )} 
+                    </div>   
+                  </div>   
+              </div>
+            </div>
+          )}
+          <button class=" w-14 h-9" onClick={() => setSetting(!setting)}>
+            <img
+              className=" w-6 h-6 hover:border"
+              src={require("../image/settings.png")}
+              alt="settings"
+            ></img>
+          </button>
+          {setting && (
+            <div className="w-40 h-44 bg-slate-500 absolute bottom-28 rounded-sm "></div>
+          )} 
