@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import DragMove from "../DragMove";
 // import Tabs from "../Page/Tabs";
 // import Fire from "../Page/Fire";
-import '../incenseBurner.css';
+import "../incenseBurner.css";
 // import { InfoBox } from "../infoBox";
 // import { Animate } from "react-simple-animate";
 // import logo from "../logo.svg";
@@ -12,9 +12,6 @@ import io from "socket.io-client";
 import Peer from "simple-peer";
 import styled from "styled-components";
 
-
-
-
 const useStyles = makeStyles((theme) => ({
   button: {
     height: "5px",
@@ -23,39 +20,35 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Container = styled.div`
-    padding: 20px;
-    display: flex;
-    height: 100vh;
-    width: 90%;
-    margin: auto;
-    flex-wrap: wrap;
+  padding: 20px;
+  display: flex;
+  height: 100vh;
+  width: 90%;
+  margin: auto;
+  flex-wrap: wrap;
 `;
 
 const StyledVideo = styled.video`
-    height: 13%;
-    width: 13%;
+  height: 13%;
+  width: 13%;
 `;
 
 const Video = (props) => {
-    const ref = useRef();
+  const ref = useRef();
 
-    useEffect(() => {
-        props.peer.on("stream", stream => {
-            ref.current.srcObject = stream;
-        })
-    }, []);
+  useEffect(() => {
+    props.peer.on("stream", (stream) => {
+      ref.current.srcObject = stream;
+    });
+  }, []);
 
-    return (
-        <StyledVideo playsInline autoPlay ref={ref} />
-    );
-}
-
-
-const videoConstraints = {
-    height: window.innerHeight / 2,
-    width: window.innerWidth / 2
+  return <StyledVideo playsInline autoPlay ref={ref} />;
 };
 
+const videoConstraints = {
+  height: window.innerHeight / 2,
+  width: window.innerWidth / 2,
+};
 
 const RoomMeet = (props) => {
   const [isActive, setIsActive] = useState(false);
@@ -64,33 +57,29 @@ const RoomMeet = (props) => {
   const [isVoice, setVoice] = useState(false);
   const [isVideo, setVideo] = useState(false);
   const [backendData, setBackendData] = useState([{}]);
-  useEffect(() => {
-    fetch("/cart")
+  const location = useLocation();
+  const roomID = location.state.roomId;
+  const userID = location.state.username;
+
+  function fetchData() {
+    fetch(`/cart/${roomID}`)
       .then((response) => response.json())
       .then((data) => {
         setBackendData(data);
       });
+  }
+
+  const [productsData, setProductsData] = useState([{}]);
+  useEffect(() => {
+    fetch("/getProducts")
+      .then((response) => response.json())
+      .then((data) => {
+        setProductsData(data);
+      });
   }, []);
 
-  /*tab menu */
-  const [isMenu, setMenu] = useState(false);
-  const [openTab, setOpenTab] = React.useState(1);
-  const handleClick=(e)=>{
-    const id = e.currentTarget.id;
-    socketRef.current.emit("collect",{id,roomID})
-  }
-
-  /*delete button */
-  const[isDeleteMenuOpen,setIsDeleteMenuOpen] = useState(false);
-  const toggleDeleteMenu=()=>{
-    setIsDeleteMenuOpen(!isDeleteMenuOpen);
-  };
-  const handleDelete = (Id) =>{
-    socketRef.current.emit("delete",{Id,roomID})
-  }
-
   /* incense burner */
-  const [isBurning,setIsBurning] = useState(false);
+  const [isBurning, setIsBurning] = useState(false);
 
   const classes = useStyles();
   // const state = {play: false};
@@ -155,7 +144,7 @@ const RoomMeet = (props) => {
   //       if (localVideoRef.current) {
   //         localVideoRef.current.srcObject = stream;
   //       }
-        
+
   //     });
 
   //   socket.emit("add-stream", localVideoRef);
@@ -173,80 +162,116 @@ const RoomMeet = (props) => {
   const socketRef = useRef();
   const userVideo = useRef();
   const peersRef = useRef([]);
-  const location = useLocation();
-  const roomID = location.state.roomId;
-  const userID = location.state.username;
 
   useEffect(() => {
-      socketRef.current = io.connect("http://localhost:3000");
-      navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
-          userVideo.current.srcObject = stream;
-          socketRef.current.emit("join room", roomID);
-          socketRef.current.on("all users", users => {
-              const peers = [];
-              users.forEach(userID => {
-                  const peer = createPeer(userID, socketRef.current.id, stream);
-                  peersRef.current.push({
-                      peerID: userID,
-                      peer,
-                  })
-                  peers.push(peer);
-              })
-              setPeers(peers);
-          })
+    socketRef.current = io.connect("http://localhost:3000");
+    navigator.mediaDevices
+      .getUserMedia({ video: true, audio: true })
+      .then((stream) => {
+        userVideo.current.srcObject = stream;
+        socketRef.current.emit("join room", roomID);
+        socketRef.current.on("all users", (users) => {
+          const peers = [];
+          users.forEach((userID) => {
+            const peer = createPeer(userID, socketRef.current.id, stream);
+            peersRef.current.push({
+              peerID: userID,
+              peer,
+            });
+            peers.push(peer);
+          });
+          setPeers(peers);
+        });
 
-          socketRef.current.on("user joined", payload => {
-              const peer = addPeer(payload.signal, payload.callerID, stream);
-              peersRef.current.push({
-                  peerID: payload.callerID,
-                  peer,
-              })
-
-              setPeers(users => [...users, peer]);
+        socketRef.current.on("user joined", (payload) => {
+          const peer = addPeer(payload.signal, payload.callerID, stream);
+          peersRef.current.push({
+            peerID: payload.callerID,
+            peer,
           });
 
-          socketRef.current.on("receiving returned signal", payload => {
-              const item = peersRef.current.find(p => p.peerID === payload.id);
-              item.peer.signal(payload.signal);
-          });
-      })
-      return ()=>{socketRef.disconnect();
-      }
+          setPeers((users) => [...users, peer]);
+        });
+
+        socketRef.current.on("receiving returned signal", (payload) => {
+          const item = peersRef.current.find((p) => p.peerID === payload.id);
+          item.peer.signal(payload.signal);
+        });
+      });
+    return () => {
+      socketRef.disconnect();
+    };
   }, []);
 
   function createPeer(userToSignal, callerID, stream) {
-      const peer = new Peer({
-          initiator: true,
-          trickle: false,
-          stream,
+    const peer = new Peer({
+      initiator: true,
+      trickle: false,
+      stream,
+    });
+
+    peer.on("signal", (signal) => {
+      socketRef.current.emit("sending signal", {
+        userToSignal,
+        callerID,
+        signal,
       });
+    });
 
-      peer.on("signal", signal => {
-          socketRef.current.emit("sending signal", { userToSignal, callerID, signal })
-      })
-
-      return peer;
+    return peer;
   }
 
   function addPeer(incomingSignal, callerID, stream) {
-      const peer = new Peer({
-          initiator: false,
-          trickle: false,
-          stream,
-      })
+    const peer = new Peer({
+      initiator: false,
+      trickle: false,
+      stream,
+    });
 
-      peer.on("signal", signal => {
-          socketRef.current.emit("returning signal", { signal, callerID })
-      })
+    peer.on("signal", (signal) => {
+      socketRef.current.emit("returning signal", { signal, callerID });
+    });
 
-      peer.signal(incomingSignal);
+    peer.signal(incomingSignal);
 
-      return peer;
+    return peer;
+  }
+
+  /*tab menu */
+  const [isMenu, setMenu] = useState(false);
+  const [openTab, setOpenTab] = React.useState(1);
+  const handleClick = (e) => {
+    const id = e.currentTarget.id;
+    socketRef.current.emit("collect", { id, roomID });
+  };
+
+  /*delete button */
+  const [isDeleteMenuOpen, setIsDeleteMenuOpen] = useState(false);
+  const toggleDeleteMenu = () => {
+    setIsDeleteMenuOpen(!isDeleteMenuOpen);
+  };
+  const handleDelete = (id) => {
+    socketRef.current.emit("delete", { id, roomID });
+    fetchData();
+    setIsDeleteMenuOpen(false);
+  };
+
+  const toggleCamera = () => {
+    setVideo((prevState) => !prevState);
+  };
+
+  useEffect(() => {
+    if (!isVideo) {
+      // Turn off the camera by setting the srcObject of the video element to null
+      userVideo.current.srcObject = null;
+    } else {
     }
+  }, [isVideo]);
+
   return (
-    <div className=" bg-[url('C:/Users/piyawan/Desktop/proj_final/senior-proj/src/image/bg.jpg')] bg-repeat bg-cover">
-      <div className=" flex flex-col justify-items-center h-screen" >
-        <div className="flex flex-row justify-between items-start mt-8 ml-12 mr-4 h-3/5 " >
+    <div className=" bg-backgroundRoommeet bg-repeat bg-cover">
+      <div className=" flex flex-col justify-items-center h-screen">
+        <div className="flex flex-row justify-between items-start mt-10 ml-12 mr-4 h-5/6 ">
           {" "}
           {/* Header*/}
           <div>
@@ -385,7 +410,7 @@ const RoomMeet = (props) => {
                                           </div>
                                           <div className={openTab === 2 ? "block" : "hidden"} id="link2">
                                               <div className=" grid grid-cols-4 gap-3 text-xl">
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"11"}>
+                                                  {/*<button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"11"}>
                                                       <img className=" w-36 h-36" src={require("../image/orange.png")} alt=""/>
                                                       <p className=" text-center pb-1">ขนมสาลี</p> 
                                                   </button>
@@ -416,105 +441,189 @@ const RoomMeet = (props) => {
                                                   <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"18"}>
                                                       <img className=" w-36 h-36" src={require("../image/orange.png")} alt=""/>
                                                       <p className=" text-center pb-1">ขนมเทียน</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"19"}>
-                                                      <img className=" w-36 h-36" src={require("../image/orange.png")} alt=""/>
-                                                      <p className=" text-center pb-1">ส้ม</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"20"}>
-                                                      <img className="w-36 h-36" src={require("../image/apple.png")} alt=""/>
-                                                      <p className=" text-center pb-1">แอปเปิ้ล</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"21"}>
-                                                      <img className=" w-36 h-36" src={require("../image/grape.png")} alt=""/>
-                                                      <p className=" text-center pb-1">องุ่น</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"22"}>
-                                                      <img className=" w-36 h-36" src={require("../image/banana.png")} alt=""/>
-                                                      <p className=" text-center pb-1">กล้วยหอม</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"23"}>
-                                                      <img className=" w-36 h-36" src={require("../image/pomelo.png")} alt=""/>
-                                                      <p className=" text-center pb-1">ส้มโอ</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"24"}>
-                                                      <img className=" w-36 h-36" src={require("../image/dragonfruit.png")} alt=""/>
-                                                      <p className=" text-center pb-1">แก้วมังกร</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"25"}>
-                                                      <img className=" w-36 h-36" src={require("../image/chinese pear.png")} alt=""/>
-                                                      <p className=" text-center pb-1">สาลี</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"26"}>
-                                                      <img className=" w-36 h-36" src={require("../image/pineapple.png")} alt=""/>
-                                                      <p className=" text-center pb-1">สัปปะรด</p>
-                                                  </button>
-                                              </div>  
-                                          </div>
-                                          <div className={openTab === 3 ? "block" : "hidden"} id="link3">
-                                              <div className=" grid grid-cols-4 gap-3 text-xl">
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"27"}>
-                                                      <img className=" w-36 h-36" src={require("../image/banana.png")} alt=""/>
-                                                      <p className=" text-center pb-1">เสื้อผ้า</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"28"}>
-                                                      <img className="w-36 h-36" src={require("../image/banana.png")} alt=""/>
-                                                      <p className=" text-center pb-1">ใบเบิกทาง</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"29"}>
-                                                      <img className=" w-36 h-36" src={require("../image/banana.png")} alt=""/>
-                                                      <p className=" text-center pb-1">เงินทอง</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"30"}>
-                                                      <img className=" w-36 h-36" src={require("../image/banana.png")} alt=""/>
-                                                      <p className=" text-center pb-1">ของเครื่องใช้</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"31"}>
-                                                      <img className=" w-36 h-36" src={require("../image/banana.png")} alt=""/>
-                                                      <p className=" text-center pb-1">กิมจั้ว</p>
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"32"}>
-                                                      <img className=" w-36 h-36" src={require("../image/banana.png")} alt=""/>
-                                                      <p className=" text-center pb-1">ธนบัตรยมโลก</p>    
-                                                  </button>
-                                                  <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"33"}>
-                                                      <img className=" w-36 h-36" src={require("../image/banana.png")} alt=""/>
-                                                      <p className=" text-center pb-1">ตั่วกิม</p>
-                                                  </button>
-                                              </div>
-                                          </div>
-                                          <div className={openTab === 4 ? "block" : "hidden"} id="link4" class=" relative">   {/* create delete button */}
-                                              <div className=" grid grid-cols-4 gap-3 text-xs">    
-                                                  {typeof backendData.data === "undefined" ? (  
-                                                    <div className=" flex flex-col justify-center items-center">
-                                                      <svg class="animate-spin h-5 w-5  rounded-full border-4 border-slate-600 border-r-transparent" viewBox="0 0 24 24"></svg> 
-                                                      <p>Loading</p>
-                                                    </div>
-                                                      ) : (  
-                                                      backendData.data.map((data,i) => 
-                                                          <button key ={i} className =" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 hover:-translate-y-1 hover:scale-110 shadow-xl" onClick={(i)=>setIsDeleteMenuOpen(true)} >
-                                                            <img className=" w-36 h-36" key={i} src={data.image} alt=""/>
-                                                            <p className=" text-center text-xl pb-1" key={i}>{data.productname}</p>
-                                                          </button>)        
-                                                  )} 
-                                              </div>
-                                              {isDeleteMenuOpen &&
-                                                <div className="flex flex-col items-center w-56 h-24 bg-white absolute inset-0 top-52 left-52 p-2 rounded-md">
-                                                    <p className="text-center">Are you sure you want to delete</p>
-                                                    <div className=" flex flex-row">
-                                                      <button className=" mt-1 w-7 h-7 rounded-md bg-orange-200 hover:border-2 border-orange-50" onClick={(i)=>handleDelete(i)}><img src={require("../image/delete.png")}/></button>
-                                                      <button className=" mt-1 ml-2 w-7 h-7 rounded-md bg-orange-200 hover:border-2 border-orange-50" onClick={toggleDeleteMenu}><img src={require("../image/close.png")}/></button>
-                                                    </div>
-                                                </div>
-                                              }
-                                          </div>
-                                      </div>
-                                  </div>
-                              </div>
+                                                  </button> */}
+                              {typeof productsData.fruits === "undefined" ? (
+                                <p>Loading...</p>
+                              ) : (
+                                productsData.fruits.map((data, i) => (
+                                  <button
+                                    key={i}
+                                    className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl"
+                                    onClick={handleClick}
+                                    id={data.id}
+                                  >
+                                    <img
+                                      className=" w-36 h-36"
+                                      key={i}
+                                      src={data.imageUrl}
+                                      alt=""
+                                    />
+                                    <p
+                                      className=" text-center text-xl pb-1"
+                                      key={i}
+                                    >
+                                      {data.name}
+                                    </p>
+                                  </button>
+                                ))
+                              )}
+                            </div>
                           </div>
+                          <div
+                            className={openTab === 3 ? "block" : "hidden"}
+                            id="link3"
+                          >
+                            <div className=" grid grid-cols-4 gap-3 text-xl">
+                              <button
+                                className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl"
+                                handleClick={handleClick}
+                                id={"27"}
+                              >
+                                <img
+                                  className=" w-36 h-36"
+                                  src={require("../image/banana.png")}
+                                  alt=""
+                                />
+                                <p className=" text-center pb-1">เสื้อผ้า</p>
+                              </button>
+                              <button
+                                className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl"
+                                handleClick={handleClick}
+                                id={"28"}
+                              >
+                                <img
+                                  className="w-36 h-36"
+                                  src={require("../image/banana.png")}
+                                  alt=""
+                                />
+                                <p className=" text-center pb-1">ใบเบิกทาง</p>
+                              </button>
+                              <button
+                                className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl"
+                                handleClick={handleClick}
+                                id={"29"}
+                              >
+                                <img
+                                  className=" w-36 h-36"
+                                  src={require("../image/banana.png")}
+                                  alt=""
+                                />
+                                <p className=" text-center pb-1">เงินทอง</p>
+                              </button>
+                              <button
+                                className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl"
+                                handleClick={handleClick}
+                                id={"30"}
+                              >
+                                <img
+                                  className=" w-36 h-36"
+                                  src={require("../image/banana.png")}
+                                  alt=""
+                                />
+                                <p className=" text-center pb-1">
+                                  ของเครื่องใช้
+                                </p>
+                              </button>
+                              <button
+                                className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl"
+                                handleClick={handleClick}
+                                id={"31"}
+                              >
+                                <img
+                                  className=" w-36 h-36"
+                                  src={require("../image/banana.png")}
+                                  alt=""
+                                />
+                                <p className=" text-center pb-1">กิมจั้ว</p>
+                              </button>
+                              <button
+                                className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl"
+                                handleClick={handleClick}
+                                id={"32"}
+                              >
+                                <img
+                                  className=" w-36 h-36"
+                                  src={require("../image/banana.png")}
+                                  alt=""
+                                />
+                                <p className=" text-center pb-1">ธนบัตรยมโลก</p>
+                              </button>
+                              <button
+                                className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl"
+                                handleClick={handleClick}
+                                id={"33"}
+                              >
+                                <img
+                                  className=" w-36 h-36"
+                                  src={require("../image/banana.png")}
+                                  alt=""
+                                />
+                                <p className=" text-center pb-1">ตั่วกิม</p>
+                              </button>
+                            </div>
+                          </div>
+                          <div
+                            className={openTab === 4 ? "block" : "hidden"}
+                            id="link4"
+                            class=" relative"
+                          >
+                            {" "}
+                            {/* create delete button */}
+                            <div className=" grid grid-cols-4 gap-3 text-xs">
+                              {typeof backendData.roomCart === "undefined" ? (
+                                <p>Loading...</p>
+                              ) : (
+                                backendData.roomCart.map((data, i) => (
+                                  <button
+                                    key={i}
+                                    className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl"
+                                    onClick={(data) => setIsDeleteMenuOpen(true)}
+                                  >
+                                    <img
+                                      className=" w-36 h-36"
+                                      key={i}
+                                      src={data.image}
+                                      alt=""
+                                    />
+                                    <p
+                                      className=" text-center text-xl pb-1"
+                                      key={i}
+                                    >
+                                      {data}
+                                    </p>
+                                  </button>
+                                ))
+                              )}
+                            </div>
+                            {isDeleteMenuOpen && (
+                              <div className="flex flex-col items-center w-56 h-24 bg-white absolute inset-0 top-52 left-52 p-2 rounded-md">
+                                <p className="text-center">
+                                  Are you sure you want to delete
+                                </p>
+                                <div className=" flex flex-row">
+                                  <button
+                                    className=" mt-1 w-7 h-7 rounded-md bg-orange-200 hover:border-2 border-orange-50"
+                                    onClick={(data) => handleDelete()}
+                                  >
+                                    <img src={require("../image/delete.png")} />
+                                  </button>
+                                  <button
+                                    className=" mt-1 ml-2 w-7 h-7 rounded-md bg-orange-200 hover:border-2 border-orange-50"
+                                    onClick={toggleDeleteMenu}
+                                  >
+                                    <img src={require("../image/close.png")} />
+                                  </button>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
                       </div>
-                  }
-              </div>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
           </div>
           <div className=" overflow-x-auto  ">
             {" "}
@@ -524,11 +633,9 @@ const RoomMeet = (props) => {
               
             </div> */}
             <div className=" flex flex-row gap-3 p-2">
-              <StyledVideo muted ref={userVideo} autoPlay playsInline/>
+              <StyledVideo muted ref={userVideo} autoPlay playsInline />
               {peers.map((peer, index) => {
-                  return (
-                      <Video key={index} peer={peer} />
-                  );
+                return <Video key={index} peer={peer} />;
               })}
             </div>
           </div>
@@ -545,7 +652,7 @@ const RoomMeet = (props) => {
             )} 
           </div>
         </div>
-        <div className=" flex justify-center items-end h-2/5" >
+        <div className=" flex justify-center">
           {" "}
           {/* middle*/}
           <div className=" flex justify-center w-2/5  h-full rounded-full">
@@ -659,15 +766,14 @@ const RoomMeet = (props) => {
                 {isVideo ? (
                   <img
                     className=" w-6 h-6"
-                    src={require("../image/no-video.png")}
-                    alt="no video"
-                    
+                    src={require("../image/video.png")}
+                    alt="video"
                   ></img>
                 ) : (
                   <img
                     className=" w-6 h-6"
-                    src={require("../image/video.png")}
-                    alt="video"
+                    src={require("../image/no-video.png")}
+                    alt="no video"
                   ></img>
                 )}
               </button>
@@ -715,7 +821,7 @@ const RoomMeet = (props) => {
             <div className="box-content h-32 w-44 border-2 p-2 ">
               {" "}
               {/* video me*/}
-              <video ref={userVideo} muted={true} autoPlay={!isVideo} />
+              <video ref={userVideo} muted={true} autoPlay={true} />
             </div>
           </div>
         </div>
