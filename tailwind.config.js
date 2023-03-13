@@ -18,7 +18,8 @@ module.exports = {
         '138': '40rem'
       },
       backgroundImage: {
-        'backgroundRoommeet': "url('../src/image/bg.jpg')"
+        'backgroundRoommeet': "url('../image/bg.jpg)",
+        'backgroundFire': "url('../image/fireOpen.png')"
       },
       rotate:{
         '72': '72deg'
