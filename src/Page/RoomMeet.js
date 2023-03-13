@@ -245,13 +245,15 @@ const RoomMeet = (props) => {
     socketRef.current.emit("collect", { id, roomID });
   };
 
+  const [pid, setPid] = useState(0);
+
   /*delete button */
   const [isDeleteMenuOpen, setIsDeleteMenuOpen] = useState(false);
   const toggleDeleteMenu = () => {
     setIsDeleteMenuOpen(!isDeleteMenuOpen);
   };
-  const handleDelete = (id) => {
-    socketRef.current.emit("delete", { id, roomID });
+  const handleDelete = () => {
+    socketRef.current.emit("delete", { pid, roomID });
     fetchData();
     setIsDeleteMenuOpen(false);
   };
@@ -702,19 +704,23 @@ const RoomMeet = (props) => {
                                   <button
                                     key={i}
                                     className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl"
-                                    onClick={(data) => setIsDeleteMenuOpen(true)}
+                                    onClick={() => {
+                                      setIsDeleteMenuOpen(true);
+                                      setPid(data.id);
+                                    }}
+                                    id={data.id}
                                   >
                                     <img
                                       className=" w-36 h-36"
                                       key={i}
-                                      src={data.image}
+                                      src={data.imageUrl}
                                       alt=""
                                     />
                                     <p
                                       className=" text-center text-xl pb-1"
                                       key={i}
                                     >
-                                      {data}
+                                      {data.name}
                                     </p>
                                   </button>
                                 ))
@@ -728,7 +734,7 @@ const RoomMeet = (props) => {
                                 <div className=" flex flex-row">
                                   <button
                                     className=" mt-1 w-7 h-7 rounded-md bg-orange-200 hover:border-2 border-orange-50"
-                                    onClick={(data) => handleDelete()}
+                                    onClick={() => handleDelete()}
                                   >
                                     <img src={require("../image/delete.png")} />
                                   </button>
@@ -774,7 +780,7 @@ const RoomMeet = (props) => {
             </button>
             {setting && (
               <div className="w-40 h-44 bg-slate-500 absolute rounded-sm right-10"></div>
-            )} 
+            )}
           </div>
         </div>
         <div className=" flex justify-center">
@@ -854,16 +860,23 @@ const RoomMeet = (props) => {
               </div>
               <div className=" mt-14">
                 <div className="relative inset-0 w-24 h-28 border-2 border-gray-900">
-                  <div className={`static w-24 h-12 rounded-full bg-[#964B00] mt-[50px] ${isBurning ? 'isBurning' : ''}`} onClick={()=>setIsBurning(!isBurning)}>
-                      <div className=" absolute w-3/5 h-3 bg-[#333] bottom-0 left-[19px] rounded-t-md"></div> {/* base*/} 
-                      <div className=" smoke"></div> {/*smoke */}
-                      <div className=" absolute bottom-14 left-1/4 w-2 h-2/5 bg-[#333] "></div>
-                      <div className=" absolute bottom-14 left-2/4 w-2 h-2/5 bg-[#333] "></div>
-                      <div className=" absolute bottom-14 left-3/4 w-2 h-2/5 bg-[#333] "></div> {/*stick */}
+                  <div
+                    className={`static w-24 h-12 rounded-full bg-[#964B00] mt-[50px] ${
+                      isBurning ? "isBurning" : ""
+                    }`}
+                    onClick={() => setIsBurning(!isBurning)}
+                  >
+                    <div className=" absolute w-3/5 h-3 bg-[#333] bottom-0 left-[19px] rounded-t-md"></div>{" "}
+                    {/* base*/}
+                    <div className=" smoke"></div> {/*smoke */}
+                    <div className=" absolute bottom-14 left-1/4 w-2 h-2/5 bg-[#333] "></div>
+                    <div className=" absolute bottom-14 left-2/4 w-2 h-2/5 bg-[#333] "></div>
+                    <div className=" absolute bottom-14 left-3/4 w-2 h-2/5 bg-[#333] "></div>{" "}
+                    {/*stick */}
                   </div>
                   {/* <img src={require("../image/incense-stick.png")} /> */}
                 </div>
-              </div>  
+              </div>
             </div>
           </div>
         </div>
@@ -880,36 +893,55 @@ const RoomMeet = (props) => {
               <div className="justify-center flex overflow-x-hidden overflow-y-auto absolute inset-0 right-5 left-5 top-5 bottom-28 bg-red-50 border-2 border-red-700">
                 <div className=" flex flex-col items-center">
                   <div className="flex flex-row">
-                    <div className=" absolute inset-0 left-2 top-2 hover:cursor-pointer w-10 h-10" onClick={()=>setIsActive(!isActive)}><img className=" w-10 h-10" src={require("../image/close.png")}/></div>
-                    <div>fire</div> 
-                  </div>    
+                    <div
+                      className=" absolute inset-0 left-2 top-2 hover:cursor-pointer w-10 h-10"
+                      onClick={() => setIsActive(!isActive)}
+                    >
+                      <img
+                        className=" w-10 h-10"
+                        src={require("../image/close.png")}
+                      />
+                    </div>
+                    <div>fire</div>
+                  </div>
                   <div className="  pb-3 w-138 h-36 bg-amber-100 border-2 border-amber-700 absolute bottom-5 overflow-x-auto overflow-y-hidden">
-                    <div className=" p-2 flex flex-row gap-3">  {/*เครื่องกระดาษ*/}  
-                      {typeof backendData.data === "undefined" ? (   
+                    <div className=" p-2 flex flex-row gap-3">
+                      {" "}
+                      {/*เครื่องกระดาษ*/}
+                      {typeof backendData.data === "undefined" ? (
                         <p>Loading...</p>
-                      ) : (  
-                        backendData.data.map((data,i) => 
-                          <div key ={i}>
+                      ) : (
+                        backendData.data.map((data, i) => (
+                          <div key={i}>
                             <DragMove onDragMove={handleDragMove}>
-                              <div  style={{transform: `translateX(${translate.x}px) translateY(${translate.y}px)`}}>
-                                <img className="w-32 h-32 " key={i} src={data.image} alt=""/>
+                              <div
+                                style={{
+                                  transform: `translateX(${translate.x}px) translateY(${translate.y}px)`,
+                                }}
+                              >
+                                <img
+                                  className="w-32 h-32 "
+                                  key={i}
+                                  src={data.image}
+                                  alt=""
+                                />
                               </div>
                             </DragMove>
-                          </div>)        
-                      )} 
-                    </div>   
-                  </div>   
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
           </div>
-          <div className="flex justify-end items-end ml-24  mr-2 " >
+          <div className="flex justify-end items-end ml-24  mr-2 ">
             {" "}
             {/* toolbar/ video me*/}
             <div className="flex justify-self-center pl-2 rounded-full  border-0 shadow-md bg-amber-100 mr-5">
               {" "}
               {/* toolbar*/}
-              
               <button class=" w-12 h-9" onClick={() => setVideo(!isVideo)}>
                 {isVideo ? (
                   <img
@@ -925,7 +957,6 @@ const RoomMeet = (props) => {
                   ></img>
                 )}
               </button>
-              
               <button class=" w-12 h-9" onClick={() => setVoice(!isVoice)}>
                 {isVoice ? (
                   <img
