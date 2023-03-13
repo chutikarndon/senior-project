@@ -259,10 +259,10 @@ const RoomMeet = (props) => {
                       <div className=" h-20 visible transition absolute">
                           <div className="container w-12 h-80 bg-amber-300 shadow-md overflow-hidden border-spacing-1 rounded-b-lg">
                               <div className=" flex justify-center items-center border-spacing-12 w-12 pt-5 ">
-                                  <div className=" flex flex-col justify-between items-center space-y-7" role="tablist">
+                                  <div className=" flex flex-col justify-between items-center w-12 space-y-7" role="tablist">
                                       <button
                                           className={
-                                          "w-12 h-10 rounded block leading-normal " +
+                                          "w-12 h-10 rounded flex justify-center " +
                                           (openTab === 1
                                               ? "bg-amber-200"  
                                               : " bg-amber-300")
@@ -275,11 +275,11 @@ const RoomMeet = (props) => {
                                           href="#link1"
                                           role="tablist"
                                       >
-                                          <img className=" w-10 h-10" src={require("../image/rice.png")} alt="rice"/>
+                                          <img className=" w-9 h-9" src={require("../image/riceBowl.png")} alt="rice"/>
                                       </button>
                                       <button
                                           className={
-                                          "w-12 h-10 rounded block leading-normal " +
+                                          "w-12 h-10 rounded flex justify-center " +
                                           (openTab === 2
                                               ? "bg-amber-200"  
                                               : " bg-amber-300")
@@ -292,11 +292,11 @@ const RoomMeet = (props) => {
                                           href="#link2"
                                           role="tablist"
                                       >
-                                          <img className=" w-10 h-10" src={require("../image/orange (1).png")} alt=" dessert"/>
+                                          <img className=" w-9 h-9" src={require("../image/fruit.png")} alt=" dessert"/>
                                       </button>
                                       <button
                                           className={
-                                          "w-12 h-10 rounded block leading-normal " +
+                                          "w-12 h-10 rounded flex justify-center " +
                                           (openTab === 3
                                               ? "bg-amber-200"
                                               : " bg-amber-300")
@@ -309,11 +309,11 @@ const RoomMeet = (props) => {
                                           href="#link3"
                                           role="tablist"
                                       >
-                                          <img className=" w-10 h-10" src={require("../image/firecracker (1).png")} alt="firecracker"/>
+                                          <img className=" w-9 h-9" src={require("../image/fire-cracker.png")} alt="firecracker"/>
                                       </button>
                                       <button
                                           className={
-                                          "w-12 h-10 rounded block leading-normal " +
+                                          "w-12 h-10 rounded flex justify-center " +
                                           (openTab === 4
                                               ? "bg-amber-200"
                                               : " bg-amber-300")
@@ -326,11 +326,11 @@ const RoomMeet = (props) => {
                                           href="#link4"
                                           role="tablist"
                                       >
-                                          <img className=" w-10 h-10" src={require("../image/circle-table.png")} alt="shopping cart"/>
+                                          <img className=" w-9 h-9" src={require("../image/table.png")} alt="shopping cart"/>
                                       </button>
                                   </div>
                                   <div className="flex snap-y w-138 h-128 absolute inset-0 z-50 mx-96 my-1 bg-red-400 p-3 rounded">
-                                      <div className=" overflow-y-auto">
+                                      <div className=" overflow-y-auto overflow-x-hidden ">
                                           <div className={openTab === 1 ? "block" : "hidden"} id="link1">
                                               <div className=" grid grid-cols-4 gap-3 text-xl">
                                                   <button className=" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl " handleClick={handleClick} id={"0"}>
@@ -485,13 +485,16 @@ const RoomMeet = (props) => {
                                           </div>
                                           <div className={openTab === 4 ? "block" : "hidden"} id="link4" class=" relative">   {/* create delete button */}
                                               <div className=" grid grid-cols-4 gap-3 text-xs">    
-                                                  {typeof backendData.data === "undefined" ? (   
-                                                      <p>Loading...</p>
+                                                  {typeof backendData.data === "undefined" ? (  
+                                                    <div className=" flex flex-col justify-center items-center">
+                                                      <svg class="animate-spin h-5 w-5  rounded-full border-4 border-slate-600 border-r-transparent" viewBox="0 0 24 24"></svg> 
+                                                      <p>Loading</p>
+                                                    </div>
                                                       ) : (  
                                                       backendData.data.map((data,i) => 
-                                                          <button key ={i} className =" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 shadow-xl" onClick={(i)=>setIsDeleteMenuOpen(true)} >
-                                                              <img className=" w-36 h-36" key={i} src={data.image} alt=""/>
-                                                              <p className=" text-center text-xl pb-1" key={i}>{data.productname}</p>
+                                                          <button key ={i} className =" flex flex-col items-center container bg-white rounded transition ease-in-out hover:bg-red-100 hover:-translate-y-1 hover:scale-110 shadow-xl" onClick={(i)=>setIsDeleteMenuOpen(true)} >
+                                                            <img className=" w-36 h-36" key={i} src={data.image} alt=""/>
+                                                            <p className=" text-center text-xl pb-1" key={i}>{data.productname}</p>
                                                           </button>)        
                                                   )} 
                                               </div>
@@ -547,7 +550,7 @@ const RoomMeet = (props) => {
           {/* middle*/}
           <div className=" flex justify-center w-2/5  h-full rounded-full">
             <div className=" flex flex-col justify-center items-center relative">
-              <div className=" mt-14">
+              <div className=" mt-[160px]">
                 <div className=" grid grid-cols-5 text-xs">
                   {" "}
                   {/*อาหารคาว*/}
@@ -588,41 +591,47 @@ const RoomMeet = (props) => {
                   )}
                 </div>
               </div>
-              <div className=" mt-14">
-                <div className="relative inset-0 w-24 h-28 border-2 border-gray-900">
-                  <div className={`static w-24 h-12 rounded-full bg-[#964B00] mt-[50px] ${isBurning ? 'isBurning' : ''}`} onClick={()=>setIsBurning(!isBurning)}>
-                      <div className=" absolute w-3/5 h-3 bg-[#333] bottom-0 left-[19px] rounded-t-md"></div> {/* base*/} 
-                      <div className=" smoke"></div> {/*smoke */}
-                      <div className=" absolute bottom-14 left-1/4 w-2 h-2/5 bg-[#333] "></div>
-                      <div className=" absolute bottom-14 left-2/4 w-2 h-2/5 bg-[#333] "></div>
-                      <div className=" absolute bottom-14 left-3/4 w-2 h-2/5 bg-[#333] "></div> {/*stick */}
+              <div className=" mt-10">
+                <div className="relative inset-0 w-24 h-28">
+                  <div className=" relative w-24 h-12 rounded-full bg-[#964B00] mt-[50px]" onClick={()=>setIsBurning(!isBurning)}>
+                      <div className=" absolute w-3/5 h-3 bg-[#333] top-12 left-[19px] rounded-t-md"></div> {/* base*/} 
+                      {isBurning ? (
+                       <img className="absolute bottom-12 w-24 h-[52px]" src={require("../image/incenseBurnerGif.gif")}/>
+                      ):(
+                        <img className="absolute bottom-12 w-24 h-[52px]" src={require("../image/incense.jpg")}/>
+                      ) }
                   </div>
-                  {/* <img src={require("../image/incense-stick.png")} /> */}
                 </div>
               </div>  
             </div>
           </div>
         </div>
-        <div className=" flex flex-row justify-between mb-5 h-1/6">
+        <div className=" flex flex-row justify-between mb-5 ">
           <div className=" ml-10">
-            <button class=" w-14 h-9" onClick={() => setIsActive(!isActive)}>
+            <button class=" absolute w-60 h-60 bottom-2 hover:shadow-lg hover:rounded-full hover:border-2 hover:border-red-400 focus:border-2 focus:rounded-full" onClick={() => setIsActive(!isActive)}>
               <img
-                className=" w-6 h-6"
-                src={require("../image/fire.png")}
+                className=" w-60 h-60 "
+                src={require("../image/fireImg.png")}
                 alt="fire"
               ></img>
             </button>
             {isActive && (
-              <div className="justify-center flex overflow-x-hidden overflow-y-auto absolute inset-0 right-5 left-5 top-5 bottom-28 bg-red-50 border-2 border-red-700">
+              <div className="justify-center flex overflow-x-hidden overflow-y-auto absolute inset-0 right-5 left-5 top-5 bottom-28 bg-[#48494B] ">
                 <div className=" flex flex-col items-center">
                   <div className="flex flex-row">
                     <div className=" absolute inset-0 left-2 top-2 hover:cursor-pointer w-10 h-10" onClick={()=>setIsActive(!isActive)}><img className=" w-10 h-10" src={require("../image/close.png")}/></div>
-                    <div>fire</div> 
+                    <div className="relative mt-14 h-96 w-96 rounded-full"> {/* fire */}
+                      <img className="absolute w-96 h-96 rounded-full" src={require("../image/fireplace-fire.gif")}></img>
+                      <img className="absolute w-96 h-96 rounded-full hover:-translate-y-28 hover:h-[500px] hover:delay-200" src={require("../image/fireplace-fire.gif")}/>
+                    </div> 
                   </div>    
                   <div className="  pb-3 w-138 h-36 bg-amber-100 border-2 border-amber-700 absolute bottom-5 overflow-x-auto overflow-y-hidden">
                     <div className=" p-2 flex flex-row gap-3">  {/*เครื่องกระดาษ*/}  
                       {typeof backendData.data === "undefined" ? (   
-                        <p>Loading...</p>
+                        <div className=" flex flex-col justify-center items-center">
+                          <svg class="animate-spin h-5 w-5  rounded-full border-4 border-slate-600 border-r-transparent" viewBox="0 0 24 24"></svg> 
+                          <p>Loading</p>
+                        </div>
                       ) : (  
                         backendData.data.map((data,i) => 
                           <div key ={i}>
@@ -688,7 +697,7 @@ const RoomMeet = (props) => {
               <button class=" w-12 h-9 " onClick={() => setMember(!member)}>
                 <img
                   className=" w-6 h-6"
-                  src={require("../image/user.png")}
+                  src={require("../image/user-group.png")}
                   alt="user"
                 ></img>
               </button>
