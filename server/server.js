@@ -88,6 +88,10 @@ io.on("connection", (socket) => {
     roomCart = roomCart.filter((id) => id !== data.pid);
     console.log(roomCart)
     cart[data.roomID] = roomCart;
+    console.log(data.pid)
+    roomCart = roomCart.filter((id) => id !== data.pid);
+    console.log(roomCart)
+    cart[data.roomID] = roomCart;
   });
 });
 

@@ -84,17 +84,7 @@ const RoomMeet = (props) => {
   const classes = useStyles();
   // const state = {play: false};
 
-  /*drag move fire page */
-  const [translate, setTranslate] = useState({
-    x: 0,
-    y: 0,
-  });
-  const handleDragMove = (e) => {
-    setTranslate({
-      x: translate.x + e.movementX,
-      y: translate.y + e.movementY,
-    });
-  };
+  
 
   // const localVideoRef = useRef(null);
   // const [mediaStream, setMediaStream] = useState();
@@ -270,8 +260,37 @@ const RoomMeet = (props) => {
     }
   }, [isVideo]);
 
+  /*drag move fire page */
+  // const [translate, setTranslate] = useState({
+  //   x: 0,
+  //   y: 0,
+  // });
+  // const handleDragMove = (e) => {
+  //   setTranslate({
+  //     x: translate.x + e.movementX,
+  //     y: translate.y + e.movementY,
+  //   });
+  // };
+  const [itemId, setItemId] = useState();
+  const [pId, setPid] = useState();
+
+  const dragStarted=(id)=>{
+    
+  }
+  const draggingOver=(e)=>{
+    e.preventDefault();
+  }
+  const dragDropped=(e)=>{
+    const id = e.currentTarget.id
+    socketRef.current.emit("delete",{itemId, roomID});
+    fetchData();
+  }
+
+  
+
+
   return (
-    <div className=" bg-backgroundRoommeet bg-repeat bg-cover">
+    <div className=" bg-[url('C:/Users/piyawan/Desktop/proj_final/senior-proj/src/image/bg.jpg')] bg-repeat bg-cover">
       <div className=" flex flex-col justify-items-center h-screen">
         <div className="flex flex-row justify-between items-start mt-10 ml-12 mr-4 h-5/6 ">
           {" "}
@@ -734,40 +753,28 @@ const RoomMeet = (props) => {
                 <div className=" flex flex-col items-center">
                   <div className="flex flex-row">
                     <div className=" absolute inset-0 left-2 top-2 hover:cursor-pointer w-10 h-10" onClick={()=>setIsActive(!isActive)}><img className=" w-10 h-10" src={require("../image/close.png")}/></div>
-                    <div className="relative mt-14 h-96 w-96 rounded-full"> {/* fire */}
+                    <div className="relative mt-14 h-96 w-96 rounded-full" droppable onDragOver={(e)=>draggingOver(e)} onDrop={(e)=>dragDropped(e)}> {/* fire */}
                       <img className="absolute w-96 h-96 rounded-full" src={require("../image/fireplace-fire.gif")}></img>
                       <img className="absolute w-96 h-96 rounded-full hover:-translate-y-28 hover:h-[500px] hover:delay-200" src={require("../image/fireplace-fire.gif")}/>
                     </div> 
                   </div>    
-                  <div className="  pb-3 w-138 h-36 bg-amber-100 border-2 border-amber-700 absolute bottom-5 overflow-x-auto overflow-y-hidden">
+                  <div className="  pb-3 w-138 h-36 bg-amber-100 border-2 border-amber-700 absolute bottom-5">
                     <div className=" p-2 flex flex-row gap-3">  {/*เครื่องกระดาษ*/}  
-                      {typeof backendData.data === "undefined" ? (   
+                      {typeof backendData.roomCart === "undefined" ? (   
                         <div className=" flex flex-col justify-center items-center">
                           <svg class="animate-spin h-5 w-5  rounded-full border-4 border-slate-600 border-r-transparent" viewBox="0 0 24 24"></svg> 
                           <p>Loading</p>
                         </div>
                       ) : (  
-                        backendData.data.map((data,i) => 
-                          <div key ={i}>
-                            <DragMove onDragMove={handleDragMove}>
-                              <div
-                                style={{
-                                  transform: `translateX(${translate.x}px) translateY(${translate.y}px)`,
-                                }}
-                              >
-                                <img
-                                  className="w-32 h-32 "
-                                  key={i}
-                                  src={data.image}
-                                  alt=""
-                                />
-                              </div>
-                            </DragMove>
-                          </div>
-                        ))
-                      }
-                    </div>
-                  </div>
+                        backendData.roomCart.map((data,i) => 
+                          <div key={i} draggable onDragStart={(data)=>{dragStarted() 
+                          setItemId(data.id)}}>
+                            <img id={data.id} className="w-32 h-32 " key={i} src={data.imageUrl} alt=""/>
+                          </div> 
+                        )        
+                      )} 
+                    </div>   
+                  </div>   
                 </div>
               </div>
             )}
@@ -887,17 +894,18 @@ const RoomMeet = (props) => {
                       </form>
                   </div>
               </div> */}
-        <div className={classes.img}>
+        {/* <div className={classes.img}>
           <DragMove onDragMove={handleDragMove}>
             <div
               style={{
                 transform: `translateX(${translate.x}px) translateY(${translate.y}px)`,
               }}
             >
-              {/* <img src={logo} alt="logo"/> */}
+              <img src={logo} alt="logo"/>
             </div>
           </DragMove>
-        </div>
+        </div> */}
+
         {/* <div>
                   <Animate 
                       play={state.play}
