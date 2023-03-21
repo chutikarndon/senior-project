@@ -272,7 +272,6 @@ const RoomMeet = (props) => {
   //   });
   // };
   const [itemId, setItemId] = useState();
-  const [pId, setPid] = useState();
 
   const dragStarted=(id)=>{
     
@@ -290,7 +289,7 @@ const RoomMeet = (props) => {
 
 
   return (
-    <div className=" bg-[url('C:/Users/piyawan/Desktop/proj_final/senior-proj/src/image/bg.jpg')] bg-repeat bg-cover">
+    <div className=" bg-backgroundRoommeet bg-repeat bg-cover">
       <div className=" flex flex-col justify-items-center h-screen">
         <div className="flex flex-row justify-between items-start mt-10 ml-12 mr-4 h-5/6 ">
           {" "}
