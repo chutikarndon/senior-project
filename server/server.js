@@ -84,8 +84,10 @@ io.on("connection", (socket) => {
 
   socket.on("delete", (data) => {
     let roomCart = cart[data.roomID];
-    console.log(data.id);
-    roomCart = roomCart.filter((id) => id !== data.id);
+    console.log(data.pid)
+    roomCart = roomCart.filter((id) => id !== data.pid);
+    console.log(roomCart)
+    cart[data.roomID] = roomCart;
   });
 });
 
@@ -136,10 +138,30 @@ app.get("/index", (req, res) => {
   res.json({ festival: ["NewYear", "Tomb Sweeping"] });
 });
 
-app.get("/cart/:roomID", (req, res) => {
+app.get("/cart/:roomID", async (req, res) => {
+  const dbProducts = db.collection("products");
   const _id = req.params.roomID;
-  console.log(_id);
-  const roomCart = cart[_id];
+  let roomCart, products = [];
+
+  if (cart[_id]) {
+    roomCart = cart[_id];
+    const promises = roomCart.map(async (pid) => {
+      const productSnapshot = await dbProducts.where("id", "==", pid).get();
+      if (productSnapshot.empty) {
+        throw new Error('Product with ID ${pid} not found in database.');
+      }
+      return productSnapshot.docs[0].data();
+    });
+    try {
+      products = await Promise.all(promises);
+      roomCart = products
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  else{
+    roomCart = []
+  }
   res.json({
     roomCart
   });
