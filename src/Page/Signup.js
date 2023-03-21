@@ -1,4 +1,4 @@
-import React, { useState, onSubmit, Component } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { makeStyles, Button } from "@material-ui/core";
 import ReactDOM from "react-dom/client";
@@ -146,7 +146,7 @@ const Signup = () => {
             </div>
           </div>
           <div className="pt-7">
-            <Button type="submit" className={classes.button} onClick={onSubmit}>
+            <Button type="submit" className={classes.button}>
               สร้างห้อง
             </Button>
           </div>
