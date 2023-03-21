@@ -348,6 +348,7 @@ const RoomMeet = (props) => {
                                           onClick={e => {
                                           e.preventDefault();
                                           setOpenTab(4);
+                                          fetchData();
                                           }}
                                           data-toggle="tab"
                                           href="#link4"
