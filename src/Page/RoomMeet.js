@@ -235,13 +235,15 @@ const RoomMeet = (props) => {
     socketRef.current.emit("collect", { id, roomID });
   };
 
+  const [pid, setPid] = useState(0);
+
   /*delete button */
   const [isDeleteMenuOpen, setIsDeleteMenuOpen] = useState(false);
   const toggleDeleteMenu = () => {
     setIsDeleteMenuOpen(!isDeleteMenuOpen);
   };
-  const handleDelete = (id) => {
-    socketRef.current.emit("delete", { pId, roomID });
+  const handleDelete = () => {
+    socketRef.current.emit("delete", { pid, roomID });
     fetchData();
     setIsDeleteMenuOpen(false);
   };
@@ -627,7 +629,7 @@ const RoomMeet = (props) => {
                                 <div className=" flex flex-row">
                                   <button
                                     className=" mt-1 w-7 h-7 rounded-md bg-orange-200 hover:border-2 border-orange-50"
-                                    onClick={(data) => handleDelete()}
+                                    onClick={() => handleDelete()}
                                   >
                                     <img src={require("../image/delete.png")} />
                                   </button>
@@ -673,7 +675,7 @@ const RoomMeet = (props) => {
             </button>
             {setting && (
               <div className="w-40 h-44 bg-slate-500 absolute rounded-sm right-10"></div>
-            )} 
+            )}
           </div>
         </div>
         <div className=" flex justify-center">
@@ -777,13 +779,12 @@ const RoomMeet = (props) => {
               </div>
             )}
           </div>
-          <div className="flex justify-end items-end ml-24  mr-2 " >
+          <div className="flex justify-end items-end ml-24  mr-2 ">
             {" "}
             {/* toolbar/ video me*/}
             <div className="flex justify-self-center pl-2 rounded-full  border-0 shadow-md bg-amber-100 mr-5">
               {" "}
               {/* toolbar*/}
-              
               <button class=" w-12 h-9" onClick={() => setVideo(!isVideo)}>
                 {isVideo ? (
                   <img
@@ -799,7 +800,6 @@ const RoomMeet = (props) => {
                   ></img>
                 )}
               </button>
-              
               <button class=" w-12 h-9" onClick={() => setVoice(!isVoice)}>
                 {isVoice ? (
                   <img

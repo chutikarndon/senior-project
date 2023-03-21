@@ -88,6 +88,10 @@ io.on("connection", (socket) => {
     roomCart = roomCart.filter((id) => id !== data.pid);
     console.log(roomCart)
     cart[data.roomID] = roomCart;
+    console.log(data.pid)
+    roomCart = roomCart.filter((id) => id !== data.pid);
+    console.log(roomCart)
+    cart[data.roomID] = roomCart;
   });
 });
 
@@ -142,13 +146,13 @@ app.get("/cart/:roomID", async (req, res) => {
   const dbProducts = db.collection("products");
   const _id = req.params.roomID;
   let roomCart, products = [];
-
+  
   if (cart[_id]) {
     roomCart = cart[_id];
     const promises = roomCart.map(async (pid) => {
       const productSnapshot = await dbProducts.where("id", "==", pid).get();
       if (productSnapshot.empty) {
-        throw new Error('Product with ID ${pid} not found in database.');
+        throw new Error(`Product with ID ${pid} not found in database.`);
       }
       return productSnapshot.docs[0].data();
     });
