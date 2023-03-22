@@ -275,15 +275,17 @@ const RoomMeet = (props) => {
   
 
   const dragStarted=(id)=>{
-    
+    setItemId(id);
+    console.log(" Drag has started", itemId)
   }
   const draggingOver=(e)=>{
     e.preventDefault();
+    console.log("Dragging Over now", itemId)
   }
-  const dragDropped=(e)=>{
-    const id = e.currentTarget.id
+  const dragDropped=()=>{
     socketRef.current.emit("delete",{itemId, roomID});
     fetchData();
+    console.log("droped" ,itemId)
   }
 
   
@@ -753,7 +755,7 @@ const RoomMeet = (props) => {
                 <div className=" flex flex-col items-center">
                   <div className="flex flex-row">
                     <div className=" absolute inset-0 left-2 top-2 hover:cursor-pointer w-10 h-10" onClick={()=>setIsActive(!isActive)}><img className=" w-10 h-10" src={require("../image/close.png")}/></div>
-                    <div className="relative mt-14 h-96 w-96 rounded-full" droppable onDragOver={(e)=>draggingOver(e)} onDrop={(e)=>dragDropped(e)}> {/* fire */}
+                    <div className="relative mt-14 h-96 w-96 rounded-full" droppable onDragOver={draggingOver} onDrop={dragDropped}> {/* fire */}
                       <img className="absolute w-96 h-96 rounded-full" src={require("../image/fireplace-fire.gif")}></img>
                       <img className="absolute w-96 h-96 rounded-full hover:-translate-y-28 hover:h-[500px] hover:delay-200" src={require("../image/fireplace-fire.gif")}/>
                     </div> 
@@ -767,10 +769,10 @@ const RoomMeet = (props) => {
                         </div>
                       ) : (  
                         backendData.roomCart.map((data,i) => 
-                          <div key={i} draggable onDragStart={(data)=>{dragStarted() 
-                          setItemId(data.id)}}>
+                          <button key={i} id={data.id} draggable onDragStart={()=>dragStarted(data.id) 
+                          }>
                             <img id={data.id} className="w-32 h-32 " key={i} src={data.imageUrl} alt=""/>
-                          </div> 
+                          </button> 
                         )        
                       )} 
                     </div>   
