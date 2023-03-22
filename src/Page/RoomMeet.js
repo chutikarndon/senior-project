@@ -272,7 +272,7 @@ const RoomMeet = (props) => {
   //   });
   // };
   const [itemId, setItemId] = useState();
-  const [pId, setPid] = useState();
+  
 
   const dragStarted=(id)=>{
     
