@@ -1,4 +1,4 @@
-import React, { useState, onSubmit } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { makeStyles, Button } from "@material-ui/core";
 
@@ -140,7 +140,7 @@ const Login = () => {
           </div>
         </div>
         <div className="pt-7">
-        <Button type="submit" className={classes.button} onClick={onSubmit}>
+        <Button type="submit" className={classes.button}>
             เข้าร่วม
           </Button>
         </div>
