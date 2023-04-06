@@ -57,13 +57,12 @@ const Login = () => {
   const { username, roomId, password } = formValue;
   const handleSubmit = (event) => {
     console.log(formValue);
-    fetch("http://localhost:7000/joinRoom", {
+    fetch("/joinRoom", {
       method: "POST",
       // We convert the React state to JSON and send it as the POST body
       body: JSON.stringify(formValue),
       headers: {
         "Content-Type": "application/json",
-        Origin: "http://localhost:3000",
       },
     }).then(
       (response) => {

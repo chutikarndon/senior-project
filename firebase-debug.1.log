@@ -1,0 +1,33 @@
+[debug] [2023-03-27T08:27:36.401Z] ----------------------------------------------------------------------
+[debug] [2023-03-27T08:27:36.403Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\asus\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js serve --only functions
+[debug] [2023-03-27T08:27:36.404Z] CLI Version:   11.25.1
+[debug] [2023-03-27T08:27:36.404Z] Platform:      win32
+[debug] [2023-03-27T08:27:36.404Z] Node Version:  v16.17.1
+[debug] [2023-03-27T08:27:36.405Z] Time:          Mon Mar 27 2023 15:27:36 GMT+0700 (Indochina Time)
+[debug] [2023-03-27T08:27:36.406Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2023-03-27T08:27:36.528Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2023-03-27T08:27:36.529Z] > authorizing via signed-in user (6234416023@student.chula.ac.th)
+[debug] [2023-03-27T08:27:36.529Z] [iam] checking project web-app-for-awc-1061d for permissions ["firebase.projects.get"]
+[debug] [2023-03-27T08:27:36.531Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/web-app-for-awc-1061d:testIamPermissions [none]
+[debug] [2023-03-27T08:27:36.532Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/web-app-for-awc-1061d:testIamPermissions x-goog-quota-user=projects/web-app-for-awc-1061d
+[debug] [2023-03-27T08:27:36.532Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/web-app-for-awc-1061d:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2023-03-27T08:27:37.723Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/web-app-for-awc-1061d:testIamPermissions 200
+[debug] [2023-03-27T08:27:37.723Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/web-app-for-awc-1061d:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2023-03-27T08:27:37.725Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/web-app-for-awc-1061d [none]
+[debug] [2023-03-27T08:27:38.341Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/web-app-for-awc-1061d 200
+[debug] [2023-03-27T08:27:38.342Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/web-app-for-awc-1061d {"projectId":"web-app-for-awc-1061d","projectNumber":"386776119508","displayName":"Web App for AWC","name":"projects/web-app-for-awc-1061d","resources":{"hostingSite":"web-app-for-awc-1061d","realtimeDatabaseInstance":"web-app-for-awc-1061d-default-rtdb","storageBucket":"web-app-for-awc-1061d.appspot.com","locationId":"asia-southeast1"},"state":"ACTIVE","etag":"1_39b6e14e-4a2f-45bb-a1e9-caa81a6e693d"}
+[debug] [2023-03-27T08:27:38.347Z] defaultcredentials: writing to file C:\Users\asus\AppData\Roaming\firebase\6234416023_student_chula.ac.th_application_default_credentials.json
+[debug] [2023-03-27T08:27:38.349Z] Setting GAC to C:\Users\asus\AppData\Roaming\firebase\6234416023_student_chula.ac.th_application_default_credentials.json {"metadata":{"emulator":{"name":"functions"},"message":"Setting GAC to C:\\Users\\asus\\AppData\\Roaming\\firebase\\6234416023_student_chula.ac.th_application_default_credentials.json"}}
+[debug] [2023-03-27T08:27:38.350Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/web-app-for-awc-1061d/adminSdkConfig [none]
+[debug] [2023-03-27T08:27:38.735Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/web-app-for-awc-1061d/adminSdkConfig 200
+[debug] [2023-03-27T08:27:38.735Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/web-app-for-awc-1061d/adminSdkConfig {"projectId":"web-app-for-awc-1061d","databaseURL":"https://web-app-for-awc-1061d-default-rtdb.firebaseio.com","storageBucket":"web-app-for-awc-1061d.appspot.com","locationId":"asia-southeast1"}
+[debug] [2023-03-27T08:27:38.753Z] Error: listen EADDRINUSE: address already in use 127.0.0.1:5000
+    at Server.setupListenHandle [as _listen2] (node:net:1432:16)
+    at listenInCluster (node:net:1480:12)
+    at GetAddrInfoReqWrap.doListen [as callback] (node:net:1629:7)
+    at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:111:8)
+[error] 
+[error] Error: An unexpected error has occurred.
+[info] i  functions: Watching "D:\senior\senior-proj\functions" for Cloud Functions... {"metadata":{"emulator":{"name":"functions"},"message":"Watching \"D:\\senior\\senior-proj\\functions\" for Cloud Functions..."}}
+[debug] [2023-03-27T08:27:38.765Z] Validating nodejs source

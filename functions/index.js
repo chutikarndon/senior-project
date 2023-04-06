@@ -1,8 +1,5 @@
 const express = require("express");
-const cors = require("cors");
 const app = express();
-const port = 7000;
-const { db } = require("./firebase.js");
 const uuid = require("uuid");
 const uuid4 = uuid.v4();
 const bodyParser = require("body-parser");
@@ -14,11 +11,18 @@ const http = require("http").Server(app);
 //   debug: true,
 // });
 const path = require("path");
+// The Cloud Functions for Firebase SDK to create Cloud Functions and set up triggers.
+const functions = require('firebase-functions');
+const admin = require('firebase-admin');
+const { getFirestore, initializeFirestore } = require("firebase-admin/firestore")
+admin.initializeApp();
 
-app.use(cors());
+const db = getFirestore();
+
+const cors = require('cors');
+app.use(cors({origin: true}));
 const io = require("socket.io")(http, {
   cors: {
-    origin: "http://localhost:3000",
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -117,32 +121,38 @@ const corsOptions = {
 // Enable preflight requests for all routes
 app.options("*", cors(corsOptions));
 
-app.options("/createRoom", function (req, res) {
+app.options("*/createRoom", function (req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "*");
   res.setHeader("Access-Control-Allow-Headers", "*");
   res.end();
 });
 
-app.options("/joinRoom", function (req, res) {
+app.options("*/joinRoom", function (req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "*");
   res.setHeader("Access-Control-Allow-Headers", "*");
   res.end();
 });
 
-app.options("/RoomMeet", function (req, res) {
+app.options("*/RoomMeet", function (req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "*");
   res.setHeader("Access-Control-Allow-Headers", "*");
   res.end();
 });
 
-app.get("/index", (req, res) => {
+exports.bangkok = functions.https.onRequest((req, res) => { return res.status(200).send(
+      "Hello bangkok"
+    );
+});
+
+app.get("/festival", function (req, res) {
   res.json({ festival: ["NewYear", "Tomb Sweeping"] });
+  console.log("Hello")
 });
 
-app.get("/cart/:roomID", async (req, res) => {
+app.get("*/cart/:roomID", async (req, res) => {
   const dbProducts = db.collection("products");
   const _id = req.params.roomID;
   let roomCart, products = [];
@@ -171,7 +181,7 @@ app.get("/cart/:roomID", async (req, res) => {
   });
 });
 
-app.get("/getProducts", cors(), async (req, res) => {
+app.get("*/getProducts", cors(), async (req, res) => {
   cors();
   const dbProducts = db.collection("products");
   const fruitsInfo = await dbProducts.where("type", "==", "fruit").get();
@@ -183,10 +193,9 @@ app.get("/getProducts", cors(), async (req, res) => {
     fruits,
   });
 });
-// app.listen(port, () => console.log(`Server listening on port ${port}!`));
-http.listen(port, () => console.log(`Listening on port ${port}`));
 
-app.post("/createRoom", cors(), async (req, res) => {
+
+app.post("*/createRoom", cors(), async (req, res) => {
   cors();
   const { fname, lname, password } = req.body;
   const dbRoom = await db.collection("rooms").add({
@@ -205,22 +214,18 @@ app.post("/createRoom", cors(), async (req, res) => {
 
 // app.use("/peerjs", peerServer);
 
-app.post("/joinRoom", cors(), async (req, res) => {
+app.post("*/joinRoom", cors(), async (req, res) => {
   cors();
-  console.log("fetch api success");
   const { username, roomId, password } = req.body;
   const roomInfo = db.collection("rooms");
   const roomExist = await roomInfo
     .where("roomId", "==", roomId)
     .where("password", "==", password)
     .get();
-  console.log("fetch to database success");
   if (roomExist.empty) {
-    console.log("return roomnotexist success");
     res.status(404).send("ID or password is incorrect");
     return;
   } else {
-    console.log("return roomexist success");
     res.status(200).send("Success");
 
     // res.redirect(
@@ -241,7 +246,6 @@ const addUser = (username, roomId) => {
 
 const userLeave = (username) => {
   users = users.filter((users) => users.username != username);
-  console.log(users);
 };
 
 const getRoomUsers = (roomId) => {
@@ -261,3 +265,8 @@ const getRoomUsers = (roomId) => {
 //   // }); // i.e we need the roomid and the username
 
 // });
+
+exports.main = functions.https.onRequest(app);
+const port = process.env.PORT || 8080;
+// app.listen(port, () => console.log(`Server listening on port ${port}!`));
+http.listen(port, () => console.log(`Listening on port ${port}`));

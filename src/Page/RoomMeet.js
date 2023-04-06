@@ -154,7 +154,7 @@ const RoomMeet = (props) => {
   const peersRef = useRef([]);
 
   useEffect(() => {
-    socketRef.current = io.connect("http://localhost:3000");
+    socketRef.current = io.connect("http://localhost:8080");
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then((stream) => {

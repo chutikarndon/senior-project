@@ -23,7 +23,7 @@ const Header = () => {
 
   const [backendData, setBackendData] = useState([{}])
   useEffect(() => {
-    fetch("/index").then(
+    fetch("/festival").then(
       response => response.json()
     ).then(
       data => {

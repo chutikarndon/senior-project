@@ -49,7 +49,7 @@ class signupForm extends React.Component {
   handleSubmit = (event) => {
     alert("A form was submitted: " + this.state);
 
-    fetch("http://localhost:5000/signup", {
+    fetch("/signup", {
       method: "POST",
       // We convert the React state to JSON and send it as the POST body
       body: JSON.stringify(this.state),
@@ -84,13 +84,12 @@ const Signup = () => {
   const handleSubmit = (event) => {
     alert("Success!");
     console.log(formValue);
-    fetch("http://localhost:7000/createRoom", {
+    fetch("/createRoom", {
       method: "POST",
       // We convert the React state to JSON and send it as the POST body
       body: JSON.stringify(formValue),
       headers: {
         "Content-Type": "application/json",
-        Origin: "http://localhost:3000",
       },
     })
       .then(
