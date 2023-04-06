@@ -580,3 +580,5 @@ const ref = useRef();
           {setting && (
             <div className="w-40 h-44 bg-slate-500 absolute bottom-28 rounded-sm "></div>
           )} 
+
+          <button className=" absolute right-[3%] top-[5%] w-[45px] h-[45px]" onClick={() =>setIsExpanded(false) }><img className=" w-[45px] h-[45px]" src={require("../image/close.png")}/></button>

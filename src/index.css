@@ -4,7 +4,28 @@
 
 @layer base {
     html {
-        font-family: Noto Sans TC, sans-serif;
-        font-family: Sarabun, sans-serif;
+        /* font-family: Noto Sans TC, sans-serif;
+        font-family: Sarabun, sans-serif; */
+        font-family: 'Noto Sans TC', sans-serif;
+        font-family: 'Sarabun', sans-serif;
+        font-family: 'Thasadith', sans-serif;
     }
+  }
+  @layer components {
+    .backgroundHome{
+        background-image: url(../src/image/bgH.jpg);
+    }
+    .backgroundRoommeet {
+        background-image: url(../src/image/pxfuel.jpg);
+    }
+    .buttonG {
+        background: linear-gradient(90deg, #EB5153 11.3%, #A30709 49.01%, #EB5153 91.4%);;
+    }
+    .bgM {
+        background: linear-gradient(-45deg, #E9A327 14.64%, rgba(233, 163, 39, 0) 77.27%);
+    }
+    .bgF {
+        background-image: url(../src/image/bgFire.png)
+    }
+    
   }
