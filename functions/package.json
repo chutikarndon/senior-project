@@ -2,11 +2,7 @@
   "name": "functions",
   "description": "Cloud Functions for Firebase",
   "scripts": {
-    "serve": "firebase emulators:start --only functions",
-    "shell": "firebase functions:shell",
-    "start": "npm run shell",
-    "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log",
+    "start": "node index.js",
     "image": "gcloud builds submit --tag gcr.io/web-app-for-awc-1061d/functions --project web-app-for-awc-1061d",
     "deploy:public": "gcloud run deploy functions --image gcr.io/web-app-for-awc-1061d/functions --allow-unauthenticated --region asia-southeast1 --project web-app-for-awc-1061d",
     "deploy:private": "gcloud run deploy functions --image gcr.io/web-app-for-awc-1061d/functions --no-allow-unauthenticated --region asia-southeast1 --project web-app-for-awc-1061d",
@@ -20,6 +16,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.18.2",
+    "firebase": "^9.19.1",
     "firebase-admin": "^11.5.0",
     "firebase-functions": "^4.2.1",
     "peer": "^1.0.0",

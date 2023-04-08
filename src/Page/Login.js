@@ -151,7 +151,7 @@ const Login = () => {
           </div>
         </div>
         <div className="pt-7">
-        <Button type="submit" className=" absolute left-[44.11%] right-[45.36%] top-[70%] bottom-[28.98%] w-[202px] h-[52px] text-[26px] text-white bg-[#CD3D3D] hover:scale-105" onClick={onSubmit}>
+        <Button type="submit" className=" absolute left-[44.11%] right-[45.36%] top-[70%] bottom-[28.98%] w-[202px] h-[52px] text-[26px] text-white bg-[#CD3D3D] hover:scale-105" >
             เข้าร่วม
           </Button>
         </div>

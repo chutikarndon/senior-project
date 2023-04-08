@@ -6,13 +6,15 @@
       "**/.*",
       "**/node_modules/**"
     ],
-    "rewrites": [ {
-      "source": "/**",
-      "run": {
-        "serviceId": "functions",  
-        "region": "asia-southeast1"     
+    "rewrites": [
+      {
+        "source": "/**",
+        "run": {
+          "serviceId": "functions",
+          "region": "asia-southeast1"
+        }
       }
-    } ]
+    ]
   },
   "functions": [
     {

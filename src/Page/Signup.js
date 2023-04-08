@@ -160,7 +160,7 @@ const Signup = () => {
               </div>
             </div>
             <div className="pt-7">
-              <Button type="submit" className="absolute left-[45.26%] right-[43.02%] top-[66.39%] bottom-[28.52%] w-[225px] h-[55px] text-[26px] text-white bg-[#CD3D3D] hover:scale-105" onClick={onSubmit}>
+              <Button type="submit" className="absolute left-[45.26%] right-[43.02%] top-[66.39%] bottom-[28.52%] w-[225px] h-[55px] text-[26px] text-white bg-[#CD3D3D] hover:scale-105">
                 สร้างห้อง
               </Button>
             </div>

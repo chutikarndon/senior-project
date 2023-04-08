@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require('cors');
 const app = express();
 const uuid = require("uuid");
 const uuid4 = uuid.v4();
@@ -11,16 +12,21 @@ const http = require("http").Server(app);
 //   debug: true,
 // });
 const path = require("path");
+const { db } = require("./firebase.js");
+
+app.use(cors({origin: true}));
+
 // The Cloud Functions for Firebase SDK to create Cloud Functions and set up triggers.
 const functions = require('firebase-functions');
+const { initializeApp } = require('firebase-admin/app')
+
 const admin = require('firebase-admin');
 const { getFirestore, initializeFirestore } = require("firebase-admin/firestore")
-admin.initializeApp();
+// admin.initializeApp();
 
-const db = getFirestore();
+// const db = getFirestore();
 
-const cors = require('cors');
-app.use(cors({origin: true}));
+
 const io = require("socket.io")(http, {
   cors: {
     methods: ["GET", "POST"],
@@ -121,21 +127,21 @@ const corsOptions = {
 // Enable preflight requests for all routes
 app.options("*", cors(corsOptions));
 
-app.options("*/createRoom", function (req, res) {
+app.options("/createRoom", function (req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "*");
   res.setHeader("Access-Control-Allow-Headers", "*");
   res.end();
 });
 
-app.options("*/joinRoom", function (req, res) {
+app.options("/joinRoom", function (req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "*");
   res.setHeader("Access-Control-Allow-Headers", "*");
   res.end();
 });
 
-app.options("*/RoomMeet", function (req, res) {
+app.options("/RoomMeet", function (req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "*");
   res.setHeader("Access-Control-Allow-Headers", "*");
@@ -152,7 +158,7 @@ app.get("/festival", function (req, res) {
   console.log("Hello")
 });
 
-app.get("*/cart/:roomID", async (req, res) => {
+app.get("/cart/:roomID", async (req, res) => {
   const dbProducts = db.collection("products");
   const _id = req.params.roomID;
   let roomCart, products = [];
@@ -181,7 +187,7 @@ app.get("*/cart/:roomID", async (req, res) => {
   });
 });
 
-app.get("*/getProducts", cors(), async (req, res) => {
+app.get("/getProducts", cors(), async (req, res) => {
   cors();
   const dbProducts = db.collection("products");
   const fruitsInfo = await dbProducts.where("type", "==", "fruit").get();
@@ -195,7 +201,7 @@ app.get("*/getProducts", cors(), async (req, res) => {
 });
 
 
-app.post("*/createRoom", cors(), async (req, res) => {
+app.post("/createRoom", cors(), async (req, res) => {
   cors();
   const { fname, lname, password } = req.body;
   const dbRoom = await db.collection("rooms").add({
@@ -214,7 +220,7 @@ app.post("*/createRoom", cors(), async (req, res) => {
 
 // app.use("/peerjs", peerServer);
 
-app.post("*/joinRoom", cors(), async (req, res) => {
+app.post("/joinRoom", cors(), async (req, res) => {
   cors();
   const { username, roomId, password } = req.body;
   const roomInfo = db.collection("rooms");
