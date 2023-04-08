@@ -195,8 +195,21 @@ app.get("/getProducts", cors(), async (req, res) => {
   fruitsInfo.forEach((doc) => {
     fruits.push(doc.data());
   });
+
+  const foodInfo = await dbProducts.where("type", "==", "food").get();
+  const food = [];
+  foodInfo.forEach((doc) => {
+    food.push(doc.data());
+  });
+
+  const paperInfo = await dbProducts.where("type", "==", "paper").get();
+  const paper = [];
+  paperInfo.forEach((doc) => {
+    paper.push(doc.data());
+  });
+
   res.status(200).json({
-    fruits,
+    fruits,food,paper
   });
 });
 

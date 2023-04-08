@@ -393,7 +393,7 @@ const RoomMeet = (props) => {
                             <div className=" overflow-y-hidden scroll-smooth hover:overflow-y-auto overflow-x-hidden ">
                               <div className={openTab === 1 ? "block" : "hidden"} id="link1">
                                 <div className=" grid grid-cols-5 gap-3 text-xl">              
-                                  <button className=" flex flex-col items-center container bg-[#E9A327] border-[1px] border-[#AF010A] rounded transition ease-in-out hover:bg-red-100 shadow-xl " handleClick={handleClick} id={"0"}>
+                                  { /*<button className=" flex flex-col items-center container bg-[#E9A327] border-[1px] border-[#AF010A] rounded transition ease-in-out hover:bg-red-100 shadow-xl " handleClick={handleClick} id={"0"}>
                                     <img className=" w-[120px] h-[120px]" src={require("../image/grape.png")} alt=""/>
                                     <p className=" text-center" >เป็ด</p>  
                                   </button>
@@ -440,7 +440,32 @@ const RoomMeet = (props) => {
                                   <button className=" flex flex-col items-center container bg-[#E9A327] border-[1px] border-[#AF010A] rounded transition ease-in-out hover:bg-red-100 shadow-xl" handleClick={handleClick} id={"10"}>
                                     <img className=" w-[120px] h-[120px]" src={require("../image/grape.png")} alt=""/>
                                     <p className=" text-center pb-1">น้ำเปล่า</p>
-                                  </button>
+                                  </button> */}
+                                  {typeof productsData.food === "undefined" ? (
+                                    <p>Loading...</p>
+                                  ) : (
+                                    productsData.food.map((data, i) => (
+                                      <button
+                                        key={i}
+                                        className=" flex flex-col items-center container bg-[#E9A327] border-[1px] border-[#AF010A] rounded transition ease-in-out hover:bg-red-100 shadow-xl active:bg-red-100"
+                                        onClick={handleClick}
+                                        id={data.id}
+                                      >
+                                        <img
+                                          className=" w-[120px] h-[120px]"
+                                          key={i}
+                                          src={data.imageUrl}
+                                          alt=""
+                                        />
+                                        <p
+                                          className=" text-center text-xl pb-1"
+                                          key={i}
+                                        >
+                                          {data.name}
+                                        </p>
+                                      </button>
+                                    ))
+                                  )}
                                 </div> 
                               </div>
                               <div className={openTab === 2 ? "block" : "hidden"} id="link2">
@@ -506,7 +531,7 @@ const RoomMeet = (props) => {
                               </div>
                               <div className={openTab === 3 ? "block" : "hidden"} id="link3">
                                 <div className=" grid grid-cols-5 gap-3 text-xl">
-                                  <button
+                                  {/* <button
                                     className=" flex flex-col items-center container bg-[#E9A327] border-[1px] border-[#AF010A] rounded transition ease-in-out hover:bg-red-100 shadow-xl"
                                     handleClick={handleClick}
                                     id={"27"}
@@ -591,7 +616,32 @@ const RoomMeet = (props) => {
                                       alt=""
                                     />
                                     <p className=" text-center pb-1">ตั่วกิม</p>
-                                  </button>
+                                  </button> */}
+                                  {typeof productsData.paper === "undefined" ? (
+                                    <p>Loading...</p>
+                                  ) : (
+                                    productsData.paper.map((data, i) => (
+                                      <button
+                                        key={i}
+                                        className=" flex flex-col items-center container bg-[#E9A327] border-[1px] border-[#AF010A] rounded transition ease-in-out hover:bg-red-100 shadow-xl active:bg-red-100"
+                                        onClick={handleClick}
+                                        id={data.id}
+                                      >
+                                        <img
+                                          className=" w-[120px] h-[120px]"
+                                          key={i}
+                                          src={data.imageUrl}
+                                          alt=""
+                                        />
+                                        <p
+                                          className=" text-center text-xl pb-1"
+                                          key={i}
+                                        >
+                                          {data.name}
+                                        </p>
+                                      </button>
+                                    ))
+                                  )}
                                 </div>
                               </div>
                               <div
