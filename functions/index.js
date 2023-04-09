@@ -161,7 +161,7 @@ app.get("/festival", function (req, res) {
 app.get("/cart/:roomID", async (req, res) => {
   const dbProducts = db.collection("products");
   const _id = req.params.roomID;
-  let roomCart, products = [];
+  let roomCart, products, paper, fruit, food = [];
   
   if (cart[_id]) {
     roomCart = cart[_id];
@@ -175,6 +175,9 @@ app.get("/cart/:roomID", async (req, res) => {
     try {
       products = await Promise.all(promises);
       roomCart = products
+      paper = products.filter((product) => product.type == "paper")
+      fruit = products.filter((product) => product.type == "fruit")
+      food = products.filter((product) => product.type == "food")
     } catch (error) {
       console.error(error);
     }
@@ -183,7 +186,7 @@ app.get("/cart/:roomID", async (req, res) => {
     roomCart = []
   }
   res.json({
-    roomCart
+    roomCart,paper,fruit,food
   });
 });
 

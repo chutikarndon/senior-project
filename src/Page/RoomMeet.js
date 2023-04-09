@@ -841,13 +841,13 @@ const RoomMeet = (props) => {
                   </div>    
                   <div className="  pb-3 w-[700px] h-[120px] bg-[#ECD9B8] border-2 border-[#FCC5BB] absolute bottom-5 shadow-lg">
                     <div className=" p-2 flex flex-row gap-3">  {/*เครื่องกระดาษ drag*/}  
-                      {typeof backendData.roomCart === "undefined" ? (   
+                      {typeof backendData.paper === "undefined" ? (   
                         <div className=" flex flex-col justify-center items-center">
                           <svg class="animate-spin h-5 w-5  rounded-full border-4 border-slate-600 border-r-transparent" viewBox="0 0 24 24"></svg> 
                           <p>Loading</p>
                         </div>
                       ) : (  
-                        backendData.roomCart.map((data,i) => 
+                        backendData.paper.map((data,i) => 
                           <button key={i} id={data.id} draggable onDragStart={()=>dragStarted(data.id) 
                           }>
                             <img id={data.id} className="w-[100px] h-[100px] " key={i} src={data.imageUrl} alt=""/>
