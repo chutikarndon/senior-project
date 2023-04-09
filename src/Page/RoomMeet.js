@@ -381,7 +381,7 @@ const RoomMeet = (props) => {
                             role="tablist"
                         >
                           <div className="absolute rounded-sm w-[45px] h-[45px] rotate-45 z-0 top-[20%] left-[25%] bgM "></div>
-                          <img className=" absolute z-20 left-[18%] top-0 w-[55px] h-[55px]" src={require("../image/candle.png")} alt=""></img>
+                          <img className=" absolute z-20 left-[18%] top-0 w-[55px] h-[55px]" src={require("../image/candle 1.png")} alt=""></img>
                           <div className=" buttonG absolute z-10 bottom-0 w-[70px] h-[23px] rounded-md">
                             <p className=" text-[18px] text-[#F4C43E]">
                               โต๊ะไหว้
@@ -751,7 +751,7 @@ const RoomMeet = (props) => {
           <div className=" flex justify-center w-2/5  h-full rounded-full">
             <div className=" flex flex-col justify-center items-center absolute z-0 bg-[#F4C43E] w-[645px] h-[428px] top-[30%] rounded-lg shadow-md shadow-[#F4C43E] ">
               <div>
-                <div className=" grid grid-cols-5 text-xs absolute top-[2%] left-[2%]">
+                <div className=" grid grid-cols-5 gap-3 text-xs absolute top-[2%] left-[2%]">
                   {" "}
                   {/*อาหารคาว*/}
                   {typeof backendData.roomCart === "undefined" ? (   
@@ -767,7 +767,7 @@ const RoomMeet = (props) => {
                         )        
                   )}
                 </div>
-                <div className=" grid grid-cols-5 text-xs absolute top-[25%] left-[2%]">
+                <div className=" grid grid-cols-5 gap-3 text-xs absolute top-[25%] left-[2%]">
                   {" "}
                   {/*ของหวาน*/}
                   {typeof backendData.roomCart === "undefined" ? (   
@@ -783,7 +783,7 @@ const RoomMeet = (props) => {
                         )        
                   )}
                 </div>
-                <div className=" grid grid-cols-5 text-xs absolute top-[45%] left-[2%]">
+                <div className=" grid grid-cols-5 gap-3 text-xs absolute top-[45%] left-[2%]">
                   {" "}
                   {/*เครื่องกระดาษ*/}
                   {typeof backendData.roomCart === "undefined" ? (   
@@ -800,7 +800,9 @@ const RoomMeet = (props) => {
                   )}
                 </div>
               </div>
-              <div>
+              <div className=" flex flex-row">
+                <div className="absolute top-[70%] left-[23%] w-24 h-28"><img src={require("../image/vase.png")}/></div>
+                <div className="absolute top-[70%] left-[33%] w-24 h-28"><img src={require("../image/candle.png")}/></div>
                 <div className="absolute top-[70%] left-[43%] w-24 h-28">
                   <div className=" absolute w-24 h-12 rounded-full bg-[#964B00] mt-[50px]" onClick={()=>setIsBurning(!isBurning)}>
                       <div className=" absolute w-3/5 h-3 bg-[#333] top-12 left-[19px] rounded-t-md"></div> {/* base*/} 
@@ -811,6 +813,8 @@ const RoomMeet = (props) => {
                       ) }
                   </div>
                 </div>
+                <div className="absolute top-[70%] left-[53%] w-24 h-28"><img src={require("../image/candle.png")}/></div>
+                <div className="absolute top-[70%] left-[63%] w-24 h-28"><img src={require("../image/vase.png")}/></div>
               </div>  
             </div>
           </div>
