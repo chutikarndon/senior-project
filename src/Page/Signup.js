@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: 'orange'
     },
     textName: {
-        fontSize: '12px',
+        fontSize: '20px',
         width: '436px',
         height: '44px',
         position:' absolute',
@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: '4px'
     },
     textSur: {
-        fontSize: '10px',
+        fontSize: '20px',
         width: '436px',
         height: '44px',
         position: 'absolute',
@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: '4px'
     },
     textPass: {
-        fontSize: '10px',
+        fontSize: '20px',
         width: '436px',
         height: '44px',
         position: 'absolute',

@@ -452,7 +452,7 @@ const RoomMeet = (props) => {
                                         id={data.id}
                                       >
                                         <img
-                                          className=" w-[120px] h-[120px]"
+                                          className=" w-[120px] h-[120px] p-2"
                                           key={i}
                                           src={data.imageUrl}
                                           alt=""
@@ -513,7 +513,7 @@ const RoomMeet = (props) => {
                                         id={data.id}
                                       >
                                         <img
-                                          className=" w-[120px] h-[120px]"
+                                          className=" w-[120px] h-[120px] p-2"
                                           key={i}
                                           src={data.imageUrl}
                                           alt=""
@@ -628,7 +628,7 @@ const RoomMeet = (props) => {
                                         id={data.id}
                                       >
                                         <img
-                                          className=" w-[120px] h-[120px]"
+                                          className=" w-[120px] h-[120px] p-2"
                                           key={i}
                                           src={data.imageUrl}
                                           alt=""
@@ -666,7 +666,7 @@ const RoomMeet = (props) => {
                                         id={data.id}
                                       >
                                         <img
-                                          className=" w-[120px] h-[120px]"
+                                          className=" w-[120px] h-[120px] p-2"
                                           key={i}
                                           src={data.imageUrl}
                                           alt=""
@@ -751,50 +751,50 @@ const RoomMeet = (props) => {
           <div className=" flex justify-center w-2/5  h-full rounded-full">
             <div className=" flex flex-col justify-center items-center absolute z-0 bg-[#F4C43E] w-[645px] h-[428px] top-[30%] rounded-lg shadow-md shadow-[#F4C43E] ">
               <div>
-                <div className=" grid grid-cols-5 gap-3 text-xs absolute top-[2%] left-[2%]">
+                <div className=" grid grid-cols-6 gap-3 text-xs absolute top-[2%] left-[2%]">
                   {" "}
                   {/*อาหารคาว*/}
-                  {typeof backendData.roomCart === "undefined" ? (   
+                  {typeof backendData.food === "undefined" ? (   
                     <div className=" flex flex-col justify-center items-center">
                       <svg class="animate-spin h-5 w-5  rounded-full border-4 border-slate-600 border-r-transparent" viewBox="0 0 24 24"></svg> 
                       <p>Loading</p>
                     </div>
                     ) : (  
-                        backendData.roomCart.map((data,i) =>
+                        backendData.food.map((data,i) =>
                           <button key={i}>
-                            <img className="w-[120px] h-[120px] " key={i} src={data.imageUrl} alt=""/>
+                            <img className="w-[90px] h-[90px] " key={i} src={data.imageUrl} alt=""/>
                           </button> 
                         )        
                   )}
                 </div>
-                <div className=" grid grid-cols-5 gap-3 text-xs absolute top-[25%] left-[2%]">
+                <div className=" grid grid-cols-6 gap-3 text-xs absolute top-[22%] left-[2%]">
                   {" "}
                   {/*ของหวาน*/}
-                  {typeof backendData.roomCart === "undefined" ? (   
+                  {typeof backendData.fruit === "undefined" ? (   
                     <div className=" flex flex-col justify-center items-center">
                       <svg class="animate-spin h-5 w-5  rounded-full border-4 border-slate-600 border-r-transparent" viewBox="0 0 24 24"></svg> 
                       <p>Loading</p>
                     </div>
                     ) : (  
-                        backendData.roomCart.map((data,i) =>
+                        backendData.fruit.map((data,i) =>
                           <button key={i}>
-                            <img className="w-[120px] h-[120px] " key={i} src={data.imageUrl} alt=""/>
+                            <img className="w-[90px] h-[90px] " key={i} src={data.imageUrl} alt=""/>
                           </button> 
                         )        
                   )}
                 </div>
-                <div className=" grid grid-cols-5 gap-3 text-xs absolute top-[45%] left-[2%]">
+                <div className=" grid grid-cols-6 gap-3 text-xs absolute top-[45%] left-[2%]">
                   {" "}
                   {/*เครื่องกระดาษ*/}
-                  {typeof backendData.roomCart === "undefined" ? (   
+                  {typeof backendData.paper === "undefined" ? (   
                     <div className=" flex flex-col justify-center items-center">
                       <svg class="animate-spin h-5 w-5  rounded-full border-4 border-slate-600 border-r-transparent" viewBox="0 0 24 24"></svg> 
                       <p>Loading</p>
                     </div>
                     ) : (  
-                        backendData.roomCart.map((data,i) =>
+                        backendData.paper.map((data,i) =>
                           <button key={i}>
-                            <img className=" w-[120px] h-[120px] " key={i} src={data.imageUrl} alt=""/>
+                            <img className=" w-[90px] h-[90px] " key={i} src={data.imageUrl} alt=""/>
                           </button> 
                         )        
                   )}
@@ -830,7 +830,7 @@ const RoomMeet = (props) => {
             </button>
             {/* fire page */}
             {isActive && (  
-              <div className="justify-center flex overflow-x-hidden overflow-y-auto absolute z-30 inset-0 right-[25%] left-[25%] top-5 bottom-28 bgF ">
+              <div className="justify-center flex overflow-x-hidden overflow-y-auto absolute z-30 inset-0 right-[25%] left-[25%] top-5 bottom-[10%] bgF ">
                 <div className=" flex flex-col items-center">
                   <div className="flex flex-row">
                     <div className=" absolute inset-0 left-2 top-2 hover:cursor-pointer w-10 h-10" onClick={()=>setIsActive(!isActive)}><img className=" w-10 h-10" src={require("../image/close.png")}/></div>
