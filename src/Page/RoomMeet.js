@@ -292,6 +292,7 @@ const RoomMeet = (props) => {
 
   {/* toggle */}  
   const [enabled, setEnabled] = useState(false)
+  const [camera, setCamera] = useState(false);
 
   {/*expand video */}
   const [isExpanded, setIsExpanded] = useState(false);
@@ -726,14 +727,19 @@ const RoomMeet = (props) => {
             </div>
           </div>
           <div>
-            <button onClick={() => {setEnabled(!enabled
-              );}} className="absolute h-[80px] w-[80px] right-[5%] top-[10%] hover:scale-105">
+            <button onClick={() => {setEnabled(!enabled); setCamera(!camera); }} className="absolute h-[80px] w-[80px] right-[5%] top-[10%] hover:scale-105">
               <div className="absolute rounded-sm w-[45px] h-[45px] rotate-45 z-0 top-[15%] left-[15%] bgM "></div>
               <img className=" absolute z-20 left-[13%] top-0 w-[50px] h-[50px]" src={require("../image/camera.png")} alt=""></img>
               <div className=" buttonG absolute z-10 bottom-0 w-[70px] h-[23px] rounded-md">
-                <p className=" text-[18px] text-[#F4C43E] text-center">
-                  แชร์โต๊ะ
-                </p>
+                {camera ? (
+                  <p className=" text-[18px] text-[#F4C43E] text-center">
+                    หยุดแชร์
+                  </p>
+                )  : (
+                  <p className=" text-[18px] text-[#F4C43E] text-center">
+                    แชร์โต๊ะ
+                  </p>
+                )}
               </div>
             </button>
           </div>
@@ -833,7 +839,7 @@ const RoomMeet = (props) => {
               <div className="justify-center flex overflow-x-hidden overflow-y-auto absolute z-30 inset-0 right-[25%] left-[25%] top-5 bottom-[10%] bgF ">
                 <div className=" flex flex-col items-center">
                   <div className="flex flex-row">
-                    <div className=" absolute inset-0 left-2 top-2 hover:cursor-pointer w-10 h-10" onClick={()=>setIsActive(!isActive)}><img className=" w-10 h-10" src={require("../image/close.png")}/></div>
+                    <div className=" absolute inset-0 left-2 top-2 hover:cursor-pointer hover:scale-110 w-10 h-10" onClick={()=>setIsActive(!isActive)}><img className=" w-10 h-10" src={require("../image/close.png")}/></div>
                     <div className="relative mt-14 h-96 w-96 rounded-md shadow-xl" droppable onDragOver={draggingOver} onDrop={dragDropped}> {/* fire (drop)*/}
                       <img className="absolute w-96 h-96 rounded-md" src={require("../image/fireplace-fire.gif")}></img>
                       <img className="absolute w-96 h-96 rounded-md hover:-translate-y-28 hover:h-[500px] hover:delay-200" src={require("../image/fireplace-fire.gif")}/>
@@ -868,16 +874,17 @@ const RoomMeet = (props) => {
               {/* toolbar*/}
               <button class=" w-12 h-9" onClick={() => setVideo(!isVideo)}>
                 {isVideo ? (
+                <img
+                    className=" w-6 h-6"
+                    src={require("../image/no-video.png")}
+                    alt="no video"
+                  ></img>
+                  
+                ) : (
                   <img
                     className=" w-6 h-6"
                     src={require("../image/video.png")}
                     alt="video"
-                  ></img>
-                ) : (
-                  <img
-                    className=" w-6 h-6"
-                    src={require("../image/no-video.png")}
-                    alt="no video"
                   ></img>
                 )}
               </button>
