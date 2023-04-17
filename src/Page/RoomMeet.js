@@ -61,7 +61,7 @@ const RoomMeet = (props) => {
   const [backendData, setBackendData] = useState([{}]);
   const location = useLocation();
   const roomID = location.state.roomId;
-  const userID = location.state.username;
+  const userName = location.state.username;
 
   function fetchData() {
     fetch(`/cart/${roomID}`)
@@ -154,14 +154,17 @@ const RoomMeet = (props) => {
   const socketRef = useRef();
   const userVideo = useRef();
   const peersRef = useRef([]);
+  const [members, setMembers] = useState([]);
 
+  //run local เปลี่ยนเป็น http://localhost:8080 ใน io.connect
+  //run deploy https://functions-3die6uyrca-as.a.run.app
   useEffect(() => {
     socketRef.current = io.connect("http://localhost:8080");
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then((stream) => {
         userVideo.current.srcObject = stream;
-        socketRef.current.emit("join room", roomID);
+        socketRef.current.emit("join room", {roomID,userName});
         socketRef.current.on("all users", (users) => {
           const peers = [];
           users.forEach((userID) => {
@@ -173,6 +176,7 @@ const RoomMeet = (props) => {
             peers.push(peer);
           });
           setPeers(peers);
+          console.log(peers);
         });
 
         socketRef.current.on("user joined", (payload) => {
@@ -184,6 +188,12 @@ const RoomMeet = (props) => {
 
           setPeers((users) => [...users, peer]);
         });
+
+        socketRef.current.emit("update member",roomID);
+        socketRef.current.on("member in room",(membernames)=>{
+          console.log(membernames)
+          setMembers(membernames);
+        })
 
         socketRef.current.on("receiving returned signal", (payload) => {
           const item = peersRef.current.find((p) => p.peerID === payload.id);
@@ -285,7 +295,7 @@ const RoomMeet = (props) => {
     console.log("Dragging Over now", itemId)
   }
   const dragDropped=()=>{
-    socketRef.current.emit("delete",{itemId, roomID});
+    socketRef.current.emit("delete",{pid:itemId, roomID});
     fetchData();
     console.log("droped" ,itemId)
   }
@@ -745,8 +755,9 @@ const RoomMeet = (props) => {
           </div>
           {enabled && (
             <div className=" z-10 bg-white w-[650px] h-[433px] absolute top-[30%] left-[28%]">
-              <button className=" absolute right-[3%] top-[5%] w-[45px] h-[45px]" onClick={() =>setEnabled(false) }><img className=" w-[45px] h-[45px]" src={require("../image/close.png")}/></button>
-              share video
+              {/*<button className=" absolute right-[3%] top-[5%] w-[45px] h-[45px]" onClick={() =>setEnabled(false) }><img className=" w-[45px] h-[45px]" src={require("../image/close.png")}/></button>
+              share video*/}
+
             </div>
           )}
           
@@ -937,13 +948,27 @@ const RoomMeet = (props) => {
               </button>
               {member && (
                 <div className=" z-50 w-[200px] h-[250px] bg-[#F4C43E] border-[2px] border-[#A80109] shadow-md absolute bottom-20 right-[13.5%] rounded-sm ">
-                  <p className=" absolute top-[1%] left-[34%] text-[18px] text-center">สมาชิก({/*number in room */})</p>
+                  <p className=" absolute top-[1%] left-[34%] text-[18px] text-center">สมาชิก({members.length})</p>
                   {/* <div className="w-[180px] h-[1px] border-[1px] border-[#8C8581] opacity-10 absolute top-[12.5%] left-[3%]"></div> */}
                   <div className="overflow-hidden hover:overflow-y-auto  "> 
-                    <div className=" absolute top-[15%]  flex flex-col divide-y-[1px] divide-[#8C8581] w-[200px] h-[30px] shadow-md p-[4px] "> 
-                      <div className=" ">
-                        {/*member in meething */}
-                        piyawan kornthong
+                    <div className=" absolute top-[15%]  flex flex-col gap-2 divide-y-[1px] divide-[#8C8581] w-[200px] h-[30px] "> 
+                      <div className="overflow-hidden hover:overflow-y-auto">
+                        <div className="flex flex-col gap-2 items-start pl-1">
+                    
+                          {/*member in meething */}
+                              {typeof members === "undefined" ? (   
+                              <div className=" flex flex-col justify-center items-center">
+                                <svg class="animate-spin h-5 w-5  rounded-full border-4 border-slate-600 border-r-transparent" viewBox="0 0 24 24"></svg> 
+                                <p>Loading</p>
+                              </div>
+                            ) : (  
+                              members.map((data,i) => 
+                                <button key={i}>
+                                  {data}
+                                </button> 
+                              )        
+                            )} 
+                        </div>
                       </div>
                     </div>
                   </div>  

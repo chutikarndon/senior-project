@@ -26,9 +26,11 @@ const { getFirestore, initializeFirestore } = require("firebase-admin/firestore"
 
 // const db = getFirestore();
 
-
+//run local เปลี่ยนเป็น http://localhost:3000 ใน origin
+//deploy ใช้ https://web-app-for-awc-1061d.web.app
 const io = require("socket.io")(http, {
   cors: {
+    origin:"http://localhost:3000",
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -36,29 +38,38 @@ const io = require("socket.io")(http, {
 
 let interval;
 
-const users = {};
+const users = {}
+
+const usersName = {};
 
 const socketToRoom = {};
 
 const cart = {};
 
 io.on("connection", (socket) => {
-  socket.on("join room", (roomID) => {
-    if (users[roomID]) {
-      const length = users[roomID].length;
+  socket.on("join room", (data) => {
+    if (users[data.roomID]) {
+      const length = users[data.roomID].length;
       if (length === 10) {
         socket.emit("room full");
         return;
       }
-      users[roomID].push(socket.id);
+      users[data.roomID].push(socket.id);
+      usersName[data.roomID].push(data.userName);
     } else {
-      users[roomID] = [socket.id];
+      users[data.roomID] = [socket.id];
+      usersName[data.roomID] = [data.userName];
     }
-    socketToRoom[socket.id] = roomID;
-    const usersInThisRoom = users[roomID].filter((id) => id !== socket.id);
+    socketToRoom[socket.id] = data.roomID;
+    const usersInThisRoom = users[data.roomID].filter((id) => id !== socket.id);
 
     socket.emit("all users", usersInThisRoom);
   });
+
+  socket.on("update member", (roomID) => {
+    const members = usersName[roomID];
+    socket.emit("member in room", members)
+  })
 
   socket.on("sending signal", (payload) => {
     io.to(payload.userToSignal).emit("user joined", {
@@ -111,6 +122,7 @@ const allowedOrigins = [
   "http://localhost:8080",
   "http://localhost:8100",
   "http://localhost:3000",
+  "https://web-app-for-awc-1061d.web.app"
 ];
 
 // Reflect the origin if it's in the allowed list or not defined (cURL, Postman, etc.)
