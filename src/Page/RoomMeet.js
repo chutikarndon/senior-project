@@ -58,18 +58,17 @@ const RoomMeet = (props) => {
   const [isVideo, setVideo] = useState(false);
   const [chat, setChat] = useState(false);
   const [openMenu, setOpenMenu] = useState(false); {/* open menu user and chat */}
-  const [backendData, setBackendData] = useState([{}]);
   const location = useLocation();
   const roomID = location.state.roomId;
   const userName = location.state.username;
 
-  function fetchData() {
+  /*function fetchData() {
     fetch(`/cart/${roomID}`)
       .then((response) => response.json())
       .then((data) => {
         setBackendData(data);
       });
-  }
+  }*/
 
   const [productsData, setProductsData] = useState([{}]);
   useEffect(() => {
@@ -155,6 +154,7 @@ const RoomMeet = (props) => {
   const userVideo = useRef();
   const peersRef = useRef([]);
   const [members, setMembers] = useState([]);
+  const [cartData, setCartData] = useState([{}]);
 
   //run local เปลี่ยนเป็น http://localhost:8080 ใน io.connect
   //run deploy https://functions-3die6uyrca-as.a.run.app
@@ -176,7 +176,6 @@ const RoomMeet = (props) => {
             peers.push(peer);
           });
           setPeers(peers);
-          console.log(peers);
         });
 
         socketRef.current.on("user joined", (payload) => {
@@ -189,10 +188,19 @@ const RoomMeet = (props) => {
           setPeers((users) => [...users, peer]);
         });
 
+        socketRef.current.emit("show shared video",{roomID,enabled});
+        socketRef.current.on("show to all user",(isShow)=>{
+          setEnabled(isShow)})
+      
+
         socketRef.current.emit("update member",roomID);
         socketRef.current.on("member in room",(membernames)=>{
-          console.log(membernames)
           setMembers(membernames);
+        })
+
+        socketRef.current.emit("update cart",roomID);
+        socketRef.current.on("cart in room",(cartdata)=>{
+          setCartData(cartdata);
         })
 
         socketRef.current.on("receiving returned signal", (payload) => {
@@ -205,6 +213,20 @@ const RoomMeet = (props) => {
     };
   }, []);
 
+  useEffect(() => {
+    socketRef.current.emit("update member",roomID);
+        socketRef.current.on("member in room",(membernames)=>{
+          setMembers(membernames);
+        })
+  }, [socketRef, members]);
+
+  useEffect(() => {
+    socketRef.current.emit("update cart",roomID);
+        socketRef.current.on("cart in room",(cartdata)=>{
+          setCartData(cartdata);
+        })
+  }, [socketRef,cartData])
+  
   function createPeer(userToSignal, callerID, stream) {
     const peer = new Peer({
       initiator: true,
@@ -239,12 +261,42 @@ const RoomMeet = (props) => {
     return peer;
   }
 
+  /*member name*/
+  
+
   /*tab menu */
   const [isMenu, setMenu] = useState(false);
   const [openTab, setOpenTab] = React.useState(1);
-  const handleClick = (e) => {
+  function handleClick(e){
     const id = e.currentTarget.id;
-    socketRef.current.emit("collect", { id, roomID });
+    if (e.currentTarget.value === "food") {
+      if(cartData.food.length < 6 ){
+        socketRef.current.emit("collect", { id, roomID });
+      }
+      else{
+        alert("สามารถเลือกของคาวได้ไม่เกิน 6 ชิ้น");
+    }
+    }
+    else if (e.currentTarget.value === "fruit"){
+      if(cartData.fruit.length < 6){
+      socketRef.current.emit("collect", { id, roomID });
+    }
+      else{
+        alert("สามารถเลือกผลไม้และของหวานได้ไม่เกิน 6 ชิ้น");
+    }
+    }
+    else if (e.currentTarget.value === "paper"){
+      if(cartData.paper.length < 6){
+      socketRef.current.emit("collect", { id, roomID });
+    }
+      else{
+        alert("สามารถเลือกกระดาษเงินกระดาษทองได้ไม่เกิน 6 ชิ้น");
+    }
+    }
+    
+    
+    
+    
   };
 
   const [pid, setPid] = useState(0);
@@ -256,7 +308,6 @@ const RoomMeet = (props) => {
   };
   const handleDelete = () => {
     socketRef.current.emit("delete", { pid, roomID });
-    fetchData();
     setIsDeleteMenuOpen(false);
   };
 
@@ -296,7 +347,6 @@ const RoomMeet = (props) => {
   }
   const dragDropped=()=>{
     socketRef.current.emit("delete",{pid:itemId, roomID});
-    fetchData();
     console.log("droped" ,itemId)
   }
 
@@ -304,9 +354,21 @@ const RoomMeet = (props) => {
   const [enabled, setEnabled] = useState(false)
   const [camera, setCamera] = useState(false);
 
+  function shareVideo(IsEnabled){
+      socketRef.current.emit("show shared video",{roomID,IsEnabled});
+      socketRef.current.on("show to all user",(isShow)=>{
+          setEnabled(isShow)})
+      }
+
+  const handleClickShare = ()=>{
+    setEnabled(!enabled); 
+    setCamera(!camera);  
+    shareVideo(!enabled);
+  }
+
+
   {/*expand video */}
   const [isExpanded, setIsExpanded] = useState(false);
-
 
   return (
     <div className=" backgroundRoommeet bg-repeat bg-cover">
@@ -385,7 +447,6 @@ const RoomMeet = (props) => {
                           onClick={e => {
                             e.preventDefault();
                             setOpenTab(4);
-                            fetchData()
                           }}                
                             data-toggle="tab"
                             href="#link4"
@@ -459,8 +520,9 @@ const RoomMeet = (props) => {
                                       <button
                                         key={i}
                                         className=" flex flex-col items-center container bg-[#E9A327] border-[1px] border-[#AF010A] rounded transition ease-in-out hover:bg-red-100 shadow-xl active:bg-red-100"
-                                        onClick={handleClick}
+                                        onClick= {(e) => { handleClick(e);}}
                                         id={data.id}
+                                        value="food"
                                       >
                                         <img
                                           className=" w-[120px] h-[120px] p-2"
@@ -520,8 +582,9 @@ const RoomMeet = (props) => {
                                       <button
                                         key={i}
                                         className=" flex flex-col items-center container bg-[#E9A327] border-[1px] border-[#AF010A] rounded transition ease-in-out hover:bg-red-100 shadow-xl active:bg-red-100"
-                                        onClick={handleClick}
+                                        onClick={(e) => {handleClick(e); }}
                                         id={data.id}
+                                        value="fruit"
                                       >
                                         <img
                                           className=" w-[120px] h-[120px] p-2"
@@ -635,8 +698,9 @@ const RoomMeet = (props) => {
                                       <button
                                         key={i}
                                         className=" flex flex-col items-center container bg-[#E9A327] border-[1px] border-[#AF010A] rounded transition ease-in-out hover:bg-red-100 shadow-xl active:bg-red-100"
-                                        onClick={handleClick}
+                                        onClick={(e) => {handleClick(e); }}
                                         id={data.id}
+                                        value="paper"
                                       >
                                         <img
                                           className=" w-[120px] h-[120px] p-2"
@@ -663,10 +727,10 @@ const RoomMeet = (props) => {
                                 {" "}
                                 {/* create delete button */}
                                 <div className=" grid grid-cols-5 gap-3 text-xs">
-                                  {typeof backendData.roomCart === "undefined" ? (
+                                  {typeof cartData.roomCart === "undefined" ? (
                                     <p>Loading...</p>
                                   ) : (
-                                    backendData.roomCart.map((data, i) => (
+                                    cartData.roomCart.map((data, i) => (
                                       <button
                                         key={i}
                                         className=" flex flex-col items-center container bg-[#E9A327] border-[1px] border-[#AF010A] rounded transition ease-in-out hover:bg-red-100 shadow-xl "
@@ -737,7 +801,7 @@ const RoomMeet = (props) => {
             </div>
           </div>
           <div>
-            <button onClick={() => {setEnabled(!enabled); setCamera(!camera); }} className="absolute h-[80px] w-[80px] right-[5%] top-[10%] hover:scale-105">
+            <button onClick={ handleClickShare } className="absolute h-[80px] w-[80px] right-[5%] top-[10%] hover:scale-105">
               <div className="absolute rounded-sm w-[45px] h-[45px] rotate-45 z-0 top-[15%] left-[15%] bgM "></div>
               <img className=" absolute z-20 left-[13%] top-0 w-[50px] h-[50px]" src={require("../image/camera.png")} alt=""></img>
               <div className=" buttonG absolute z-10 bottom-0 w-[70px] h-[23px] rounded-md">
@@ -754,10 +818,11 @@ const RoomMeet = (props) => {
             </button>
           </div>
           {enabled && (
-            <div className=" z-10 bg-white w-[650px] h-[433px] absolute top-[30%] left-[28%]">
+            <div className=" z-40 w-[650px] h-[433px] absolute top-[30%] left-[28%]">
               {/*<button className=" absolute right-[3%] top-[5%] w-[45px] h-[45px]" onClick={() =>setEnabled(false) }><img className=" w-[45px] h-[45px]" src={require("../image/close.png")}/></button>
               share video*/}
-
+              {" "}
+              <video ref={userVideo} muted={true} autoPlay={true} />
             </div>
           )}
           
@@ -766,18 +831,18 @@ const RoomMeet = (props) => {
           {" "}
           {/* middle*/}
           <div className=" flex justify-center w-2/5  h-full rounded-full">
-            <div className=" flex flex-col justify-center items-center absolute z-0 bg-[#F4C43E] w-[645px] h-[428px] top-[30%] rounded-lg shadow-md shadow-[#F4C43E] ">
+            <div className=" flex flex-col justify-center items-center absolute bg-[#F4C43E] w-[645px] h-[428px] top-[30%] rounded-lg shadow-md shadow-[#F4C43E] ">
               <div>
                 <div className=" grid grid-cols-6 gap-3 text-xs absolute top-[2%] left-[2%]">
                   {" "}
                   {/*อาหารคาว*/}
-                  {typeof backendData.food === "undefined" ? (   
+                  {typeof cartData.food === "undefined" ? (   
                     <div className=" flex flex-col justify-center items-center">
                       <svg class="animate-spin h-5 w-5  rounded-full border-4 border-slate-600 border-r-transparent" viewBox="0 0 24 24"></svg> 
                       <p>Loading</p>
                     </div>
                     ) : (  
-                        backendData.food.map((data,i) =>
+                      cartData.food.map((data,i) =>
                           <button key={i}>
                             <img className="w-[90px] h-[90px] " key={i} src={data.imageUrl} alt=""/>
                           </button> 
@@ -787,13 +852,13 @@ const RoomMeet = (props) => {
                 <div className=" grid grid-cols-6 gap-3 text-xs absolute top-[22%] left-[2%]">
                   {" "}
                   {/*ของหวาน*/}
-                  {typeof backendData.fruit === "undefined" ? (   
+                  {typeof cartData.fruit === "undefined" ? (   
                     <div className=" flex flex-col justify-center items-center">
                       <svg class="animate-spin h-5 w-5  rounded-full border-4 border-slate-600 border-r-transparent" viewBox="0 0 24 24"></svg> 
                       <p>Loading</p>
                     </div>
                     ) : (  
-                        backendData.fruit.map((data,i) =>
+                      cartData.fruit.map((data,i) =>
                           <button key={i}>
                             <img className="w-[90px] h-[90px] " key={i} src={data.imageUrl} alt=""/>
                           </button> 
@@ -803,13 +868,13 @@ const RoomMeet = (props) => {
                 <div className=" grid grid-cols-6 gap-3 text-xs absolute top-[45%] left-[2%]">
                   {" "}
                   {/*เครื่องกระดาษ*/}
-                  {typeof backendData.paper === "undefined" ? (   
+                  {typeof cartData.paper === "undefined" ? (   
                     <div className=" flex flex-col justify-center items-center">
                       <svg class="animate-spin h-5 w-5  rounded-full border-4 border-slate-600 border-r-transparent" viewBox="0 0 24 24"></svg> 
                       <p>Loading</p>
                     </div>
                     ) : (  
-                        backendData.paper.map((data,i) =>
+                      cartData.paper.map((data,i) =>
                           <button key={i}>
                             <img className=" w-[90px] h-[90px] " key={i} src={data.imageUrl} alt=""/>
                           </button> 
@@ -858,13 +923,13 @@ const RoomMeet = (props) => {
                   </div>    
                   <div className="  pb-3 w-[700px] h-[120px] bg-[#ECD9B8] border-2 border-[#FCC5BB] absolute bottom-5 shadow-lg">
                     <div className=" p-2 flex flex-row gap-3">  {/*เครื่องกระดาษ drag*/}  
-                      {typeof backendData.paper === "undefined" ? (   
+                      {typeof cartData.paper === "undefined" ? (   
                         <div className=" flex flex-col justify-center items-center">
                           <svg class="animate-spin h-5 w-5  rounded-full border-4 border-slate-600 border-r-transparent" viewBox="0 0 24 24"></svg> 
                           <p>Loading</p>
                         </div>
                       ) : (  
-                        backendData.paper.map((data,i) => 
+                        cartData.paper.map((data,i) => 
                           <button key={i} id={data.id} draggable onDragStart={()=>dragStarted(data.id) 
                           }>
                             <img id={data.id} className="w-[100px] h-[100px] " key={i} src={data.imageUrl} alt=""/>
@@ -951,7 +1016,7 @@ const RoomMeet = (props) => {
                   <p className=" absolute top-[1%] left-[34%] text-[18px] text-center">สมาชิก({members.length})</p>
                   {/* <div className="w-[180px] h-[1px] border-[1px] border-[#8C8581] opacity-10 absolute top-[12.5%] left-[3%]"></div> */}
                   <div className="overflow-hidden hover:overflow-y-auto  "> 
-                    <div className=" absolute top-[15%]  flex flex-col gap-2 divide-y-[1px] divide-[#8C8581] w-[200px] h-[30px] "> 
+                    <div className=" absolute top-[15%]  flex flex-col gap-2 divide-y-[1px] divide-[#8C8581] w-[196px] h-[200px] "> 
                       <div className="overflow-hidden hover:overflow-y-auto">
                         <div className="flex flex-col gap-2 items-start pl-1">
                     
@@ -984,7 +1049,8 @@ const RoomMeet = (props) => {
             </div>
             <div className="box-content h-32 w-44  p-2 ">
               {" "}
-              {/* video me*/}
+              {/* video me
+              */}
               <video ref={userVideo} muted={true} autoPlay={true} />
             </div>
           </div>

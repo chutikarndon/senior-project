@@ -30,7 +30,7 @@ const { getFirestore, initializeFirestore } = require("firebase-admin/firestore"
 //deploy ใช้ https://web-app-for-awc-1061d.web.app
 const io = require("socket.io")(http, {
   cors: {
-    origin:"http://localhost:3000",
+    origin:["http://localhost:3000","https://web-app-for-awc-1061d.web.app"],
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -46,6 +46,8 @@ const socketToRoom = {};
 
 const cart = {};
 
+const isShareVideo = {};
+
 io.on("connection", (socket) => {
   socket.on("join room", (data) => {
     if (users[data.roomID]) {
@@ -56,9 +58,11 @@ io.on("connection", (socket) => {
       }
       users[data.roomID].push(socket.id);
       usersName[data.roomID].push(data.userName);
+      isShareVideo[data.roomID] = true;
     } else {
       users[data.roomID] = [socket.id];
       usersName[data.roomID] = [data.userName];
+      isShareVideo[data.roomID] = true;
     }
     socketToRoom[socket.id] = data.roomID;
     const usersInThisRoom = users[data.roomID].filter((id) => id !== socket.id);
@@ -69,6 +73,26 @@ io.on("connection", (socket) => {
   socket.on("update member", (roomID) => {
     const members = usersName[roomID];
     socket.emit("member in room", members)
+  })
+
+  socket.on("update cart", async (roomID) => {
+    cartdata = await getCartData(roomID);
+    socket.emit("cart in room", cartdata)
+  })
+
+  socket.on("show shared video", (data) => {
+    let isShow = data.enabled;
+    if(isShareVideo[data.roomID]) {
+      isShareVideo[data.roomID] = false
+      isShow = false
+    }
+    else {
+      isShareVideo[data.roomID] = true
+      isShow = true
+    }
+    console.log(data.roomID,":",isShow)
+    console.log(isShareVideo[data.roomID])
+    socket.broadcast.emit("show to all user", isShow)
   })
 
   socket.on("sending signal", (payload) => {
@@ -88,17 +112,22 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     const roomID = socketToRoom[socket.id];
     let room = users[roomID];
+    //let member = usersName[roomID];
     if (room) {
       room = room.filter((id) => id !== socket.id);
       users[roomID] = room;
     }
+    /*if (member) {
+      member = member.filter((name) => name !== userName);
+    }*/
   });
 
   socket.on("collect", (data) => {
     if (cart[data.roomID]) {
       const roomCart = cart[data.roomID];
       roomCart.push(data.id);
-    } else {
+    }
+      else {
       cart[data.roomID] = [data.id];
     }
   });
@@ -170,11 +199,15 @@ app.get("/festival", function (req, res) {
   console.log("Hello")
 });
 
-app.get("/cart/:roomID", async (req, res) => {
+async function getCartData(roomID){
   const dbProducts = db.collection("products");
-  const _id = req.params.roomID;
-  let roomCart, products, paper, fruit, food = [];
-  
+  const _id = roomID;
+  let roomCart  = [];
+  let products = [];
+  let paper = [];
+  let fruit = [];
+  let food = [];
+
   if (cart[_id]) {
     roomCart = cart[_id];
     const promises = roomCart.map(async (pid) => {
@@ -196,11 +229,13 @@ app.get("/cart/:roomID", async (req, res) => {
   }
   else{
     roomCart = []
+    paper = []
+    fruit = []
+    food = []
   }
-  res.json({
-    roomCart,paper,fruit,food
-  });
-});
+  return { roomCart,paper,fruit,food }
+  
+};
 
 app.get("/getProducts", cors(), async (req, res) => {
   cors();
