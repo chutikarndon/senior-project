@@ -29,8 +29,8 @@ const Container = styled.div`
 `;
 
 const StyledVideo = styled.video`
-  height: 13%;
-  width: 13%;
+  height: 55%;
+  width: 55%;
 `;
 
 const Video = (props) => {
@@ -159,7 +159,7 @@ const RoomMeet = (props) => {
   //run local เปลี่ยนเป็น http://localhost:8080 ใน io.connect
   //run deploy https://functions-3die6uyrca-as.a.run.app
   useEffect(() => {
-    socketRef.current = io.connect("http://localhost:8080");
+    socketRef.current = io.connect("https://functions-3die6uyrca-as.a.run.app");
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then((stream) => {
@@ -176,6 +176,7 @@ const RoomMeet = (props) => {
             peers.push(peer);
           });
           setPeers(peers);
+          console.log(peers);
         });
 
         socketRef.current.on("user joined", (payload) => {
@@ -186,6 +187,7 @@ const RoomMeet = (props) => {
           });
 
           setPeers((users) => [...users, peer]);
+          console.log(peers);
         });
 
         socketRef.current.emit("show shared video",{roomID,enabled});
@@ -788,17 +790,38 @@ const RoomMeet = (props) => {
           </div>
           <div className=" overflow-x-auto  ">
             {" "}
+          {enabled ? (
+            <div className=" z-40 w-[650px] h-[433px] absolute top-[30%] left-[28%]">
+              {/*<button className=" absolute right-[3%] top-[5%] w-[45px] h-[45px]" onClick={() =>setEnabled(false) }><img className=" w-[45px] h-[45px]" src={require("../image/close.png")}/></button>*/}
+              {peers.map((peer, index) => {
+                return <div>
+                {" "}
+                {/* video other
+                */}
+                <Video key={index} peer={peer} />
+              </div>;
+              })}
+            </div>
+          ):(
+            <div className=" flex flex-row gap-3 p-2">
+              {peers.map((peer, index) => {
+                return <div>{" "} <Video key={index} peer={peer} ref={userVideo} autoPlay playsInline/></div>;
+              })}
+            </div>
+          )
+          }
+            
             {/* other user*/}
             {/* <div className=" flex flex-row w-96">
               <div className="w-44 h-32" muted ref={userVideo} autoPlay playsInline />
               
             </div> */}
-            <div className=" flex flex-row gap-3 p-2">
+            {/*<div className=" flex flex-row gap-3 p-2">
               <StyledVideo muted ref={userVideo} autoPlay playsInline />
               {peers.map((peer, index) => {
                 return <Video key={index} peer={peer} />;
               })}
-            </div>
+            </div>*/}
           </div>
           <div>
             <button onClick={ handleClickShare } className="absolute h-[80px] w-[80px] right-[5%] top-[10%] hover:scale-105">
@@ -817,14 +840,7 @@ const RoomMeet = (props) => {
               </div>
             </button>
           </div>
-          {enabled && (
-            <div className=" z-40 w-[650px] h-[433px] absolute top-[30%] left-[28%]">
-              {/*<button className=" absolute right-[3%] top-[5%] w-[45px] h-[45px]" onClick={() =>setEnabled(false) }><img className=" w-[45px] h-[45px]" src={require("../image/close.png")}/></button>
-              share video*/}
-              {" "}
-              <video ref={userVideo} muted={true} autoPlay={true} />
-            </div>
-          )}
+          
           
         </div>
         <div className=" flex justify-center">
@@ -1047,12 +1063,18 @@ const RoomMeet = (props) => {
                 ></img>
               </button>
             </div>
+            {camera ? (
+            <div className=" z-40 w-[650px] h-[433px] absolute top-[30%] left-[28%]">
+              {" "}
+              <video ref={userVideo} muted={true} autoPlay={true} />
+            </div>
+            ) : (
             <div className="box-content h-32 w-44  p-2 ">
               {" "}
               {/* video me
               */}
               <video ref={userVideo} muted={true} autoPlay={true} />
-            </div>
+            </div>)}
           </div>
         </div>
         {/* <div class="main-wrapper">
