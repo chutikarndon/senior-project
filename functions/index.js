@@ -22,6 +22,7 @@ const { initializeApp } = require('firebase-admin/app')
 
 const admin = require('firebase-admin');
 const { getFirestore, initializeFirestore } = require("firebase-admin/firestore")
+const { query, orderBy, limit } = require("firebase/firestore"); 
 // admin.initializeApp();
 
 // const db = getFirestore();
@@ -194,9 +195,18 @@ exports.bangkok = functions.https.onRequest((req, res) => { return res.status(20
     );
 });
 
-app.get("/festival", function (req, res) {
-  res.json({ festival: ["NewYear", "Tomb Sweeping"] });
-  console.log("Hello")
+
+
+app.get("/festival", async function (req, res) {
+  const dbFestival = db.collection("Festival");
+  const nearFestivalInfo = await dbFestival.orderBy('festivalDate','desc').limit(1).get();
+  const festival = nearFestivalInfo.docs[0].data();
+  const name = festival.festivalName;
+  const date = festival.festivalDate.toDate();
+  console.log(festival.festivalName);
+  res.status(200).json({
+    date,name
+  });
 });
 
 async function getCartData(roomID){

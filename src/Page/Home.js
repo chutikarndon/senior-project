@@ -33,15 +33,17 @@ const Header = () => {
     )
   }, [])
 
+  console.log(backendData.date)
+
   const [openTab, setOpenTab] = useState(1);
 
-  const THREE_DAYS_IN_MS = 3 * 24 * 60 * 60 * 1000;
+  const FESTIVAL_DAYS_IN_MS = new Date(backendData.date).getTime()
 
   const NOW_IN_MS = new Date().getTime();
 
-  const dateTimeAfterThreeDays = NOW_IN_MS + THREE_DAYS_IN_MS;
+  const dateTimeAfterThreeDays = FESTIVAL_DAYS_IN_MS;
   
-
+  // const option = {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'};
   return (
     // <div className="flex flex-col items-center">
     //   <div className=" container mx-auto">
@@ -150,8 +152,8 @@ const Header = () => {
     // </div>
 
     <div className=" backgroundHome bg-repeat bg-cover h-screen">
-      <p className='absolute text-[80px] top-[18%] left-[41.5%] text-[#A30709]'>วันตรุษจีน</p>
-      <p className='absolute text-[50px] top-[35%] left-[40%] text-[#655F5B]'>21 มกราคม 2566</p>
+      <p className='absolute text-[80px] top-[18%] left-[41.5%] text-[#A30709]'>{backendData.name}</p>
+      <p className='absolute text-[50px] top-[35%] left-[40%] text-[#655F5B]'>{backendData.date}</p>
       <div className=' absolute flex flex-row top-[53%] left-[31%] w-[550px]'>
         <div className=' absolute text-[78px] text-[#A30709]'>อีก</div>
         <div className=" absolute left-[25.5%]">

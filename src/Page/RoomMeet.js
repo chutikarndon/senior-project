@@ -29,8 +29,8 @@ const Container = styled.div`
 `;
 
 const StyledVideo = styled.video`
-  height: 55%;
-  width: 55%;
+  height: 50%;
+  width: 50%;
 `;
 
 const Video = (props) => {
@@ -159,7 +159,7 @@ const RoomMeet = (props) => {
   //run local เปลี่ยนเป็น http://localhost:8080 ใน io.connect
   //run deploy https://functions-3die6uyrca-as.a.run.app
   useEffect(() => {
-    socketRef.current = io.connect("https://functions-3die6uyrca-as.a.run.app");
+    socketRef.current = io.connect("http://localhost:8080");
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then((stream) => {
@@ -788,28 +788,23 @@ const RoomMeet = (props) => {
               }
             </div>
           </div>
-          <div className=" overflow-x-auto  ">
-            {" "}
-          {enabled ? (
-            <div className=" z-40 w-[650px] h-[433px] absolute top-[30%] left-[28%]">
-              {/*<button className=" absolute right-[3%] top-[5%] w-[45px] h-[45px]" onClick={() =>setEnabled(false) }><img className=" w-[45px] h-[45px]" src={require("../image/close.png")}/></button>*/}
-              {peers.map((peer, index) => {
-                return <div>
-                {" "}
-                {/* video other
-                */}
-                <Video key={index} peer={peer} />
-              </div>;
-              })}
-            </div>
-          ):(
-            <div className=" flex flex-row gap-3 p-2">
-              {peers.map((peer, index) => {
-                return <div>{" "} <Video key={index} peer={peer} ref={userVideo} autoPlay playsInline/></div>;
-              })}
-            </div>
-          )
-          }
+          <div className=" overflow-x-auto pl-36 pr-36 ">
+            {enabled ? (
+              <div className=" z-40 w-[650px] h-[433px] absolute top-[30%] left-[28%]">
+                {peers.map((peer, index) => {
+                  return <div>
+                  {/* video other*/}
+                  <Video key={index} peer={peer} />
+                </div>;
+                })}
+              </div>
+            ):(
+              <div className=" flex flex-row ">
+                {peers.map((peer, index) => {
+                  return <div className=" w-[30%] h-[30%]"> <Video  key={index} peer={peer} ref={userVideo} autoPlay /></div>;
+                })}
+              </div>
+            )}
             
             {/* other user*/}
             {/* <div className=" flex flex-row w-96">
