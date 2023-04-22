@@ -7,7 +7,7 @@ import "../incenseBurner.css";
 // import { Animate } from "react-simple-animate";
 // import logo from "../logo.svg";
 import { makeStyles } from "@material-ui/core";
-import { useLocation } from "react-router-dom";
+import { useLocation,useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 import Peer from "simple-peer";
 import styled from "styled-components";
@@ -61,6 +61,7 @@ const RoomMeet = (props) => {
   const location = useLocation();
   const roomID = location.state.roomId;
   const userName = location.state.username;
+  let navigate = useNavigate();
 
   /*function fetchData() {
     fetch(`/cart/${roomID}`)
@@ -155,6 +156,8 @@ const RoomMeet = (props) => {
   const peersRef = useRef([]);
   const [members, setMembers] = useState([]);
   const [cartData, setCartData] = useState([{}]);
+  const [sharePeerId, setSharePeerId] = useState()
+  const [sharePeer, setSharePeer] = useState()
 
   //run local เปลี่ยนเป็น http://localhost:8080 ใน io.connect
   //run deploy https://functions-3die6uyrca-as.a.run.app
@@ -173,10 +176,12 @@ const RoomMeet = (props) => {
               peerID: userID,
               peer,
             });
-            peers.push(peer);
+            peers.push({
+              peerID: userID,
+              peer,
+            });
           });
           setPeers(peers);
-          console.log(peers);
         });
 
         socketRef.current.on("user joined", (payload) => {
@@ -185,14 +190,25 @@ const RoomMeet = (props) => {
             peerID: payload.callerID,
             peer,
           });
+          const peerObj = {
+            peer,
+            peerID: payload.callerID
+          }
 
-          setPeers((users) => [...users, peer]);
-          console.log(peers);
+          setPeers((users) => [...users, peerObj]);
         });
 
         socketRef.current.emit("show shared video",{roomID,enabled});
-        socketRef.current.on("show to all user",(isShow)=>{
-          setEnabled(isShow)})
+        socketRef.current.on("show to all user",(data)=>{
+          const{isShow,pid} = data
+          const peerObj = peersRef.current.find(p => p.peerID === pid);
+          if(peerObj){
+            setEnabled(isShow)
+            setSharePeerId(pid)
+            setSharePeer(peerObj)
+          }
+        })
+        
       
 
         socketRef.current.emit("update member",roomID);
@@ -209,11 +225,26 @@ const RoomMeet = (props) => {
           const item = peersRef.current.find((p) => p.peerID === payload.id);
           item.peer.signal(payload.signal);
         });
+
+        socketRef.current.on("user left", (id) => {
+          const peerObj = peersRef.current.find((p) => p.peerID === id);
+          if(peerObj){
+            peerObj.peer.destroy();
+          }
+          const peers = peersRef.current.filter((p) => p.peerID !== id);
+          peersRef.current = peers;
+          setPeers(peers);
+        })
       });
     return () => {
-      socketRef.disconnect();
+      disconnect(userName,roomID)
     };
   }, []);
+
+  //disconnect function
+  function disconnect(username,roomID){
+    socketRef.current.emit("delete member",{username,roomID});
+  }
 
   useEffect(() => {
     socketRef.current.emit("update member",roomID);
@@ -358,8 +389,15 @@ const RoomMeet = (props) => {
 
   function shareVideo(IsEnabled){
       socketRef.current.emit("show shared video",{roomID,IsEnabled});
-      socketRef.current.on("show to all user",(isShow)=>{
-          setEnabled(isShow)})
+      socketRef.current.on("show to all user",(data)=>{
+          const{isShow,id} = data
+          const peerObj = peersRef.current.find(p => p.peerID === id);
+          if(peerObj){
+            setEnabled(isShow)
+            setSharePeerId(id)
+            setSharePeer(peerObj)
+          }
+        })
       }
 
   const handleClickShare = ()=>{
@@ -789,19 +827,19 @@ const RoomMeet = (props) => {
             </div>
           </div>
           <div className=" overflow-x-auto pl-36 pr-36 ">
-            {enabled ? (
+            {(enabled && sharePeer) ? (
               <div className=" z-40 w-[650px] h-[433px] absolute top-[30%] left-[28%]">
-                {peers.map((peer, index) => {
-                  return <div>
-                  {/* video other*/}
-                  <Video key={index} peer={peer} />
-                </div>;
-                })}
+                <div>
+                  {/* video other shared*/}
+                  <Video key={sharePeerId} peer={sharePeer.peer} />
+                </div>
               </div>
+              
             ):(
               <div className=" flex flex-row ">
-                {peers.map((peer, index) => {
-                  return <div className=" w-[30%] h-[30%]"> <Video  key={index} peer={peer} ref={userVideo} autoPlay /></div>;
+                <StyledVideo muted ref={userVideo} autoPlay playsInline />
+                {peers.map((peer) => {
+                  return <div className=" w-[30%] h-[30%]"> <Video  key={peer.peerID} peer={peer.peer} /></div>;
                 })}
               </div>
             )}
@@ -1050,7 +1088,7 @@ const RoomMeet = (props) => {
                   </div>  
                 </div>
               )}
-              <button class=" w-12 h-9">
+              <button class=" w-12 h-9" onClick={()=>{navigate("/Home");}}>
                 <img
                   className=" w-7 h-7"
                   src={require("../image/call-end.png")}
