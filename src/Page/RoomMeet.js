@@ -156,13 +156,12 @@ const RoomMeet = (props) => {
   const peersRef = useRef([]);
   const [members, setMembers] = useState([]);
   const [cartData, setCartData] = useState([{}]);
-  const [sharePeerId, setSharePeerId] = useState()
   const [sharePeer, setSharePeer] = useState()
 
   //run local เปลี่ยนเป็น http://localhost:8080 ใน io.connect
   //run deploy https://functions-3die6uyrca-as.a.run.app
   useEffect(() => {
-    socketRef.current = io.connect("http://localhost:8080");
+    socketRef.current = io.connect("https://functions-3die6uyrca-as.a.run.app");
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then((stream) => {
@@ -197,20 +196,7 @@ const RoomMeet = (props) => {
 
           setPeers((users) => [...users, peerObj]);
         });
-
-        socketRef.current.emit("show shared video",{roomID,enabled});
-        socketRef.current.on("show to all user",(data)=>{
-          const{isShow,pid} = data
-          const peerObj = peersRef.current.find(p => p.peerID === pid);
-          if(peerObj){
-            setEnabled(isShow)
-            setSharePeerId(pid)
-            setSharePeer(peerObj)
-          }
-        })
         
-      
-
         socketRef.current.emit("update member",roomID);
         socketRef.current.on("member in room",(membernames)=>{
           setMembers(membernames);
@@ -225,6 +211,14 @@ const RoomMeet = (props) => {
           const item = peersRef.current.find((p) => p.peerID === payload.id);
           item.peer.signal(payload.signal);
         });
+
+        socketRef.current.emit("show shared video",{roomID,enabled});
+        socketRef.current.on("show to all user",(data)=>{
+          const peerObj = peersRef.current.find(p => p.peerID === data.id);
+          setEnabled(data.isShow);
+          console.log(peerObj);
+          setSharePeer(peerObj);
+          })
 
         socketRef.current.on("user left", (id) => {
           const peerObj = peersRef.current.find((p) => p.peerID === id);
@@ -390,13 +384,10 @@ const RoomMeet = (props) => {
   function shareVideo(IsEnabled){
       socketRef.current.emit("show shared video",{roomID,IsEnabled});
       socketRef.current.on("show to all user",(data)=>{
-          const{isShow,id} = data
-          const peerObj = peersRef.current.find(p => p.peerID === id);
-          if(peerObj){
-            setEnabled(isShow)
-            setSharePeerId(id)
-            setSharePeer(peerObj)
-          }
+          const peerObj = peersRef.current.find(p => p.peerID === data.id);
+          setEnabled(data.isShow);
+          console.log(peerObj);
+          setSharePeer(peerObj);
         })
       }
 
@@ -827,19 +818,19 @@ const RoomMeet = (props) => {
             </div>
           </div>
           <div className=" overflow-x-auto pl-36 pr-36 ">
-            {(enabled && sharePeer) ? (
+            {(enabled && !camera) ? (
               <div className=" z-40 w-[650px] h-[433px] absolute top-[30%] left-[28%]">
                 <div>
                   {/* video other shared*/}
-                  <Video key={sharePeerId} peer={sharePeer.peer} />
+                  {" "}
+                  <Video key={sharePeer.peerID} peer={sharePeer.peer} muted autoPlay playsInline/>
                 </div>
               </div>
               
             ):(
               <div className=" flex flex-row ">
-                <StyledVideo muted ref={userVideo} autoPlay playsInline />
                 {peers.map((peer) => {
-                  return <div className=" w-[30%] h-[30%]"> <Video  key={peer.peerID} peer={peer.peer} /></div>;
+                  return  <div className=" w-[30%] h-[30%]"> {" "} <Video  key={peer.peerID} peer={peer.peer} muted autoPlay playsInline /></div>;
                 })}
               </div>
             )}
