@@ -39,6 +39,9 @@ const Header = () => {
 
   const FESTIVAL_DAYS_IN_MS = new Date(backendData.date).getTime()
 
+  const event = new Date(backendData.date);
+  const option = {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'};
+
   const NOW_IN_MS = new Date().getTime();
 
   const dateTimeAfterThreeDays = FESTIVAL_DAYS_IN_MS;
@@ -153,7 +156,7 @@ const Header = () => {
 
     <div className=" backgroundHome bg-repeat bg-cover h-screen">
       <p className='absolute text-[80px] top-[18%] left-[41.5%] text-[#A30709]'>{backendData.name}</p>
-      <p className='absolute text-[50px] top-[35%] left-[40%] text-[#655F5B]'>{backendData.date}</p>
+      <p className='absolute text-[50px] top-[35%] left-[35%] text-[#655F5B]'>{event.toLocaleDateString('th-TH',option)}</p>
       <div className=' absolute flex flex-row top-[53%] left-[31%] w-[550px]'>
         <div className=' absolute text-[78px] text-[#A30709]'>อีก</div>
         <div className=" absolute left-[25.5%]">
