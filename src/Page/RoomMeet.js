@@ -157,6 +157,7 @@ const RoomMeet = (props) => {
   const [members, setMembers] = useState([]);
   const [cartData, setCartData] = useState([{}]);
   const [sharePeer, setSharePeer] = useState()
+  const [nonSharePeer, setNonSharePeer] = useState([])
 
   //run local เปลี่ยนเป็น http://localhost:8080 ใน io.connect
   //run deploy https://functions-3die6uyrca-as.a.run.app
@@ -215,9 +216,11 @@ const RoomMeet = (props) => {
         socketRef.current.emit("show shared video",{roomID,enabled});
         socketRef.current.on("show to all user",(data)=>{
           const peerObj = peersRef.current.find(p => p.peerID === data.id);
+          const peerObj2 = peersRef.current.filter(p => p.peerID !== data.id);
           setEnabled(data.isShow);
           console.log(peerObj);
           setSharePeer(peerObj);
+          setNonSharePeer(peerObj2)
           })
 
         socketRef.current.on("user left", (id) => {
@@ -233,7 +236,7 @@ const RoomMeet = (props) => {
     return () => {
       disconnect(userName,roomID)
     };
-  }, []);
+  }, [peersRef]);
 
   //disconnect function
   function disconnect(username,roomID){
@@ -384,10 +387,12 @@ const RoomMeet = (props) => {
   function shareVideo(IsEnabled){
       socketRef.current.emit("show shared video",{roomID,IsEnabled});
       socketRef.current.on("show to all user",(data)=>{
-          const peerObj = peersRef.current.find(p => p.peerID === data.id);
-          setEnabled(data.isShow);
-          console.log(peerObj);
-          setSharePeer(peerObj);
+        const peerObj = peersRef.current.find(p => p.peerID === data.id);
+        const peerObj2 = peersRef.current.filter(p => p.peerID !== data.id);
+        setEnabled(data.isShow);
+        console.log(peerObj);
+        setSharePeer(peerObj);
+        setNonSharePeer(peerObj2)
         })
       }
 
@@ -818,23 +823,26 @@ const RoomMeet = (props) => {
             </div>
           </div>
           <div className=" overflow-x-auto overflow-y-hidden pl-36 pr-36 h-[25%]">
-            {(enabled && !camera) ? (
+            {(enabled && !(camera)) ? (
                 <div>
                   <div className=" z-40 w-[650px] h-[433px] absolute top-[30%] left-[28%]">
                     <div className=" w-[100%] h-[100%]">
                       {/* video other shared*/}
                       {" "}
-                      <Video key={sharePeer.peerID} peer={sharePeer.peer} muted autoPlay playsInline/>
+                      <Video key={sharePeer.peerID} peer={sharePeer.peer} muted autoPlay playsInline />
                     </div>
                   </div>
                   <div className=" flex flex-row gap-3">
                     {/* video */}
+                    {nonSharePeer.map((peer) => {
+                    return  <div className=" w-[17%] h-[25%]"> {" "} <Video  key={peer.peerID} peer={peer.peer} muted autoPlay playsInline/></div>;
+                })}
                   </div>
                 </div>
             ):(
               <div className=" flex flex-row gap-3">
                 {peers.map((peer) => {
-                  return  <div className=" w-[17%] h-[25%]"> {" "} <Video  key={peer.peerID} peer={peer.peer} muted autoPlay playsInline /></div>;
+                  return  <div className=" w-[17%] h-[25%]"> {" "} <Video  key={peer.peerID} peer={peer.peer} muted autoPlay playsInline/></div>;
                 })}
               </div>
             )}
