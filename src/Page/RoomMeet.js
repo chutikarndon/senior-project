@@ -29,8 +29,8 @@ const Container = styled.div`
 `;
 
 const StyledVideo = styled.video`
-  height: 50%;
-  width: 50%;
+  height: 100%;
+  width: 100%;
 `;
 
 const Video = (props) => {
@@ -817,20 +817,24 @@ const RoomMeet = (props) => {
               }
             </div>
           </div>
-          <div className=" overflow-x-auto pl-36 pr-36 ">
+          <div className=" overflow-x-auto overflow-y-hidden pl-36 pr-36 h-[25%]">
             {(enabled && !camera) ? (
-              <div className=" z-40 w-[650px] h-[433px] absolute top-[30%] left-[28%]">
                 <div>
-                  {/* video other shared*/}
-                  {" "}
-                  <Video key={sharePeer.peerID} peer={sharePeer.peer} muted autoPlay playsInline/>
+                  <div className=" z-40 w-[650px] h-[433px] absolute top-[30%] left-[28%]">
+                    <div className=" w-[100%] h-[100%]">
+                      {/* video other shared*/}
+                      {" "}
+                      <Video key={sharePeer.peerID} peer={sharePeer.peer} muted autoPlay playsInline/>
+                    </div>
+                  </div>
+                  <div className=" flex flex-row gap-3">
+                    {/* video */}
+                  </div>
                 </div>
-              </div>
-              
             ):(
-              <div className=" flex flex-row ">
+              <div className=" flex flex-row gap-3">
                 {peers.map((peer) => {
-                  return  <div className=" w-[30%] h-[30%]"> {" "} <Video  key={peer.peerID} peer={peer.peer} muted autoPlay playsInline /></div>;
+                  return  <div className=" w-[17%] h-[25%]"> {" "} <Video  key={peer.peerID} peer={peer.peer} muted autoPlay playsInline /></div>;
                 })}
               </div>
             )}
