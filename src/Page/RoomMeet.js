@@ -8,7 +8,6 @@ import "../incenseBurner.css";
 // import logo from "../logo.svg";
 import { makeStyles } from "@material-ui/core";
 import { useLocation,useNavigate } from "react-router-dom";
-import { useLocation,useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 import Peer from "simple-peer";
 import styled from "styled-components";
