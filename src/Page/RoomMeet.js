@@ -383,22 +383,9 @@ const RoomMeet = (props) => {
   const [enabled, setEnabled] = useState(false)
   const [camera, setCamera] = useState(false);
 
-  function shareVideo(IsEnabled){
-      socketRef.current.emit("show shared video",{roomID,IsEnabled});
-      socketRef.current.on("show to all user",(data)=>{
-        const peerObj = peersRef.current.find(p => p.peerID === data.id);
-        const peerObj2 = peersRef.current.filter(p => p.peerID !== data.id);
-        setEnabled(data.isShow);
-        console.log(peerObj);
-        setSharePeer(peerObj);
-        setNonSharePeer(peerObj2)
-        })
-      }
-
   const handleClickShare = ()=>{
     setEnabled(!enabled); 
     setCamera(!camera);  
-    shareVideo(!enabled);
   }
 
 
