@@ -7,7 +7,7 @@ import "../incenseBurner.css";
 // import { Animate } from "react-simple-animate";
 // import logo from "../logo.svg";
 import { makeStyles } from "@material-ui/core";
-import { useLocation } from "react-router-dom";
+import { useLocation,useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 import Peer from "simple-peer";
 import styled from "styled-components";
@@ -29,8 +29,8 @@ const Container = styled.div`
 `;
 
 const StyledVideo = styled.video`
-  height: 50%;
-  width: 50%;
+  height: 13%;
+  width: 13%;
 `;
 
 const Video = (props) => {
@@ -61,6 +61,7 @@ const RoomMeet = (props) => {
   const location = useLocation();
   const roomID = location.state.roomId;
   const userName = location.state.username;
+  let navigate = useNavigate();
 
   /*function fetchData() {
     fetch(`/cart/${roomID}`)
@@ -155,14 +156,16 @@ const RoomMeet = (props) => {
   const peersRef = useRef([]);
   const [members, setMembers] = useState([]);
   const [cartData, setCartData] = useState([{}]);
+  let userStream;
 
   //run local เปลี่ยนเป็น http://localhost:8080 ใน io.connect
   //run deploy https://functions-3die6uyrca-as.a.run.app
   useEffect(() => {
-    socketRef.current = io.connect("http://localhost:8080");
+    socketRef.current = io.connect("https://functions-3die6uyrca-as.a.run.app");
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then((stream) => {
+        userStream = stream;
         userVideo.current.srcObject = stream;
         socketRef.current.emit("join room", {roomID,userName});
         socketRef.current.on("all users", (users) => {
@@ -173,7 +176,8 @@ const RoomMeet = (props) => {
               peerID: userID,
               peer,
             });
-            peers.push(peer);
+            peers.push({peerID: userID,
+              peer});
           });
           setPeers(peers);
           console.log(peers);
@@ -186,7 +190,12 @@ const RoomMeet = (props) => {
             peer,
           });
 
-          setPeers((users) => [...users, peer]);
+          const peerObj = {
+            peer,
+            peerID: payload.callerID
+          }
+
+          setPeers((users) => [...users, peerObj]);
           console.log(peers);
         });
 
@@ -209,11 +218,25 @@ const RoomMeet = (props) => {
           const item = peersRef.current.find((p) => p.peerID === payload.id);
           item.peer.signal(payload.signal);
         });
+
+        socketRef.current.on("user left", (id) => {
+          const peerObj = peersRef.current.find((p) => p.peerID === id);
+          if(peerObj){
+            peerObj.peer.destroy();
+          }
+          const peers = peersRef.current.filter((p) => p.peerID !== id);
+          peersRef.current = peers;
+          setPeers(peers);
+        })
       });
     return () => {
-      socketRef.disconnect();
+      LeaveRoom(userName,roomID);
     };
   }, []);
+
+  function LeaveRoom(username,roomID) {
+    socketRef.current.emit("delete user",{username,roomID});
+  } 
 
   useEffect(() => {
     socketRef.current.emit("update member",roomID);
@@ -313,17 +336,27 @@ const RoomMeet = (props) => {
     setIsDeleteMenuOpen(false);
   };
 
-  const toggleCamera = () => {
+  /*const toggleCamera = () => {
     setVideo((prevState) => !prevState);
-  };
+  };*/
 
-  useEffect(() => {
-    if (!isVideo) {
-      // Turn off the camera by setting the srcObject of the video element to null
-      userVideo.current.srcObject = null;
+    function toggleCamera(){
+    const videoTrack = userVideo.current.srcObject.getTracks().find(track => track.kind === 'video');
+    if (isVideo) {
+      videoTrack.enabled = true;
     } else {
+      videoTrack.enabled = false;
     }
-  }, [isVideo]);
+  }
+
+  function toggleMic(){
+    const audioTrack = userVideo.current.srcObject.getTracks().find(track => track.kind === 'audio');
+    if (isVideo) {
+      audioTrack.enabled = true;
+    } else {
+      audioTrack.enabled = false;
+    }
+  }
 
   /*drag move fire page */
   // const [translate, setTranslate] = useState({
@@ -462,8 +495,8 @@ const RoomMeet = (props) => {
                             </p>
                           </div> 
                         </button>
-                        </div>
-                          <div className="flex snap-y w-[690px] h-[485px] absolute left-[425%] top-[7%] z-20 bg-[#EABA66] p-3 rounded">
+                      </div>
+                      <div className="flex snap-y w-[690px] h-[485px] absolute left-[425%] top-[7%] z-20 bg-[#EABA66] p-3 rounded">
                             <div className=" overflow-y-hidden scroll-smooth hover:overflow-y-auto overflow-x-hidden ">
                               <div className={openTab === 1 ? "block" : "hidden"} id="link1">
                                 <div className=" grid grid-cols-5 gap-3 text-xl">              
@@ -781,19 +814,19 @@ const RoomMeet = (props) => {
                             )}
                           </div>
                         </div>
-                      
+                      </div>
                     </div>
                   </div>
-                </div>
-              }
+                }
             </div>
           </div>
+          
           <div className=" overflow-x-auto pl-36 pr-36 ">
-            {enabled ? (
+           {/* {enabled ? (
               <div className=" z-40 w-[650px] h-[433px] absolute top-[30%] left-[28%]">
                 {peers.map((peer, index) => {
                   return <div>
-                  {/* video other*/}
+                 video other
                   <Video key={index} peer={peer} />
                 </div>;
                 })}
@@ -804,19 +837,19 @@ const RoomMeet = (props) => {
                   return <div className=" w-[30%] h-[30%]"> <Video  key={index} peer={peer} ref={userVideo} autoPlay /></div>;
                 })}
               </div>
-            )}
+            )}*/}
             
             {/* other user*/}
             {/* <div className=" flex flex-row w-96">
               <div className="w-44 h-32" muted ref={userVideo} autoPlay playsInline />
               
             </div> */}
-            {/*<div className=" flex flex-row gap-3 p-2">
+            <div className=" flex flex-row gap-3 p-2">
               <StyledVideo muted ref={userVideo} autoPlay playsInline />
-              {peers.map((peer, index) => {
-                return <Video key={index} peer={peer} />;
+              {peers.map((peer) => {
+                return <Video key={peer.peerID} peer={peer.peer} />;
               })}
-            </div>*/}
+            </div>
           </div>
           <div>
             <button onClick={ handleClickShare } className="absolute h-[80px] w-[80px] right-[5%] top-[10%] hover:scale-105">
@@ -835,7 +868,17 @@ const RoomMeet = (props) => {
               </div>
             </button>
           </div>
-          
+          {enabled && (
+              <div className=" z-40 w-[650px] h-[433px] absolute top-[30%] left-[28%]">
+                <video ref={userVideo} muted={true} autoPlay={true} />
+                {/*{peers.map((peer, index) => {
+                  return <div>
+                   video other
+                  <Video key={index} peer={peer} />
+                </div>;
+                })}*/}
+              </div>
+            )}
           
         </div>
         <div className=" flex justify-center">
@@ -959,7 +1002,7 @@ const RoomMeet = (props) => {
             <div className="flex justify-self-center pl-2 rounded-full  border-0 shadow-md bg-[#E9A327] mr-5">
               {" "}
               {/* toolbar*/}
-              <button class=" w-12 h-9" onClick={() => setVideo(!isVideo)}>
+              <button class=" w-12 h-9" onClick={() => {setVideo(!isVideo); toggleCamera();}}>
                 {isVideo ? (
                 <img
                     className=" w-6 h-6"
@@ -975,7 +1018,7 @@ const RoomMeet = (props) => {
                   ></img>
                 )}
               </button>
-              <button class=" w-12 h-9" onClick={() => setVoice(!isVoice)}>
+              <button class=" w-12 h-9" onClick={() => {setVoice(!isVoice); toggleMic(); }}>
                 {isVoice ? (
                   <img
                     className=" w-6 h-6"
@@ -1050,7 +1093,7 @@ const RoomMeet = (props) => {
                   </div>  
                 </div>
               )}
-              <button class=" w-12 h-9">
+              <button class=" w-12 h-9" onClick={()=>{LeaveRoom(userName,roomID); navigate("/Home");}}>
                 <img
                   className=" w-7 h-7"
                   src={require("../image/call-end.png")}

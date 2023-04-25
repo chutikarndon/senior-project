@@ -110,6 +110,14 @@ io.on("connection", (socket) => {
     });
   });
 
+  
+  socket.on("delete user", (data)=>{
+      let memberInRoom = usersName[data.roomID];
+      memberInRoom = memberInRoom.filter((m)=>m !== data.username)
+      usersName[data.roomID] = memberInRoom;
+    })
+
+
   socket.on("disconnect", () => {
     const roomID = socketToRoom[socket.id];
     let room = users[roomID];
@@ -118,9 +126,8 @@ io.on("connection", (socket) => {
       room = room.filter((id) => id !== socket.id);
       users[roomID] = room;
     }
-    /*if (member) {
-      member = member.filter((name) => name !== userName);
-    }*/
+
+    socket.broadcast.emit("user left",socket.id)
   });
 
   socket.on("collect", (data) => {

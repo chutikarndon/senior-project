@@ -37,7 +37,6 @@ const Idpass = () => {
             </div>
           </div>
         </div>
-        <div className="absolute text-[35px] left-[34.79%] right-[34.74%] top-[65%] bottom-[34.44%] text-[#CD3D3D]">ห้องนี้จะหมดอายุภายใน 14 วัน</div>
         <div className=" pt-6 pr-1 text-right">
           <Link to="/Home" className=" text-[20px] absolute left-[55%] top-[58%] underline">
             กลับสู่หน้าหลัก
