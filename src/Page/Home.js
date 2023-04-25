@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Header = () => {
+const Home = () => {
   const classes = useStyles();
   let navigate = useNavigate();
 
@@ -173,4 +173,4 @@ const Header = () => {
     </div>
   );
 };
-export default Header;
+export default Home;

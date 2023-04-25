@@ -67,7 +67,6 @@ io.on("connection", (socket) => {
     }
     socketToRoom[socket.id] = data.roomID;
     const usersInThisRoom = users[data.roomID].filter((id) => id !== socket.id);
-
     socket.emit("all users", usersInThisRoom);
   });
 
@@ -81,20 +80,6 @@ io.on("connection", (socket) => {
     socket.emit("cart in room", cartdata)
   })
 
-  socket.on("show shared video", (data) => {
-    let isShow = data.enabled;
-    if(isShareVideo[data.roomID]) {
-      isShareVideo[data.roomID] = false
-      isShow = false
-    }
-    else {
-      isShareVideo[data.roomID] = true
-      isShow = true
-    }
-    console.log(data.roomID,":",isShow)
-    console.log(isShareVideo[data.roomID])
-    socket.broadcast.emit("show to all user", isShow)
-  })
 
   socket.on("sending signal", (payload) => {
     io.to(payload.userToSignal).emit("user joined", {
@@ -129,6 +114,13 @@ io.on("connection", (socket) => {
 
     socket.broadcast.emit("user left",socket.id)
   });
+
+  socket.on("delete member",(data) => {
+    const {username,roomID} = data
+    let members = usersName[roomID];
+    members = members.filter((name) => name !== username)
+    usersName[roomID] = members;
+  })
 
   socket.on("collect", (data) => {
     if (cart[data.roomID]) {

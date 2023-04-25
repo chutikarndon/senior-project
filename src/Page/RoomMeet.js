@@ -8,6 +8,7 @@ import "../incenseBurner.css";
 // import logo from "../logo.svg";
 import { makeStyles } from "@material-ui/core";
 import { useLocation,useNavigate } from "react-router-dom";
+import { useLocation,useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 import Peer from "simple-peer";
 import styled from "styled-components";
@@ -162,6 +163,7 @@ const RoomMeet = (props) => {
   //run deploy https://functions-3die6uyrca-as.a.run.app
   useEffect(() => {
     socketRef.current = io.connect("https://functions-3die6uyrca-as.a.run.app");
+    socketRef.current = io.connect("https://functions-3die6uyrca-as.a.run.app");
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then((stream) => {
@@ -180,7 +182,6 @@ const RoomMeet = (props) => {
               peer});
           });
           setPeers(peers);
-          console.log(peers);
         });
 
         socketRef.current.on("user joined", (payload) => {
@@ -189,6 +190,10 @@ const RoomMeet = (props) => {
             peerID: payload.callerID,
             peer,
           });
+          const peerObj = {
+            peer,
+            peerID: payload.callerID
+          }
 
           const peerObj = {
             peer,
@@ -198,12 +203,7 @@ const RoomMeet = (props) => {
           setPeers((users) => [...users, peerObj]);
           console.log(peers);
         });
-
-        socketRef.current.emit("show shared video",{roomID,enabled});
-        socketRef.current.on("show to all user",(isShow)=>{
-          setEnabled(isShow)})
-      
-
+        
         socketRef.current.emit("update member",roomID);
         socketRef.current.on("member in room",(membernames)=>{
           setMembers(membernames);
@@ -391,8 +391,14 @@ const RoomMeet = (props) => {
 
   function shareVideo(IsEnabled){
       socketRef.current.emit("show shared video",{roomID,IsEnabled});
-      socketRef.current.on("show to all user",(isShow)=>{
-          setEnabled(isShow)})
+      socketRef.current.on("show to all user",(data)=>{
+        const peerObj = peersRef.current.find(p => p.peerID === data.id);
+        const peerObj2 = peersRef.current.filter(p => p.peerID !== data.id);
+        setEnabled(data.isShow);
+        console.log(peerObj);
+        setSharePeer(peerObj);
+        setNonSharePeer(peerObj2)
+        })
       }
 
   const handleClickShare = ()=>{
@@ -830,11 +836,12 @@ const RoomMeet = (props) => {
                   <Video key={index} peer={peer} />
                 </div>;
                 })}
-              </div>
+                  </div>
+                </div>
             ):(
-              <div className=" flex flex-row ">
-                {peers.map((peer, index) => {
-                  return <div className=" w-[30%] h-[30%]"> <Video  key={index} peer={peer} ref={userVideo} autoPlay /></div>;
+              <div className=" flex flex-row gap-3">
+                {peers.map((peer) => {
+                  return  <div className=" w-[17%] h-[25%]"> {" "} <Video  key={peer.peerID} peer={peer.peer} muted autoPlay playsInline/></div>;
                 })}
               </div>
             )}*/}
