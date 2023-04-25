@@ -195,11 +195,6 @@ const RoomMeet = (props) => {
             peerID: payload.callerID
           }
 
-          const peerObj = {
-            peer,
-            peerID: payload.callerID
-          }
-
           setPeers((users) => [...users, peerObj]);
           console.log(peers);
         });
